@@ -104,10 +104,10 @@ trees.  The basic command syntax is:
 , and stores the
 changeset there.
 </p><p>When <code>mkpatch</code>
- compares trees, it uses inventory tags.  For example,
-it considers two directories or two files to be &quot;the same directory
-(or file)&quot; if they have the same tag -- regardless of where each is
-located in its respective tree.  (See <a href="inventory-tags.html#Inventory_Tags_for_Source">Inventory Tags for Source</a>.)
+ compares trees, it uses inventory ids.  For example, it
+considers two directories or two files to be &quot;the same directory (or
+file)&quot; if they have the same id -- regardless of where each is located
+in its respective tree.  (See <a href="inventory-ids.html#Inventory_Ids_for_Source">Inventory Ids for Source</a>.)
 </p><p>A changeset produced by <code>mkpatch</code>
  describes what files and directories
 have been added or removed, which have been renamed, which files have
@@ -241,7 +241,7 @@ documentation of the <code>dopatch</code>
 code.
 </p><p><code>dopatch</code>
  takes an inventory of the tree being patched.  It uses
-inventory tags to decide which files and directories expected by the
+inventory ids to decide which files and directories expected by the
 changeset are present or missing from the tree, and to figure out
 where each file and directory is located in the tree.
 </p><p><strong><u>Simple Patches</u></strong> If the changeset contains an ordinary patch or
@@ -321,88 +321,88 @@ expect, even if you don't know it's what you'd expect.
  was called the <code>ORIGINAL</code>
  tree had:
 </p><pre>
-        Directory or file:              Tag:
+        Directory or file:              Id:
 
-        a/x.c                           tag_1
-        a/bar.c                         tag_2
+        a/x.c                           id_1
+        a/bar.c                         id_2
 
 
 </pre>
 <p>but the <code>MODIFIED</code>
  tree had:
 </p><pre>
-        a/x.c                           tag_1
-        a/y.c                           tag_2
+        a/x.c                           id_1
+        a/y.c                           id_2
 
 </pre>
 <p>with changes to both files.  The patch will want to rename the file
-with tag <code>tag_2</code>
+with id <code>id_2</code>
  to <code>y.c</code>
 , and change the contents of the files with
-tags <code>tag_1</code>
- and <code>tag_2</code>
+ids <code>id_1</code>
+ and <code>id_2</code>
 .
 </p><p>Suppose, for example, that you have a tree with:
 </p><pre>
-        a/foo.c                         tag_1
-        a/zip.c                         tag_2
+        a/foo.c                         id_1
+        a/zip.c                         id_2
 
 </pre>
 <p>and the you apply the patch to that tree.  After the patch, you'll be
 left with:
 </p><pre>
-        a/foo.c                         tag_1
-        a/y.c (was zip.c)               tag_2
+        a/foo.c                         id_1
+        a/y.c (was zip.c)               id_2
 
 </pre>
 <p>with patches made to the contents of both files.
 </p><p>Here's a sample of some subtleties and ways of handling conflicts:
 </p><p>Suppose that the original tree seen by mkpatch has:
 </p><pre>
-        Directory or file:              Tag:
+        Directory or file:              Id:
 
-        ./a                             tag_a
-        ./a/b                           tag_b
-        ./a/b/c                         tag_c
+        ./a                             id_a
+        ./a/b                           id_b
+        ./a/b/c                         id_c
 
 
 </pre>
 <p>and that the modified directory has:
 </p><pre>
-        ./a                             tag_a
-        ./a/c                           tag_c
-        ./a/c/b                         tag_b
+        ./a                             id_a
+        ./a/c                           id_c
+        ./a/c/b                         id_b
 
 </pre>
 <p>Finally, suppose that the tree has:
 </p><pre>
-        ./x                             tag_a
-        ./x/b                           tag_b
-        ./x/c                           tag_new_directory
-        ./x/c/b                         tag_different_file_named_b
-        ./x/c/q                         tag_c
+        ./x                             id_a
+        ./x/b                           id_b
+        ./x/c                           id_new_directory
+        ./x/c/b                         id_different_file_named_b
+        ./x/c/q                         id_c
 
 </pre>
 <p>When patch gets done with the tree, it will have:
 </p><pre>
-        ./x                             tag_a
+        ./x                             id_a
                 Since the patch doesn't do anything 
-                to change the directory with tag_a.
+                to change the directory with id_a.
 
-        ./x/c.orig                      tag_new_directory
-        ./x/c.rej                       tag_c
+        ./x/c.orig                      id_new_directory
+        ./x/c.rej                       id_c
                 Since the patch wants to make the 
-                directory with tag_c a subdirectory named &quot;c&quot;
-                of the directory with tag_a, but the tree
+                directory with id_c a subdirectory named &quot;c&quot;
+                of the directory with id_a, but the tree
                 already had a different directory there,
-                with the tag tag_new_directory.
+                with the id id_new_directory.
 
-        ./x/c.rej/b                     tag_b
+        ./x/c.rej/b                     id_b
                 Since the patch wants to rename the directory
-                with tag_b to be a subdirectory named &quot;b&quot;
-                of the directory with tag_c.
+                with id_b to be a subdirectory named &quot;b&quot;
+                of the directory with id_c.
 
-        ./x/c.orig/b                    tag_different_file_named_b
+        ./x/c.orig/b                    id_different_file_named_b
                 Since the patch made new changes to this file,
                 it stayed with its parent directory.
                 

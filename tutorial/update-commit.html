@@ -215,7 +215,7 @@ Just to review, there are two steps.
 <p>And then tries to commit:
 </p><pre>
    % tla commit
-   cmtrev: tree is not up-to-date (missing latest revision is lord@emf.net--2003b--2003-example/hello-world--mainline--0.1--patch-2)
+   commit: tree is not up-to-date (missing latest revision is lord@emf.net--2003b--2003-example/hello-world--mainline--0.1--patch-2)
 
 </pre>
 <p>The problem here is that Bob's changes have already been stored in the
@@ -258,13 +258,13 @@ tree doesn't have yet.
 </p><p>She can examine the situation in a little more depth by asking
 what her tree is missing:
 </p><pre>
-        % tla whats-missing
+        % tla missing
         patch-2
 
 </pre>
 <p>or for more detail:
 </p><pre>
-        % tla whats-missing --summary
+        % tla missing --summary
         patch-2
             commented return from main
 
@@ -365,7 +365,7 @@ her changes.   One easy way to do that is the <code>update</code>
 </pre>
 <p>Since no further changes are missing:
 </p><pre>
-        % tla whats-missing
+        % tla missing
         [no output]
 
 </pre>
@@ -376,13 +376,13 @@ her changes.   One easy way to do that is the <code>update</code>
         [....]
 
 </pre>
-<p><strong><u>Learning Note:</u></strong> If you're following along with the examples, you
-should still have a tree in <code>hello-world-Bob</code>
- that has Bob's changes,
-but not Alice's.   Try various commands for that directory to explore
-(<code>whats-missing</code>
-, <code>update</code>
-, <code>what-changed</code>
+<p><strong><u>Learning Note:</u></strong> If you're following along with the examples, you should
+still have a tree in <code>hello-world-Bob</code>
+ that has Bob's changes, but not
+Alice's.  Try various commands for that directory to explore (<code>missing</code>
+,
+<code>update</code>
+, <code>changes</code>
  and so forth).
 </p>
 

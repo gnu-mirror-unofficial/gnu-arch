@@ -133,13 +133,13 @@ version), or a revision name (meaning get that revision, exactly).
 </pre>
 <p>Once you have a meta-project tree, some other useful commands are:
 </p><pre>
-     catcfg : output information about a multi-project config
+     cat-config : output information about a multi-project config
 
 </pre>
 <p>One use of that command is to generate a list of sub-projects to which 
 some other command can be iteratively applied:
 </p><pre>
-        % tla catcfg CFGNAME | awk '{print $1}' | xargs ...
+        % tla cat-config CFGNAME | awk '{print $1}' | xargs ...
 
 </pre>
 <p>Additionally, the option <code>--snap</code>

@@ -328,9 +328,9 @@ into the <code>candice</code>
 given by:
 </p><pre>
 
-        % tla whats-missing --summary \
-                              -A candice@candice.net--2003-example \
-                              hello-world--mainline--0.1
+        % tla missing --summary \
+                      -A candice@candice.net--2003-example \
+                      hello-world--mainline--0.1
         patch-4
             merge from Candice's Branch
         patch-5
@@ -365,17 +365,16 @@ allows us to skip the <code>patch-4</code>
  revision from the mainline.   That
 <em>sort of</em> solves the problem, but it has some drawbacks.  First, it
 means that <code>patch-4</code>
- will continue to appear in the <code>whats-missing</code>
+ will continue to appear in the <code>missing</code>
+ output
+of the <code>candice</code>
+ branch.  Second, there is nothing that guarantees us
+that the <code>patch-4</code>
+ changeset contains <em>only</em> merges from the <code>candice</code>
 
-output of the <code>candice</code>
- branch.   Second, there is nothing that
-guarantees us that the <code>patch-4</code>
- changeset contains <em>only</em> merges from
-the <code>candice</code>
- branch.   If Alice and Bob made other changes in
-<code>patch-4</code>
-, and we skip that changeset, those other changes will be
-lost.
+branch.  If Alice and Bob made other changes in <code>patch-4</code>
+, and we skip
+that changeset, those other changes will be lost.
 </p>
 
 

@@ -65,7 +65,7 @@ Another option is <code>replay</code>
 <p>It's easy to see that the resulting tree is not up-to-date:
 </p><pre>
         % cd hw-patch-1
-        % tla whats-missing
+        % tla missing
         patch-2
         patch-3
 
@@ -119,7 +119,7 @@ in the first step are made to the new tree.
 changes:
 </p><pre>
         % cd ~/wd/hw-patch-1
-        % tla whats-missing
+        % tla missing
         patch-2
         patch-3
 
@@ -128,19 +128,19 @@ changes:
  and <code>patch-3</code>
  revisions each correspond to a
 specific changeset, stored in the archive (see <a href="checking-in-changes.html#How_it_Works_--_commit_of_a_New_Revision">How it Works -- commit of a New Revision</a>).
-</p><p>We could add those changes to your local tree by using <code>get-patch</code>
- to
-retrieve each changeset, and <code>dopatch</code>
+</p><p>We could add those changes to your local tree by using <code>get-changeset</code>
+
+to retrieve each changeset, and <code>dopatch</code>
  to apply it (see
-<a href="exploring-changesets.html#get-patch_Retrieves_a_Changeset_from_an_Archive">get-patch Retrieves a Changeset from an Archive</a>, and
-<a href="introducing-changesets.html#dopatch">dopatch</a>).   That's a lot of tedious work, though, so <code>arch</code>
+<a href="exploring-changesets.html#get-changeset_Retrieves_a_Changeset_from_an_Archive">get-changeset Retrieves a Changeset from an Archive</a>, and
+<a href="introducing-changesets.html#dopatch">dopatch</a>).  That's a lot of tedious work, though, so <code>arch</code>
 
 provides a more automated way to accomplish that same effect:
 </p><pre>
         % cd ~/wd/hw-patch-1
         % tla replay
         [....]
-        % tla whats-missing
+        % tla missing
         [no output]
 
 </pre>
@@ -180,19 +180,19 @@ stop there and let you fix the conflicts.  You can then pick up where
 
 
 
-<p>If you've followed along with the tutorial so far, the way that
-<code>replay</code>
- works should be pretty obvious.  In fact, it's
-just exactly how we described it above.  <code>replay</code>
- uses <code>whats-missing</code>
+<p>If you've followed along with the tutorial so far, the way that <code>replay</code>
 
-to find out what changes your tree is missing, <code>get-patch</code>
- to retrieve
-those changesets, and <code>dopatch</code>
- to apply them.   There's a fair amount
-of &quot;bookkeeping&quot; involved in doing that -- and that bookkeeping is
-what <code>replay</code>
- automates for you.
+works should be pretty obvious.  In fact, it's just exactly how we
+described it above.  <code>replay</code>
+ uses <code>missing</code>
+ to find out what changes
+your tree is missing, <code>get-changeset</code>
+ to retrieve those changesets, and
+<code>dopatch</code>
+ to apply them.  There's a fair amount of &quot;bookkeeping&quot;
+involved in doing that -- and that bookkeeping is what <code>replay</code>
+
+automates for you.
 </p>
 
 

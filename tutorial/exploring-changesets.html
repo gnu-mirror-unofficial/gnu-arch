@@ -81,11 +81,11 @@ section: <a href="checking-in-changes.html#How_it_Works_--_commit_of_a_New_Revis
 
 
 
-<a name="get-patch_Retrieves_a_Changeset_from_an_Archive"></a>
+<a name="get-changeset_Retrieves_a_Changeset_from_an_Archive"></a>
 
 
 
-<h3 align=center>get-patch Retrieves a Changeset from an Archive</h3>
+<h3 align=center>get-changeset Retrieves a Changeset from an Archive</h3>
 
 
 
@@ -106,12 +106,12 @@ log message from an archive (see <a href="update-commit.html#Studying_Why_Alice_
 
         % cd ~/wd
 
-        % tla get-patch hello-world--mainline--0.1--patch-1 patch-1
+        % tla get-changeset hello-world--mainline--0.1--patch-1 patch-1
         [...]
 
 
 </pre>
-<p><code>get-patch</code>
+<p><code>get-changeset</code>
  retrieves the changeset from the archive and, in this
 case, stores it in a directory called <code>patch-1</code>
 .
@@ -128,11 +128,11 @@ case, stores it in a directory called <code>patch-1</code>
 
 
 
-<a name="Using_patch-report_to_Examine_a_Changeset"></a>
+<a name="Using_show-changeset_to_Examine_a_Changeset"></a>
 
 
 
-<h3 align=center>Using patch-report to Examine a Changeset</h3>
+<h3 align=center>Using show-changeset to Examine a Changeset</h3>
 
 
 
@@ -158,14 +158,10 @@ by using:
 
 </pre>
 <p>If you've been following along with the examples, you'll recognize the
-output format of <code>patch-report</code>
- from the <code>what-changed</code>
- command
-introduced earlier (see <a href="checking-in-changes.html#Oh_My_Gosh_--_What_Have_I_Done?">Oh My Gosh -- What Have I Done?</a>).
-</p><p><code>patch-report</code>
- also has a <code>--html</code>
- option which can be used to
-generate a simple web page describing a changeset.   
+output format of <code>show-changeset</code>
+ from the <code>changes</code>
+ command introduced
+earlier (see <a href="checking-in-changes.html#Oh_My_Gosh_--_What_Have_I_Done?">Oh My Gosh -- What Have I Done?</a>).
 </p>
 
 

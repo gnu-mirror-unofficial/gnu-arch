@@ -29,13 +29,12 @@
 
 <p><a name="index-pt:0"></a>
 
-</p><p>In the previous chapter, we began to learn about branching and
-merging.   We saw how commands like <code>whats-missing</code>
+</p><p>In the previous chapter, we began to learn about branching and merging.
+We saw how commands like <code>missing</code>
 , <code>update</code>
-, and
-<code>replay</code>
- can be used to keep track of and apply changes from multiple 
-branches of a project.
+, and <code>replay</code>
+ can be used
+to keep track of and apply changes from multiple branches of a project.
 </p><p>In this chapter, we'll explain a bit about <em>
 <a name="index-pt:1"></a>
 
@@ -216,22 +215,22 @@ that she used <code>tag</code>
 
 
 
-<a name="How_It_Works_--_whats-missing"></a>
+<a name="How_It_Works_--_missing"></a>
 
 
 
-<h3 align=center>How It Works -- whats-missing</h3>
-
-
-
-
+<h3 align=center>How It Works -- missing</h3>
 
 
 
 
 
 
-<p>In earlier chapters, you learned how the command <code>whats-missing</code>
+
+
+
+
+<p>In earlier chapters, you learned how the command <code>missing</code>
  can
 tell you about changes commited to archives, but not yet present in a
 given project tree (see <a href="update-commit.html#Studying_Why_Alice_Can_Not_commit">Studying Why Alice Can Not commit</a> and
@@ -266,13 +265,12 @@ revisions for which a project tree has log entries with <code>logs</code>
 
 
 </pre>
-<p>The difference between those two lists is the output of
-<code>whats-missing</code>
+<p>The difference between those two lists is the output of <code>missing</code>
 :
 </p><pre>
 
-        % tla whats-missing -A lord@emf.net--2003-example \
-                              hello-world--mainline--0.1
+        % tla missing -A lord@emf.net--2003-example \
+                      hello-world--mainline--0.1
         patch-3
 
 
@@ -519,16 +517,16 @@ a patch log:
 
 </pre>
 <p>Note that the generated <code>ChangeLog</code>
- includes a <code>tag</code>
- line.  If you
-save the output of the <code>changelog</code>
- command in a project tree, either
-using tagline tags or giving it an explicit tag that matches the <code>tag</code>
-
-line, the commands such as <code>commit</code>
- will automatically keep the
-<code>ChangeLog</code>
- up to date.
+ includes a <code>tagline</code>
+.  If you save
+the output of the <code>changelog</code>
+ command in a project tree, either using
+tagline ids or giving it an explicit id that matches the <code>tagline</code>
+s id,
+the commands such as <code>commit</code>
+ will automatically keep the <code>ChangeLog</code>
+ up
+to date.
 </p>
 
 

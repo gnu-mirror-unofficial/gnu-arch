@@ -88,15 +88,15 @@ behavior).
 changing the regular expression used for each category test.
 </p><p>You can customize naming conventions by modifying the file
 <code>./{arch}/=tagging-method</code>
- in your project trees.  That file is
-created by the <code>tagging-method</code>
- command and initially, it contains a
-single line which names the tagging method (<code>names</code>
+ in your project trees.  That file is created
+by the <code>id-tagging-method</code>
+ command and initially, it contains a single
+line which names the id tagging method (<code>names</code>
 , <code>explicit</code>
-, 
-<code>tagline</code>
- (or the now deprecated, but popular in some older projects,
-including arch itself, <code>implicit</code>
+, <code>tagline</code>
+
+(or the now deprecated, but popular in some older projects, including
+arch itself, <code>implicit</code>
 )).
 </p><p>In particular, <code>=tagging-method</code>
  can contain blank lines and comments
@@ -112,7 +112,7 @@ permissible directives are:
         implicit
         explicit
         names
-                specify the tagging method to use for this tree
+                specify the id tagging method to use for this tree
 
 </pre>
 <pre>
@@ -144,7 +144,107 @@ awk
 </em>
 ) and have default values which
 implement the naming conventions described in <a href="inventories.html#The_arch_Naming_Conventions">The arch Naming Conventions</a>.
-</p>
+</p><p>A given regexp directive can occur more than once, in which case the 
+regexps are concatenated as alternatives.   Thus, for example:
+</p><pre>
+        source  .*\.c$
+        source  .*\.h$
+
+</pre>
+<p>is equivalent to:
+</p><pre>
+        source (.*\.c$)|(.*\.h$)
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="Per-Directory_Regexps"></a>
+
+
+
+<h3 align=center>Per-Directory Regexps</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:4"></a>
+
+</p><p>A source directory can contain a <code>.arch-inventory</code>
+ file.
+</p><p><code>.arch-inventory</code>
+ files can contain regexp declarations just like
+those in =tagging-method (i.e., one for <code>excludes</code>
+, one for
+<code>junk</code>
+, etc.)   Let's call these the <em>
+<a name="index-pt:5"></a>
+
+dir-local regexps
+</em>
+.
+The <code>=tagging-method</code>
+ regexps are the <em>
+<a name="index-pt:6"></a>
+
+global regexps
+</em>
+.
+</p><p>While traversing a tree, each file is classified-by-name as follows.
+the steps which are changed by <code>.arch-inventory</code>
+ are marked with
+<code>[*]</code>
+:
+</p><pre>
+        0) &quot;.&quot; and &quot;..&quot; remain excluded files, no matter what.
+
+</pre>
+<pre>
+   [*]  1) if excluded files are being omitted from the inventory,
+           and either the dir-local or global regexp, the file
+           is excluded
+
+</pre>
+<pre>
+        2) if the file is a control file, it is source
+
+</pre>
+<pre>
+        3) if the file falls into one of the &quot;mandatory categories&quot;
+           (&quot;,,&quot; and &quot;++&quot; files) it is categorized as junk or 
+           precious respectively.
+
+</pre>
+<pre>
+   [*]  4) the dir-local (only) regexps are tried in the usual order:
+           junk, backup, precious, unrecognized, source.  If the file
+           matches, it is suitably categorized.
+
+</pre>
+<pre>
+        5) the global regexps are tried in the same order.
+
+</pre>
+<pre>
+        6) otherwise the file is unrecognized.
+
+</pre>
+
 
 
 

@@ -352,14 +352,14 @@ versions, and for her own branch:
 </pre>
 <p>There are not any later changes on Candice's branch:
 </p><pre>
-        % tla whats-missing hello-world--candice--0.1
+        % tla missing hello-world--candice--0.1
         [no output]
 
 </pre>
 <p>but recall that Alice and Bob are already up to <code>patch-3</code>
 :
 </p><pre>
-        % tla whats-missing -A lord@emf.net--2003-example \
+        % tla missing -A lord@emf.net--2003-example \
                 hello-world--mainline--0.1
         patch-2
         patch-3
@@ -615,13 +615,13 @@ output is ideal for inclusion in such a log message:
  revision.
 Its contents tell us what revision we branched from.
 </p><p>The changeset for this revision (<code>....patches.tar.gz</code>
-) was also
-created by <code>tag</code>
-.  If you explore that changeset (recall <code>get-patch</code>
-
-and <code>patch-report</code>
-) you'll see that all it does is add a log entry to
-the tree's patch log.
+) was also created
+by <code>tag</code>
+.  If you explore that changeset (recall <code>get-changeset</code>
+ and
+<code>show-changeset</code>
+) you'll see that all it does is add a log entry to the
+tree's patch log.
 </p><p>The source file (<code>...base-0.tar.gz</code>
 ) was created by
 <code>archive-cache-revision</code>
