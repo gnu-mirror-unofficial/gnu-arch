@@ -15,7 +15,7 @@
 
 <small>
 <b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
-<b>next: </b><a href="about.html#About_This_Manual">About This Manual</a></br>
+<b>next: </b><a href="in-general.html#arch_Commands_in_General">arch Commands in General</a></br>
 
 <b>prev: </b><a href="introduction.html#Introducing_arch">Introducing arch</a></br>
 
@@ -29,43 +29,111 @@
 
 <p>In order to use <code>arch</code>
 , there are some software tools that you must
-already have available.  These don't necessarily need to be on your
-<code>PATH</code>
- -- <code>arch</code>
- can use a separate <code>PATH</code>
- if you need it to.
-</p><p><strong><u>GNU Make</u></strong> You will need <code>GNU Make</code>
+already have available.  
+</p>
+<a name="Tools_Used_to_Build_arch"></a>
+
+
+
+<h3 align=center>Tools Used to Build arch</h3>
+
+
+
+
+
+
+
+
+
+
+<p><strong><u>GNU Make</u></strong> You will need <code>GNU Make</code>
  in order to build <code>arch</code>
 .
-</p><p><strong><u>GNU Tar</u></strong> You must have <code>GNU tar</code>
-.  More specifically, you must have
-a version of tar that has options:
+</p><p><strong><u>Standard Posix Shell Tools</u></strong> The package framework (i.e., the
+configure and build process) assumes that some standard Posix shell
+tools are available on your system:
 </p><pre>
-        -zcf F          to create a gzip-compressed tar file called
-                        F, where F may be `-', meaning to write
-                        the tar file to the standard-output stream
+        awk     find    mkdir   sh      wc
+        cat     fold    printf  tee     xargs
+        chmod   grep    pwd     test
+        date    head    rm      touch
+        echo    ls      sed     tsort
 
 </pre>
-<pre>
-        -zxf F          to extract files from a gzip-compressed tar
-                        file called F, where F may be `-', meaning
-                        to read the tar file from the standard-input
-                        stream.  
+<p><em>Note:</em>  On some systems, the program installed as <code>/bin/sh</code>
+ is
+<em>not</em> a Posix shell (it may be a variant of <code>csh</code>
+ or a very buggy
+implementation of Posix <code>sh</code>
+).   On such systems, you should use a 
+different shell to run <code>configure</code>
+, such as:
+</p><pre>
+  % /usr/local/bin/bash ../configure --config-shell /usr/local/bin/bash
 
 </pre>
-<pre>
-        -T -            This option reads a list of files from
-                        standard input.  Only those files are 
-                        read or written to the archive -- others
-                        are ignored.
+<p><strong><u>The null Device</u></strong> Your system must have <code>/dev/null</code>
+.  Information
+directed to <code>/dev/null</code>
+ should simply disappear from the universe.  As
+a special &quot;Green Software&quot; measure, we have made provisions that
+will enable your computers to convert that discarded information into
+<em>heat</em>, which you may use to supplement conventional heating
+systems.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Tools_Used_Internally_by_arch"></a>
+
+
+
+<h3 align=center>Tools Used Internally by arch</h3>
+
+
+
+
+
+
+
+
+
+
+<p>The remaining tools are used internally by arch itself.  They don't
+necessarily need to be on your <code>PATH</code>
+ -- when you build <code>arch</code>
+ from
+source, run the configure script:
+</p><pre>
+       % ./configure --help
 
 </pre>
-<pre>
-        -m              When extracting files, don't restore
-                        modification times.
+<p>and
+</p><pre>
+        % ./configure --help-options
 
 </pre>
-<p><strong><u>GNU diff and GNU patch</u></strong> After much deliberation, I've decided to go
+<p>for information about how to point <code>arch</code>
+ to the correct versions.
+</p><p><strong><u>GNU Tar</u></strong> You must have <code>GNU tar</code>
+.  <code>arch</code>
+ invokes <code>tar</code>
+ internally to
+pack and unpack files that it stores in archives.   It is important
+that all versions of <code>arch</code>
+ use a compatible version of <code>tar</code>
+, for
+which purpose <code>GNU tar</code>
+ was chosen.
+</p><p><strong><u>GNU diff and GNU patch</u></strong> After much deliberation, I've decided to go
 ahead and rely on the <strong>GNU</strong> versions of <code>diff</code>
  and <code>patch</code>
 .
@@ -74,7 +142,7 @@ Specifically, you need a version of <code>diff</code>
 format&quot; output (option <code>-u</code>
 ) and a version of <code>patch</code>
  that
-understands that format and that understand <code>--posix</code>
+understands that format and that understands <code>--posix</code>
 .  (It would be
 trivial to use &quot;context diffs&quot; and, thus, standard <code>diff</code>
  and
@@ -84,40 +152,18 @@ hoping that picking specific implementations of these critical
 sub-components will help contribute to the long-term stability of
 <code>arch</code>
 .)
-</p><p><strong><u>Standard Posix Shell Tools</u></strong> The package framework (i.e., the
-configure and build process) assumes that some standard Posix shell
-tools are available on your system:
-</p><pre>
-        awk
-        cat
-        chmod
-        date
-        echo
-        find
-        fold
-        grep
-        head
-        ls
-        mkdir
-        printf
-        pwd
-        rm
-        sed
-        sh
-        tee
-        test
-        touch
-        tsort
-        wc
-        xargs
-
-</pre>
-<p><strong><u>The null Device</u></strong> Your system must have <code>/dev/null</code>
-.  Output directed
-to <code>/dev/null</code>
- should simply disappear from the universe, in the usual
-way.
 </p>
+
+
+
+
+
+
+
+
+
+
+
 
 
 

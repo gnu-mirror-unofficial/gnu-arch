@@ -70,10 +70,6 @@ error and newline bug:
           (void)printf (&quot;hello warld&quot;);
         }
 
-        
-        /* arch-tag: hello_world module of the hello-world project
-         */
-
 
 </pre>
 <p>Clearly, we meant to say <code>hello world</code>
@@ -311,11 +307,11 @@ make-log</code>
 </pre>
 <p>Our project tree patch log has been similarly updated:
 </p><pre>
-        % tla log-ls hello-world--mainline--0.1
+        % tla logs hello-world--mainline--0.1
         base-0
         patch-1
 
-        % tla log-ls --summary hello-world--mainline--0.1
+        % tla logs --summary hello-world--mainline--0.1
         base-0
             initial import
         patch-1

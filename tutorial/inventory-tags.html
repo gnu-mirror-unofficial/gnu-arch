@@ -34,6 +34,146 @@ you &quot;get it&quot;, though, this will seem quite natural.  Best of all,
 this is the last tricky step before we can start storing project trees
 in an archive.
 </p>
+<a name="Looks_Like_Source_vs_Really_is_Source"></a>
+
+
+
+<h3 align=center>Looks Like Source vs Really is Source</h3>
+
+
+
+
+
+
+
+
+
+
+<p>In the previous chapter, we saw how to find out which files look like
+source according to the naming conventions:
+</p><pre>
+        % tla inventory --names --source
+        hw.c
+        main.c
+
+</pre>
+<p>In this chapter, there's a new distincition:  files which <em>look</em> like
+source according to their names, vs. files which <em>really are</em> source.
+</p><p>When you save your project tree in an archive, arch will store the
+files that <em>really are</em> source and ignore the rest.  We can ask which
+files really are source by dropping the <code>--names</code>
+ option to
+<code>inventory</code>
+:
+</p><pre>
+        % tla inventory --source
+        [no output]
+
+</pre>
+<p>It's a little more interesting if we include arch's own &quot;system
+files and directories&quot; in the listing:
+</p><pre>
+        % tla inventory --source --all --both
+        {arch}
+        {arch}/.arch-project-tree
+        {arch}/=tagging-method
+        {arch}/hello-world
+        [....]
+
+</pre>
+<p>but the thing to note here is that <code>hw.c</code>
+ and <code>main.c</code>
+ aren't listed.
+Arch thinks they are source in name only.  The next section gives a
+recipe to fix that, and the sections after that explain what's really
+going on.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="The_add_Command"></a>
+
+
+
+<h3 align=center>The add Command</h3>
+
+
+
+
+
+
+
+
+
+
+<p>We can tell arch that our files really are source, and should really
+be archived with the project, using the <code>tla add</code>
+ command:
+</p><pre>
+        % tla add hw.c
+        % tla add main.c
+
+</pre>
+<p>And now we get a better answer from:
+</p><pre>
+        % tla inventory --source
+        hw.c
+        main.c
+
+</pre>
+<p>A related command is <code>tla delete</code>
+:
+</p><pre>
+        % tla delete hw.c
+
+</pre>
+<p>That doesn't delete the file <code>hw.c</code>
+ itself:
+</p><pre>
+        % ls
+        hw.c            hw.c.~1~        main.c          {arch}
+
+</pre>
+<p>but it does remove it from the official list of source:
+</p><pre>
+        % tla inventory --source
+        main.c
+
+</pre>
+<p>For the sake of the examples, we need to put <code>hw.c</code>
+ back in the list:
+</p><pre>
+        % tla add hw.c
+
+</pre>
+<pre>
+        % tla inventory --source
+        hw.c
+        main.c
+
+</pre>
+<p>Let's take a deeper look at what's going on when you <code>tla add</code>
+ files:
+</p>
+
+
+
+
+
+
+
+
+
+
+
 <a name="Two_Names_for_Every_File"></a>
 
 
@@ -62,40 +202,274 @@ file path
 inventory tag
 </em>
 .
-</p><p>The <strong>file path</strong> of a file always begins with the string <code>./</code>
- and
-continues with a relative path name.  It describes <em>where</em> within a
-source tree a file is located.
+</p><p>The <strong>file path</strong> of a file is the relative path to the file from the
+root of the project tree.  It describes <em>where</em> within a source tree a
+file is located.
 </p><p>The <strong>inventory tag</strong> of a file is a (mostly) arbitrary string that is
-unique to the file within the tree.
-</p><p>Ordinarily, when a file is moved, its file path changes, but its
-inventory tag remains the same.
-</p><p>For example, let's suppose that we have a tree with the files:
+unique to the file within the tree.   The inventory tag remains
+constant even if a file is renamed.   So while the file path says
+where a file is located, the inventory tag says which file it is
+that's stored at that path.
+</p><p>The purpose of <code>tla add</code>
+ is to assign an inventory tag to a file.
+</p><p>In our example, we can examine the tags:
 </p><pre>
-
-        file path               inventory tag
-        ---------               -------------
-
-        ./hw.c                  i_tag_hw
-        ./main.c                i_tag_main
-
+        % tla inventory --source --tags
+        hw.c    x_very_long_string
+        main.c  x_another_very_long_string
+        ^^^^    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+         |                |
+         |           inventory tags
+     file paths
 
 </pre>
-<p>but then we rename <code>hw.c</code>
- to <code>hello.c</code>
-.   Afterwards, we'll have:
+<p>Ordinarily, when a file is moved, its file path changes, but its
+inventory tag should remain the same.  The <code>tla move</code>
+ command 
+helps with this.   Suppose that we:
 </p><pre>
-        file path               inventory tag
-        ---------               -------------
-
-        ./hello.c               i_tag_hw
-        ./main.c                i_tag_main
-
+        % mv hw.c hello.c
 
 </pre>
-<p>This chapter will teach you how tags are assigned to files, how
-tags are managed, and how they are used by <code>arch</code>
+<p>we should follow that with:
+</p><pre>
+        % tla move hw.c hello.c
+
+</pre>
+<p>after which:
+</p><pre>
+        % tla inventory --source --tags
+        hello.c   x_very_long_string
+        main.c    x_another_very_long_string
+
+</pre>
+<p>Note that <code>hello.c</code>
+ has the same inventory tag that <code>hw.c</code>
+ used to.
+</p><p>We'll come back to the topic of renames later so, for now, let's 
+put things back where they started:
+</p><pre>
+        % mv hello.c hw.c
+        % tla move hello.c hw.c
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="Quick_Aside_--_Adding_Directories"></a>
+
+
+
+<h3 align=center>Quick Aside -- Adding Directories</h3>
+
+
+
+
+
+
+
+
+
+
+<p>The <code>tla add</code>
+ command applies to directories, too.   If we were to
+create a new subdirectory in the tree, we should <code>tla add</code>
+ it:
+</p><pre>
+        % mkdir docs
+
+</pre>
+<pre>
+        % tla inventory --names --source --both
+        docs
+        hw.c
+        hello.c
+
+</pre>
+<p>but
+</p><pre>
+        % tla inventory --source --both
+        hw.c
+        hello.c
+
+</pre>
+<p>unless
+</p><pre>
+        % tla add docs
+
+</pre>
+<p>and then
+</p><pre>
+        % tla inventory --source --both
+        docs
+        hw.c
+        hello.c
+
+</pre>
+<p>But again, for the sake of our example, we don't need docs.
+We can just:
+</p><pre>
+        % rm -rf docs
+
+</pre>
+<p>There isn't a need to <code>tla delete</code>
+ a directory that we physically remove.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="How_it_Works_--_tla_add"></a>
+
+
+
+<h3 align=center>How it Works -- tla add</h3>
+
+
+
+
+
+
+
+
+
+
+<p>What <code>tla add</code>
+ does is fairly simple.   Note that when we added
+<code>hw.c</code>
+ and <code>main.c</code>
+, a new directory was created:
+</p><pre>
+        % ls -a
+        .               .arch-ids       hw.c.~1~        {arch}
+        ..              hw.c            main.c
+
+</pre>
+<p>The <code>.arch-ids</code>
+ directory is new:
+</p><pre>
+        % ls .arch-ids
+        hw.c.id         main.c.id
+
+</pre>
+<pre>
+        % cat .arch-ids/hw.c.id
+        very long string
+
+</pre>
+<p>The <code>*.id</code>
+ files is where the raw data that determines a file tag are
+stored.   The command <code>tla delete</code>
+ removes those files.   The command
+<code>tla move</code>
+ renames them.
+</p><p>The tag for a directory is stored slightly differently.   For example,
+when we created a <code>docs</code>
+ subdir and tagged that with <code>tla add</code>
+, that
+created a file <code>docs/.arch-ids/=id</code>
 .
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Keeping_Things_Neat_and_Tidy"></a>
+
+
+
+<h3 align=center>Keeping Things Neat and Tidy</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:2"></a>
+
+</p><p>The command:
+</p><pre>
+        % tla tree-lint
+
+</pre>
+<p>is useful for keeping things neat and tidy.
+</p><p><code>tree-lint</code>
+ will tell you of any tags for which the corresponding file
+does not exist.  It will tell you of any files that pass the naming
+conventions, but for which no explicit tag exists.
+</p><p>It will also warn you about files that don't fit the naming
+conventions.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Inventory_Tags_--_There's_More_Than_One_Way_to_Do_It"></a>
+
+
+
+<h3 align=center>Inventory Tags -- There's More Than One Way to Do It</h3>
+
+
+
+
+
+
+
+
+
+
+<p>In this chapter, you've learned about the basic commands <code>add</code>
+,
+<code>move</code>
+, and <code>delete</code>
+.   
+</p><p>The use of those tools for managing inventory tags was chosen as the
+default behavior because, superficially at least, it resembles similar
+commands in systems such as CVS which many users are already familiar
+with.
+</p><p>There are other ways to manage inventory tags.   Sometimes the other
+ways are more convenient.   A later chapter discusses these other
+techniques (see: xref :<em>
+<a name="index-pt:3"></a>
+
+!!!
+</em>
+).
 </p>
 
 
@@ -164,15 +538,16 @@ files have the same inventory tag:
         ---------               -------------
 
                  Alice's tree:
-        ./hw.c                  i_tag_hw
-
-                 Bob's tree:
-        ./hello.c               i_tag_hw
+        ./hw.c                  x_very_long_string
+                                                  \ 
+                                                   - the same long string
+                 Bob's tree:                      /
+        ./hello.c               x_very_long_string
 
 
 </pre>
 <p>In Alice's changeset, the changes Alice made are described as being
-made to the file whose tag is <code>i_tag_hw</code>
+made to the file whose tag is <code>x_very_long_string</code>
 .
 </p><p>Therefore, when applying that changeset to Bob's tree, <code>arch</code>
  knows to
@@ -197,629 +572,45 @@ now you've seen at least the basic point.
 
 
 
-<a name="Choices_about_Tags_--_Introducing_tagging-method"></a>
+<a name="Why_is_it_Like_This_--_Why_tla_move_Doesn't_Move_Files"></a>
 
 
 
-<h3 align=center>Choices about Tags -- Introducing tagging-method</h3>
-
-
-
-
+<h3 align=center>Why is it Like This -- Why tla move Doesn't Move Files</h3>
 
 
 
 
 
 
-<p>So, how are files given inventory tags?  Filesystems do not, as a
-general rule, have any such concept as inventory tags built-in.
-Operating systems don't have inventory tags built-in.  Rather, users
-have to take explicit action to assign tags to files and to maintain
-that assignment.
-</p><p><code>arch</code>
- gives you a choice.  There are three possible ways you can
-assign tags to files.   When you first create a project, you choose
-from one of these three techniques.
-</p><p>The possibilities are briefly introduced here, then in more detail
-below.
-</p><p><strong><u>The names Method of Tagging</u></strong> You <em>are</em> free to just ignore tags -- to
-not use them at all.  This is called the <code>names</code>
- method of tagging.
-In this method, the inventory tag of every file is essentially the
-same as the file path of that file.  As a result, if you rename a
-file, its tag changes:
-</p><pre>
-
-           The names Method of Tagging
 
 
-        file path               inventory tag
-        ---------               -------------
-
-                Before a rename
-        ./hw.c                  ?./hw.c
-
-                 After a rename
-
-        ./hello.c               ?./hello.c
 
 
-</pre>
-<p>If you don't care about synchronizing changes between trees in which
-files have been renamed, the <code>names</code>
- method is the easiest to use.
-</p><p><strong><u>The explicit Method of Tagging</u></strong> In the <code>explicit</code>
- method, inventory
-tags are stored <em>separately</em> from files, in subdirectories called
-<code>.arch-ids</code>
-.  Using this method most resembles using older revision
-control systems such as <code>CVS</code>
-: if you add a new source file, you must
-use the command <code>tla add</code>
- to assign it a tag; if you remove a file,
-you must use <code>tla delete</code>
- to remove its tag; if you rename a file,
-you must use <code>tla move</code>
- to move the corresponding tag file.  This is
-a tried-and-true technique, but some users find the necessity of
-issuing commands like <code>add</code>
-, <code>delete</code>
-, and <code>move</code>
- to be inconvenient.
-</p><p><strong><u>The tagline Method of Tagging</u></strong> The <code>tagline</code>
- method is a superset
-of both the <code>explicit</code>
- method and the <code>names</code>
- method.  You <em>may</em>, for
-a particular file, define no tag -- in which case it works like the
-<code>names</code>
- method.  You <em>may</em> define a tag using <code>tla add</code>
- -- in which
-case it works like the <code>explicit</code>
- method.  However, the real
-<em>convenience</em> of the <code>tagline</code>
- method comes from this: you <em>may</em>
-define the tag for a file by adding a specially formatted string near
-the top or bottom of that file (e.g., in a comment for source files).
-</p><p>I strongly recommend the <code>tagline</code>
- method, even though it is the
-least familiar to new users.   As you'll see below, its convenience
-far outweighs its drawbacks.
+<p>Why doesn't <code>tla delete</code>
+ delete the file being removed from the source
+category, or <code>tla move</code>
+ rename it?
+</p><p>Those commands work as they do so that you can adjust the tags in a
+tree even if some other tool which knows nothing about arch has
+rearranged files.    For example, if you use a &quot;directory editor&quot; to
+rename source files, <code>tla move</code>
+ is available to catch-up to the
+changes the directory editor made.
+</p><p>Sometimes, arch users request the addition of commands: <code>tla mv</code>
+, <code>tla
+mkdir</code>
+, <code>tla rmdir</code>
+, and <code>tla rm</code>
+ that would modify <em>both</em> tags and
+the corresponding source files.  That's a great idea and it's not all
+that hard: so, if you're looking for something to do, that's a good
+idea for a real-world programming project on which to try-out and
+learn arch.  Let us know on the <code>gnu-arch-users</code>
+ mailing list if you
+do this, so that we can consider merging your changes into the
+distribution.
 </p>
-
-
-
-
-
-
-
-
-
-
-
-<a name="Setting_the_Tagging_Method"></a>
-
-
-
-<h3 align=center>Setting the Tagging Method</h3>
-
-
-
-
-
-
-
-
-
-
-<p>To set or check the tagging method for a tree, use the
-<code>tagging-method</code>
- command:
-</p><pre>
-        % cd ~/wd/hello-world
-
-        # set the tagging method
-        # 
-        % tla tagging-method tagline
-
-
-        # check the tagging method
-        # 
-        % tla tagging-method
-        tagline
-
-
-</pre>
-<p>Possible values when setting a tagging method are <code>names</code>
-, <code>explicit</code>
-,
-and <code>tagline</code>
-.  (A now deprecated but still supported method called
-<code>implicit</code>
-, which is similar to <code>tagline</code>
-, is also permitted.)
-</p>
-
-
-
-
-
-
-
-
-
-
-
-<a name="Using_the_names_Tagging_Method"></a>
-
-
-
-<h3 align=center>Using the names Tagging Method </h3>
-
-
-
-
-
-
-
-
-
-
-<p><a name="index-pt:2"></a>
-
-</p><p>If you want to use the <code>names</code>
- method of tagging, use this command:
-</p><pre>
-        % tla tagging-method names
-
-</pre>
-<p>Thereafter, every file will have a tag that is derived from its path
-relative to the tree root.
-</p><p>(Again, the <code>names</code>
- tagging method has the disadvantage that
-changesets do not work cleanly if files have been renamed.)
-</p>
-
-
-
-
-
-
-
-
-
-
-
-<a name="Using_the_explicit_Tagging_Method"></a>
-
-
-
-<h3 align=center>Using the explicit Tagging Method</h3>
-
-
-
-
-
-
-
-
-
-
-<p><a name="index-pt:3"></a>
-
-<a name="index-pt:4"></a>
-
-<a name="index-pt:5"></a>
-
-<a name="index-pt:6"></a>
-
-</p><p>If you want to use the <code>explicit</code>
- method of tagging, use this command:
-</p><pre>
-        % tla tagging-method explicit
-
-</pre>
-<p>When using the <code>explicit</code>
- method, it is (ordinarily) necessary to 
-use <code>tla add</code>
- to tag every file and directory:
-</p><pre>
-        % tla add FILE
-
-</pre>
-<p>If <code>FILE</code>
- is a directory, that will create <code>FILE/.arch_ids/=id</code>
-.  If
-it is a regular file or symbolic link, it will create (in the same
-directory) <code>.arch_ids/FILE.id</code>
-.  In either case, the file created will
-contain an automatically generated tag for the file.
-</p><p>If you remove a regular file or symbolic link, you must use the
-command:
-</p><pre>
-        % tla delete FILE
-
-</pre>
-<p>That won't remove <code>FILE</code>
- itself, but it will remove the inventory tag
-for <code>FILE</code>
-.
-</p><p>In order to remove a directory, you must yourself remove the
-<code>.arch_ids</code>
- subdirectory.  That will also implicitly remove the
-inventory tags of any files that <code>arch</code>
- thinks are stored in that
-directory.  (For example, using <code>rm -rf</code>
- to remove a directory also
-removes its tag.)
-</p><p>If you rename a regular file or symbolic link, you can use the
-command:
-</p><pre>
-        % tla move OLD-NAME NEW-NAME
-
-</pre>
-<p>to move the inventory tag for that file.
-</p><p><strong><u>Usage Note:</u></strong> <code>tla move</code>
- does not work like the unix command <code>mv</code>
-.
-In particular, <code>NEW-NAME</code>
- must be the new name of the file -- not the
-name of a directory into which the file is being moved.
-</p><p>If you rename a directory, its inventory tag (and the tags for all
-files and subdirectories it contains) move with it automatically
-(because the <code>.arch_ids</code>
- subdirectory has moved).
-</p><p>When you run <code>tla inventory</code>
- in a working directory using explicit
-tagging, only explicitly designated source files are listed. 
-If you would rather see a list of all files passing the naming
-conventions for source files, use:
-</p><pre>
-        % tla inventory --source --names
-
-</pre>
-<p>You should also read about <code>tree-lint</code>
- (see <a href="inventory-tags.html#Keeping_Things_Neat_and_Tidy">Keeping Things Neat and Tidy</a>).
-</p>
-
-
-
-
-
-
-
-
-
-
-
-<a name="Using_a_tagline_Inventory"></a>
-
-
-
-<h3 align=center>Using a tagline Inventory</h3>
-
-
-
-
-
-
-
-
-
-
-<p><a name="index-pt:7"></a>
-
-</p><p>To use tagline tagging, use the following command in your project
-tree:
-</p><pre>
-        % tla tagging-method tagline
-
-</pre>
-<p>With this method: any file with <em>no</em> tag is assigned a tag based on
-its location -- just as in the <code>names</code>
- method.  Any file assigned a
-tag with <code>tla add</code>
- uses that tag -- just as in the <code>explicit</code>
-
-method.  Finally, though, you can tag a file by adding a specially
-formatted string near the top or bottom of the file.
-</p><p>A tag within a file is a single line that occurs within <code>1024</code>
- bytes of
-the start or end of the file and has the form:
-</p><pre>
-        &lt;punct>arch-tag:&lt;spaces>&lt;tag>
-
-</pre>
-<p>For example:
-</p><pre>
-
-        /* arch-tag: `main' for the hello world program
-         */
-
-
-</pre>
-<p><strong><u>Note:</u></strong> Leading and trailing spaces around an inventory tag are not
-considered part of the tag.  Within a tag, every non-graphical
-character is replaced by <code>_</code>
-.  For example, you write the that tag:
-</p><pre>
-        `main' for the hello    world program
-
-</pre>
-<p>the actual inventory tag is:
-</p><pre>
-        `main'_for_the_hello____world_program
-
-</pre>
-
-
-
-
-
-
-
-
-
-
-
-
-<a name="Keeping_Things_Neat_and_Tidy"></a>
-
-
-
-<h3 align=center>Keeping Things Neat and Tidy</h3>
-
-
-
-
-
-
-
-
-
-
-<p><a name="index-pt:8"></a>
-
-</p><p>The command:
-</p><pre>
-        % tla tree-lint
-
-</pre>
-<p>is useful for keeping things neat and tidy.
-</p><p>If you use <code>explicit</code>
- tagging, it will tell you of any tags for which
-the corresponding file does not exist.  It will tell you of any files
-that pass the naming conventions, but for which no explicit tag
-exists.
-</p><p>If you use <code>tagline</code>
- tagging, it will tell you of any files for which
-no tag can be found -- either explicit or tagline.  It will tell you
-of any explicit tags for which the corresponding file does not exist.
-</p><p>In either case, or if you are using the <code>names</code>
- tagging method,
-<code>tree-lint</code>
- will tell you of any files that don't fit the naming
-conventions at all.
-</p><p>Finally, if you use explicit or tagline tagging, <code>tree-lint</code>
- will
-check for cases where multiple files use the same tag.  If any two
-files do have the same tag, you <strong>must</strong> correct that, either by
-editing the tag (if it is in the file itself) or by using <code>delete</code>
-
-and <code>add</code>
- to replace a duplicated explicit tag.
-</p>
-
-
-
-
-
-
-
-
-
-
-
-<a name="Tagging_the_hello-world_Project"></a>
-
-
-
-<h3 align=center>Tagging the hello-world Project</h3>
-
-
-
-
-
-
-
-
-
-
-<p>To continue the example started in earlier chapters: let's use the
-<code>tagline</code>
- tagging method for the <code>hello-world</code>
- project:
-</p><pre>
-        % cd ~/wd/hello-world
-
-        % tla tagging-method tagline
-
-</pre>
-<p>So, what does <code>tree-lint</code>
- tell us?
-</p><pre>
-        % tla tree-lint
-        These apparent source files lack inventory tags:
- 
-        ./hw.c
-        ./main.c
-
-
-
-</pre>
-<p>If we edit the source files to add tags:
-</p><pre>
-        % tail -3 main.c
-        
-        /* arch-tag: main module of the hello-world project
-         */
-        % tail -3 hw.c
-        
-        /* arch-tag: hello_world module of the hello-world project
-         */
-
-</pre>
-<p>Then the next run of <code>tree-lint</code>
- omits the warning.
-</p><p><strong><u>Usage Note 1:</u></strong> Notice that we didn't tag any of the files in <code>{arch}</code>
-.
-<code>arch</code>
- implicitly provides tags for all of its control files.
-</p><p><strong><u>Usage Note 2:</u></strong> Our little sample project doesn't have any
-subdirectories other than <code>arch</code>
- control directories.  If it did, we
-might want to tag those with <code>tla add</code>
-.
-</p>
-
-
-
-
-
-
-
-
-
-
-
-<a name="Other_Ways_to_Tag_Files"></a>
-
-
-
-<h3 align=center>Other Ways to Tag Files</h3>
-
-
-
-
-
-
-
-
-
-
-<p><a name="index-pt:9"></a>
-
-</p><p>In some situations, it isn't convenient to explicitly tag every file
-or to add a tagline tag to every file.
-</p><p>You can supply a <em>
-<a name="index-pt:10"></a>
-
-default tag
-</em>
- for every file in a directory that
-doesn't have an explicit tag with the command:
-</p><pre>
-        % tla explicit-default TAG-PREFIX
-
-</pre>
-<p>After that, every file in that directory which lacks an explicit tag
-will have the tag:
-</p><pre>
-        TAG-PREFIX__BASENAME
-
-</pre>
-<p>where <code>BASENAME</code>
- is the basename of the file.  Default tags created in
-this way take precedence over tagline tags embedded in files.  You
-can find out the default tag for a directory with:
-</p><pre>
-        % tla explicit-default
-        TAG-PREFIX
-
-</pre>
-<p>and remove the default with:
-</p><pre>
-        % tla explicit-default --delete
-
-</pre>
-<p>You can also specify a default tag which has <em>lower</em> precedence than
-tagline tags:
-</p><pre>
-        % tla explicit-default --weak TAG-PREFIX
-
-</pre>
-<p>and view that default:
-</p><pre>
-        % tla explicit-default --weak
-
-</pre>
-<p>or delete it:
-</p><pre>
-        % tla explicit-default --weak --delete
-
-</pre>
-
-
-
-
-
-
-
-
-
-
-
-
-<a name="Telling_tree-lint_to_Shut_Up"></a>
-
-
-
-<h3 align=center>Telling tree-lint to Shut Up</h3>
-
-
-
-
-
-
-
-
-
-
-<p><a name="index-pt:11"></a>
-
-<a name="index-pt:12"></a>
-
-</p><p>When using tagline tags, you may sometimes have a directory with many
-files that have no tag (either explicit or tagline), but not want
-those files to appear in a report of untagged files generated by
-<code>tree-lint</code>
-.  There are two ways to tell <code>tree-lint</code>
- to shut-up
-about such files:
-</p><p>One is to provide a default explicit tag or weak default explicit tag
-using <code>tla explicit-default</code>
-, as described above.  
-</p><p>The second method is to label the directory as a &quot;don't care&quot;
-directory -- which means that <code>tree-lint</code>
- shouldn't complain about
-untagged files.  You can do that with:
-</p><pre>
-        % tla explicit-default --dont-care set
-
-</pre>
-<p>or remove the &quot;don't care&quot; flag with:
-</p><pre>
-        % tla explicit-default --delete --dont-care
-
-</pre>
-<p>You can find out whether the &quot;don't care&quot; flag is set in a given
-directory with:
-</p><pre>
-        % tla explicit-default --dont-care
-
-</pre>
-
 
 
 

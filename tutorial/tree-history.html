@@ -115,16 +115,16 @@ Bob's <code>patch-2</code>
 This tree has logs from only one version:
 </p><pre>
 
-        % tla logs
+        % tla log-versions
         lord@emf.net--2003-example/hello-world--mainline--0.1
 
 
 </pre>
-<p>Within that log, it has logs for the initial import, and two
+<p>Within that version, it has logs for the initial import, and two
 changesets:
 </p><pre>
 
-        % tla log-ls -A lord@emf.net--2003-example \
+        % tla logs -A lord@emf.net--2003-example \
                        --summary \
                        hello-world--mainline--0.1
         base-0
@@ -182,11 +182,11 @@ that she used <code>tag</code>
 
         % cd ~/hw-C-0
 
-        % tla logs
+        % tla log-versions
         candice@candice.net--2003-candice/hello-world--candice--0.1
         lord@emf.net--2003-example/hello-world--mainline--0.1
 
-        % tla log-ls  -A lord@emf.net--2003-example \
+        % tla logs  -A lord@emf.net--2003-example \
                         --summary \
                         hello-world--mainline--0.1
         base-0
@@ -195,7 +195,7 @@ that she used <code>tag</code>
             Fix bugs in the &quot;hello world&quot; string
 
 
-        % tla log-ls  -A candice@candice.net--2003-candice \
+        % tla logs  -A candice@candice.net--2003-candice \
                         --summary \
                         hello-world--candice--0.1
         base-0
@@ -254,11 +254,11 @@ can find the list of all revisions in a given version using the
 </pre>
 <p>Those are the logs in the archive.  <code>arch</code>
  can find out the list of
-revisions for which a project tree has log entries with <code>log-ls</code>
+revisions for which a project tree has log entries with <code>logs</code>
 :
 </p><pre>
 
-        % tla log-ls -A lord@emf.net--2003-example \
+        % tla logs -A lord@emf.net--2003-example \
                        hello-world--mainline--0.1
         base-0
         patch-1

@@ -86,10 +86,8 @@ other post-<code>patch-23</code>
  changes from the <code>mainline</code>
 ?
 </p><p>Derick can apply specific changes from the <code>mainline</code>
- by using the
-<code>--exact</code>
- option to <code>replay</code>
-:
+ by specifying the
+exact revision he wants, rather than just specifying a version:
 </p><pre>
 
         % cd ~/wd
@@ -98,10 +96,10 @@ other post-<code>patch-23</code>
 
         % cd derick
 
-        % tla replay --exact -A lord@emf.net--2003-example \
+        % tla replay -A lord@emf.net--2003-example \
                  hello-world--mainline--0.1--patch-23
 
-        % tla replay --exact -A lord@emf.net--2003-example \
+        % tla replay -A lord@emf.net--2003-example \
                  hello-world--mainline--0.1--patch-42
 
         % tla whats-missing -A lord@emf.net--2003-example \
@@ -112,7 +110,7 @@ other post-<code>patch-23</code>
         patch-41
 
 
-        % tla log-ls -A lord@emf.net--2003-example \
+        % tla logs -A lord@emf.net--2003-example \
                  hello-world--mainline--0.1
         base-0
         patch-1
@@ -135,14 +133,15 @@ practical.  It depends, for example, on the <code>mainline</code>
 &quot;clean changesets&quot; (see <a href="exploring-changesets.html#Using_commit_Well_--_The_Idea_of_a_Clean_Changeset">Using commit Well -- The Idea of a Clean Changeset</a>).
 </p><p>Nevertheless, for some projects, especially those characterized by
 lots of &quot;forks&quot;, this technique can be useful.
-</p><p><strong><u>Learning Note:</u></strong>  The <code>replay</code>
+</p><p><strong><u>Learning Note:</u></strong> Multiple revisions may be replayed with a single
+command, simply by giving all of them on the command line at once.  The
+<code>replay</code>
  command also has a <code>--list</code>
+ option which can useful for
+cherrypicking many changes at once.  If you find yourself replaying
+specific revisions often, you should take a look at the <code>--list</code>
  option
-which can useful for cherrypicking many changes at once.  If you find
-yourself using <code>replay --exact</code>
- often, you should take a look at the
-<code>--list</code>
- option in <code>tla replay --help</code>
+in <code>tla replay --help</code>
 .
 </p>
 

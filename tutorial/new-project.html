@@ -237,7 +237,7 @@ name:
 
 </pre>
 <pre>
-        % tla versions hello-world--devo
+        % tla versions hello-world--mainline
         hello-world--mainline--0.1
 
 </pre>
@@ -270,7 +270,7 @@ name:
 
 <p>People new to <code>arch</code>
  are sometimes startled at the rigidity of its
-archive structure.   Two common questions (and their answers) are:
+archive structure.   Two most common question is:
 </p><p><strong><u>Why have categories, branches and versions?  Why can't I just name my
 projects with arbitrary string?</u></strong> These questions are best answered by
 recalling that a revision control system is a <em>librarian</em>.  Part of
@@ -299,22 +299,6 @@ And just as Dewey is intended to capture the most common patterns of
 how people search through books, <code>arch</code>
  is intended to capture the
 most common patterns of how people search through source archives.
-</p><p><strong><u>Why have two-component version numbers?</u></strong> Some people do not like the
-limitation of <code>&lt;major>.&lt;minor></code>
- version numbers: instead of <code>0.1</code>
-
-they'd prefer <code>0.1.1</code>
-, for example.
-</p><p>This limitation may, in fact, eventually be removed from <code>arch</code>
-.  For
-now, though, the uniformity of two-component version numbers makes it
-easier to sort an arbitrary list of <code>arch</code>
- version numbers using the
-standard unix program <code>sort</code>
-.   Ease of integration with standard
-tools such as <code>sort</code>
- is a high priority for <code>arch</code>
-.
 </p>
 
 
@@ -362,29 +346,22 @@ quite simple: it creates new directories in your archive:
 <p>Branches the next level:
 </p><pre>
         % ls hello-world
-        =README         hello-world--mainline
+        hello-world--mainline
 
 </pre>
 <p>Versions the third:
 </p><pre>
         % ls hello-world/hello-world--mainline
-        =README         hello-world--mainline--0.1
+        hello-world--mainline--0.1
 
 </pre>
 <p>Versions are themselves directories:
 </p><pre>
         % ls hello-world/hello-world--mainline/hello-world--mainline--0.1/
-        +revision-lock  +version-lock   =README
+        +revision-lock  +version-lock
 
 </pre>
-<p><strong><u>Note:</u></strong> The <code>=README</code>
- files contain information about who created the
-category, branch, or revision and when.  These are the <em>sole</em>
-exception to the usual rule that you should never edit files in an
-archive by hand.   You can add new, arbitrary text to those files
-after the header fields they contain, separated from the headers by
-a blank line.   You should not, however, alter the header fields.
-</p><p><strong><u>Note:</u></strong> The lock files (e.g. <code>+revision-lock</code>
+<p><strong><u>Note:</u></strong> The lock files (e.g. <code>+revision-lock</code>
 ) are used internally by
 arch.  When adding new data to an archive, <code>arch</code>
  doesn't simply call

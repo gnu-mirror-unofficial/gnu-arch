@@ -123,10 +123,12 @@ filename for <code>vi</code>
     % vi ./++log.hello-world--mainline--0.1--lord@emf.net--2003-example
 
 </pre>
-<p>(We expect, in the future, to change the default name of log files
-so that you will no longer need a <code>./</code>
- prefix.)
-</p>
+<p>or you could simply:
+</p><pre>
+    % vi `tla make-log`
+
+</pre>
+
 
 
 
@@ -200,16 +202,16 @@ patch log
 </em>
 :
 </p><pre>
-        % tla logs
+        % tla log-versions
         lord@emf.net--2003-example/hello-world--mainline--0.1
 
 </pre>
 <p>Now it has an entry:
 </p><pre>
-        % tla log-ls hello-world--mainline--0.1
+        % tla logs hello-world--mainline--0.1
         base-0
 
-        % tla log-ls --summary --creator --date \
+        % tla logs --summary --creator --date \
                        hello-world--mainline--0.1
         base-0
             2003-01-28 00:45:50 GMT

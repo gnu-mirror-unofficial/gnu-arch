@@ -159,22 +159,18 @@ Example :
 
 
 
-<p>#!/bin/sh
-</p><p>if [ <em>
-<a name="index-pt:1"></a>
+<pre>
+     #!/bin/sh
 
-$1
-</em>
- == <em>
-<a name="index-pt:2"></a>
+</pre>
+<pre>
+     if [ &quot;$1&quot; == &quot;commit&quot; ]; then
+        tla push-mirror lord@emf.net--2003-example \
+           lord@emf.net--2003-example-MIRROR;
+        fi
 
-commit
-</em>
- ]; then
-   tla push-mirror tla push-mirror lord@emf.net--2003-example \
-      lord@emf.net--2003-example-MIRROR;
-   fi
-</p>
+</pre>
+
 
 
 
@@ -201,51 +197,32 @@ commit
 
 
 
-<p>#!/bin/sh
-</p><p>case <em>
-<a name="index-pt:3"></a>
+<pre>
+     #!/bin/sh
 
-$1
-</em>
- in
-   commit)
-      case <em>
-<a name="index-pt:4"></a>
-
-$ARCH_CATEGORY
-</em>
- in
-         hello-world)
-            case <em>
-<a name="index-pt:5"></a>
-
-$ARCH_BRANCH
-</em>
- in
+</pre>
+<pre>
+     case &quot;$1&quot; in
+        commit)
+           case &quot;$ARCH_CATEGORY&quot; in
+              hello-world)
+                 case &quot;$ARCH_BRANCH&quot; in
                    mainline)
-                        RELEASETYPE=<em>
-<a name="index-pt:6"></a>
-
-stable
-</em>
-
+                        RELEASETYPE=&quot;stable&quot;
                    ;;
                    devel)
-                      RELEASETYPE=<em>
-<a name="index-pt:7"></a>
-
-unstable
-</em>
-
+                      RELEASETYPE=&quot;unstable&quot;
                    ;;
-)
-</p><pre>
-            echo &quot;The $RELEASETYPE version of Hello, World been upgraded. \
-               New versions are available at ftp.hello.com&quot; |\
-               mailto hello-users@hello.com -s &quot;Hello upgraded&quot;
-         ;;
-         goodbye-world)
-            case &quot;$ARCH_BRANCH&quot; in
+                   *)
+
+</pre>
+<pre>
+                 echo &quot;The $RELEASETYPE version of Hello, World been upgraded. \
+                    New versions are available at ftp.hello.com&quot; |\
+                    mailto hello-users@hello.com -s &quot;Hello upgraded&quot;
+              ;;
+              goodbye-world)
+                 case &quot;$ARCH_BRANCH&quot; in
                    mainline)
                         RELEASETYPE=&quot;stable&quot;
                    ;;
@@ -253,15 +230,15 @@ unstable
                       RELEASETYPE=&quot;unstable&quot;
                    ;;
                       RELEASETYPE=&quot;[unknown]&quot;
-)
-            esac;
-            echo &quot;The stable version of Goodbye, Cruel World been upgraded. \
-               New versions are available at ftp.hello.com&quot; |\
-               mailto hello-users@hello.com -s &quot;Hello upgraded&quot;
-         ;;
-       esac
-   ;;
-esac
+                   *)
+                 esac;
+                 echo &quot;The stable version of Goodbye, Cruel World been upgraded. \
+                    New versions are available at ftp.hello.com&quot; |\
+                    mailto hello-users@hello.com -s &quot;Hello upgraded&quot;
+              ;;
+            esac
+        ;;
+     esac
 
 </pre>
 

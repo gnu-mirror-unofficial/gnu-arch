@@ -59,7 +59,7 @@ not -- we'll be starting slow:
 <p>Let's suppose for the moment that the <code>hello-world</code>
  project is making
 its sources available as a public, read-only mirror (see
-<a href="locating-archives.html#Locating_and_Using_Shared_and_Public_Archives">Locating and Using Shared and Public Archives</a>).
+<a href="shared-and-public-archives.html#Shared_and_Public_Archives">Shared and Public Archives</a>).
 </p><p>Early on, you (someone not involved in the <code>hello-world</code>
  project)
 decides that you'll want to use their program, but that you'll need to
@@ -135,9 +135,7 @@ the default archive:
 She can use:
 </p><pre>
 
-        % tla make-category hello-world
-        % tla make-branch hello-world--candice
-        % tla make-version hello-world--candice--0.1
+        % tla archive-setup  hello-world--candice--0.1
 
 
 </pre>
@@ -165,7 +163,7 @@ the <code>patch-1</code>
 Alice and Bob's <code>patch-1</code>
  revision.  That's because that revision is
 in some archive other than the current default archive.  (See
-<a href="locating-archives.html#Working_with_Several_Archives_at_Once">Working with Several Archives at Once</a>.)
+<a href="shared-and-public-archives.html#Working_with_Several_Archives_at_Once">Working with Several Archives at Once</a>.)
 </p><p>Next, note that we specified the <code>patch-1</code>
  revision explicitly.  If we
 had left of the <code>--patch-1</code>
@@ -326,17 +324,17 @@ Let's examine that tree:
 
         % cd ~/wd/hw-candice
 
-        % tla logs
+        % tla log-versions
         candice@candice.net--2003-candice/hello-world--candice--0.1
         lord@emf.net--2003-example/hello-world--mainline--0.1
 
 
 </pre>
 <p>Note that Candice's tree has patch logs both for Alice and Bob's
-version, and for her own branch:
+versions, and for her own branch:
 </p><pre>
 
-    % tla log-ls --summary \
+    % tla logs --summary \
             lord@emf.net--2003-example/hello-world--mainline--0.1
     base-0
         initial import
@@ -344,7 +342,7 @@ version, and for her own branch:
         Fix bugs in the &quot;hello world&quot; string
 
 
-    % tla log-ls --summary hello-world--candice--0.1
+    % tla logs --summary hello-world--candice--0.1
     base-0
         tag of \
         lord@emf.net--2003-example/hello-world--mainline--0.1--patch-1
@@ -489,9 +487,7 @@ In this example, we'll demonstrate using <code>replay</code>
 
         % cd ~/wd/hw-candice
 
-        % tla replay --in-place \
-                -A lord@emf.net--2003-example \
-                . \
+        % tla replay -A lord@emf.net--2003-example \
                 hello-world--mainline--0.1
         [...]
 
@@ -590,7 +586,7 @@ output is ideal for inclusion in such a log message:
         % cd hello-world--candice--0.1
 
         % ls
-        +version-lock   =README         base-0          patch-1
+        +version-lock   base-0          patch-1
         patch-2
 
 

@@ -32,7 +32,8 @@ configuration management tool.
 </p><p>This manual is an <code>arch</code>
  tutorial: its purpose is to help you get
 started using <code>arch</code>
- for the first time.
+ for the first time, and then learn some of the
+more advanced features of arch.
 </p>
 <a name="Who_is_this_Manual_For?"></a>
 
@@ -74,6 +75,47 @@ at least familiar with other revision control systems such as <code>CVS</code>
 
 
 
+<a name="Where's_the_Reference_Manual?"></a>
+
+
+
+<h3 align=center>Where's the Reference Manual?</h3>
+
+
+
+
+
+
+
+
+
+
+<p><code>arch</code>
+ is largely a <em>self documenting</em> program.   The command:
+</p><pre>
+        % tla help
+
+</pre>
+<p>will provide you with a categorized list of all available commands,
+and for a given command <code>foo</code>
+,
+</p><pre>
+        % tla foo -H
+
+</pre>
+<p>will provide you with documentation for that command.
+</p>
+
+
+
+
+
+
+
+
+
+
+
 <a name="Another_Source_of_Help_--_the_Mailing_List"></a>
 
 
@@ -89,13 +131,13 @@ at least familiar with other revision control systems such as <code>CVS</code>
 
 
 
-<p>Arch is sufficiently different from popular older and competing
-systems that new users are often a bit disoriented for the first few
-days.   You may find it helpful to seek help on the <code>arch-users</code>
-
-mailing list:
+<p>Arch is sufficiently different from older and competing systems that
+new users are often a bit disoriented for the first few days.  You may
+find it helpful to seek help on the <code>gnu-arch-users</code>
+ mailing list
+which you can find via links from:
 </p><pre>
-    http://arch.fifthvision.net/bin/view/Main/ArchMailingLists
+    http://www.gnu.org/software/gnu-arch
 
 </pre>
 
@@ -184,22 +226,17 @@ file-by-file; if you rename files or reorganize a tree, <code>arch</code>
 record those tree arrangements along with your changes to file
 contents.
 </p><p><strong><u>Changeset Oriented</u></strong> <code>arch</code>
- doesn't simply <em>
-<a name="index-pt:0"></a>
-
-snapshot
-</em>
- your project
+ doesn't simply &quot;snapshot&quot; your project
 trees.  Instead, <code>arch</code>
  associates each revision with a particular
-_changeset_: a description of exactly what has changed.  <code>arch</code>
+<em>changeset</em>: a description of exactly what has changed.  <code>arch</code>
 
 provides changeset oriented commands to help you review changesets,
 merge trees by applying changesets, examine the history of a tree by
 asking what changesets have been applied to it, and so forth.
 </p><p><strong><u>Fully Distributed</u></strong> <code>arch</code>
  doesn't rely on a <em>
-<a name="index-pt:1"></a>
+<a name="index-pt:0"></a>
 
 central repository
 </em>

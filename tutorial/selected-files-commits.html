@@ -104,7 +104,7 @@ some tests.   In that case, yes, you really do need a second tree.
 trivial bug fix involves modifying files that you've already heavily
 modified, then again, the brute force technique may be the simplest
 approach (but also, take a look at <code>tla undo --help</code>
- and <code>larch redo
+ and <code>tla redo
 --help</code>
 ).
 </p><p>But there is a simpler way that sometimes applies:
@@ -120,39 +120,77 @@ approach (but also, take a look at <code>tla undo --help</code>
 
 
 
-<a name="Solving_the_Quick_Fix_Problem_with_commit_--files"></a>
+<a name="Solving_the_Quick_Fix_Problem_with_commit_--"></a>
 
 
 
-<h3 align=center>Solving the Quick Fix Problem with commit --files</h3>
-
-
-
-
+<h3 align=center>Solving the Quick Fix Problem with commit --</h3>
 
 
 
 
 
 
-<p>As it turns out, the <code>commit</code>
- command has an option <code>--files</code>
- that
-let's you commit only the changes made to just a few files.
+
+
+
+
+<p>As it turns out, <code>commit</code>
+
+lets you commit only the changes made to just a few files.
 </p><p>If your quick fix changes <code>file-a.c</code>
  and <code>file-b.c</code>
 , then after
 preparing a log message, you can commit just those files with:
 </p><pre>
-        % tla commit --files -- file-a.c file-b.c
+        % tla commit -- file-a.c file-b.c
 
 </pre>
-<p>You should note that the files committed by <code>commit --files</code>
- must not
+<p>You should note that the files committed this way must not
 be new files and that, even if those files have been renamed, the
 <code>commit</code>
  will record only the changes internal to those files, not the
 renames. 
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="The_Quick_Fix_Problem_--_There's_More_Than_One_Way_to_Do_It"></a>
+
+
+
+<h3 align=center>The Quick Fix Problem -- There's More Than One Way to Do It</h3>
+
+
+
+
+
+
+
+
+
+
+<p>In the text above, we speculated about a &quot;brute force&quot; solution to
+the quick-fix problem that involved checking out a whole new project
+tree.
+</p><p>Two other command, <code>tla undo</code>
+ and <code>tla redo</code>
+, provide an alternative
+&quot;brute force&quot; solution with some advantages.   These are described
+in a later chapter (see xref :<em>
+<a name="index-pt:0"></a>
+
+!!!
+</em>
+)../
 </p>
 
 

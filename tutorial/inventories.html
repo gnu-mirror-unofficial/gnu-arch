@@ -106,11 +106,12 @@ attention to, and which to ignore.
 
 <p><a name="index-pt:0"></a>
 
-</p><p>The command <code>tla inventory</code>
- is used to print a list of source files.
-It has many options, including options to print other kinds of file
-lists (such as a list of all editor backup files, or a list of all
-files which are not source).
+</p><p>The command <code>tla inventory --names --source</code>
+ is used to print a list
+of source files as determined by the naming conventions.  It has many
+options, including options to print other kinds of file lists (such as
+a list of all editor backup files, or a list of all files which are
+not source).
 </p><p>Let's suppose that after some editing, our source tree looks like
 this:
 </p><pre>
@@ -123,7 +124,7 @@ this:
  knows that
 and omits that file from the source inventory:
 </p><pre>
-        % tla inventory --source
+        % tla inventory --names --source
         ./hw.c
         ./main.c
 
@@ -131,7 +132,7 @@ and omits that file from the source inventory:
 <p><code>tla</code>
  can give you other lists besides lists of source:
 </p><pre>
-        % tla inventory --backups
+        % tla inventory --names --backups
         ./hw.c.~1~
 
 </pre>
@@ -173,9 +174,11 @@ and omits that file from the source inventory:
 
 <p><a name="index-pt:1"></a>
 
-</p><p>This section describes the naming conventions used by <code>arch</code>
- to
-pick out source files from other kinds of files.
+</p><p>This section describes the default naming conventions used by <code>arch</code>
+
+to pick out source files from other kinds of files.  A later chapter
+describes how to customize these conventions for a partiuclar tree
+(see <a href="naming-conventions.html#Customizing_the_inventory_Naming_Conventions">Customizing the inventory Naming Conventions</a>).
 </p><p>The naming conventions are based on several categories of files:
 </p><pre>
 
@@ -354,14 +357,14 @@ treated as <code>unrecognized</code>
 </pre>
 <p>So the ordinary source listing is:
 </p><pre>
-        % tla inventory --source
+        % tla inventory --names --source
         ./hw.c
         ./main.c
 
 </pre>
 <p>And all of the source files (none excluded from the list) is:
 </p><pre>
-        % tla inventory --source --all
+        % tla inventory --names --source --all
         ./hw.c
         ./main.c
         ./{arch}/.arch-project-tree
@@ -370,7 +373,7 @@ treated as <code>unrecognized</code>
 </pre>
 <p>We can include directories in this listing:
 </p><pre>
-        % tla inventory --source --all --both
+        % tla inventory --names --source --all --both
         ./hw.c
         ./main.c
         ./{arch}
@@ -383,7 +386,7 @@ treated as <code>unrecognized</code>
 </pre>
 <p>We can also look at some lists of non-source files:
 </p><pre>
-        % tla inventory --backups
+        % tla inventory --names --backups
         ./hw.c.~1~
 
 </pre>
@@ -530,12 +533,26 @@ like:
 
 
 </pre>
-<p><strong><u>backups</u></strong> Editor backup files and the backup files created by programs
+<p>From arch's perspective, junk files have two important properties.
+First, when copying a tree, the junk files are <em>not</em> copied.  Second,
+it is considered safe for arch to overwrite a junk file.   In
+practice, arch will only ever actually overwrite a junk file if that
+junk file has a name that begins with <code>,,</code>
+.
+</p><p><strong><u>backups</u></strong> Editor backup files and the backup files created by programs
 like <code>patch</code>
  often deserve special treatment.   For example, if your
 editor creates &quot;numbered backups&quot;, those are <em>almost</em> junk files,
 but rather than deleting all of them, you might want to delete only
 some of them.
+</p><p>For arch, what is important is that when copying a tree, backup files
+should not also be copied.   For users, what is hopefully most useful
+is that using the trick:
+</p><pre>
+        % tla inventory --junk | xargs rm
+
+</pre>
+<p>will not delete backup files.
 </p><p><strong><u>unrecognized</u></strong> The appearance in a source tree of a file that doesn't
 fit any known pattern (or that has a suspicious name) most likely 
 indicates that something has gone wrong.   Rather than silently

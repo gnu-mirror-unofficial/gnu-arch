@@ -33,7 +33,7 @@ Another option is <code>replay</code>
 :
 </p><pre>
         % cd ~/wd/project-tree
-        % tla replay --in-place .
+        % tla replay
         [....]
 
 </pre>
@@ -138,20 +138,20 @@ retrieve each changeset, and <code>dopatch</code>
 provides a more automated way to accomplish that same effect:
 </p><pre>
         % cd ~/wd/hw-patch-1
-        % tla replay --in-place .
+        % tla replay
         [....]
         % tla whats-missing
         [no output]
 
 </pre>
-<p><code>replay --in-place</code>
+<p><code>replay</code>
  will do just what we've described: get patches
 from the archive and apply them one-by-one.   One word of caution,
 though: if one of those patches generates conflicts, <code>replay</code>
  will
 stop there and let you fix the conflicts.  You can then pick up where
 <code>replay</code>
- left off by running <code>replay --in-place</code>
+ left off by running <code>replay</code>
  a second time.
 </p>
 
@@ -165,11 +165,11 @@ stop there and let you fix the conflicts.  You can then pick up where
 
 
 
-<a name="How_it_Works_--_replay_--in-place"></a>
+<a name="How_it_Works_--_replay"></a>
 
 
 
-<h3 align=center>How it Works -- replay --in-place</h3>
+<h3 align=center>How it Works -- replay</h3>
 
 
 
@@ -181,7 +181,7 @@ stop there and let you fix the conflicts.  You can then pick up where
 
 
 <p>If you've followed along with the tutorial so far, the way that
-<code>replay --in-place</code>
+<code>replay</code>
  works should be pretty obvious.  In fact, it's
 just exactly how we described it above.  <code>replay</code>
  uses <code>whats-missing</code>

@@ -17,7 +17,7 @@
 <b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
 <b>next: </b><a href="introducing-yourself.html#Introducing_Yourself_to_arch">Introducing Yourself to arch</a></br>
 
-<b>prev: </b><a href="about.html#About_This_Manual">About This Manual</a></br>
+<b>prev: </b><a href="system-requirements.html#System_Requirements">System Requirements</a></br>
 
 </small>
 <br>
@@ -52,25 +52,35 @@ ordinary sub-command syntax:
 </pre>
 <p>For example, try:
 </p><pre>
-        % tla make-archive -H
-
-        create a new archive directory
-        usage: make-archive [options] name directory
+        % tla my-id -H
+        print or change your id
+        usage: tla my-id [options] [id]
         
-          -h, --help           Display a help message and exit.
-          -H,                  Display a verbose help message and exit.
-          -V, --version        Display a release identifier string
-                               and exit.
-          -m, --mirror MASTER  create mirror of specified archive
+          -h, --help     Display a help message and exit.
+          -H             Display a verbose help message and exit.
+          -V, --version  Display a release identifier string
+                         and exit.
+          -e, --errname  specify program name for errors
+          -u, --uid      print only the UID portion of the ID
         
-        NAME is the global name for the archive.  It must be an
-        email address with a fully qualified domain name, optionally
-        followed by &quot;--&quot; and a string of letters, digits, periods
-        and dashes.
+        With no argument print your arch id.
         
-        With --mirror, label the new archive as a mirror of MASTER.
-        Ordinary commits can not be made to a mirror archive, however
-        the command &quot;tla archive-mirror&quot; can write to a mirror.
+        With an argument, record ID-STRING as your id
+        in ~/.arch-params/=id
+        
+        Your id is recorded in various archives and log messages
+        as you use arch.  It must consist entirely of printable
+        characters and fit on one line.  By convention, it should
+        have the form of an email address, as in this example:
+        
+                Jane Hacker &lt;jane.hacker@gnu.org>
+        
+        The portion of an id string between &lt; and > is called your
+        uid.  arch sometimes uses your uid as a fragment when generating
+        unique file names.
+        
+        The option -u (--uid) causes only the uid part of your id string
+        to be printed.
 
 
 </pre>

@@ -133,30 +133,25 @@ version), or a revision name (meaning get that revision, exactly).
 </pre>
 <p>Once you have a meta-project tree, some other useful commands are:
 </p><pre>
-               update-config : update a multi-project tree
-               replay-config : replay a multi-project tree
+     catcfg : output information about a multi-project config
 
 </pre>
-<p>Those commands recursively <code>update</code>
- or <code>replay</code>
- the sub-trees in a
-meta-project.
-</p><p>One more configuration management command:
+<p>One use of that command is to generate a list of sub-projects to which 
+some other command can be iteratively applied:
 </p><pre>
-        % tla record-config GENERAL-CONFIG SPECIFIC-CONFIG
+        % tla catcfg CFGNAME | awk '{print $1}' | xargs ...
 
 </pre>
-<p>That reads a config file, the <code>GENERAL-CONFIG</code>
-.  It examines the
-project tree to see what revisions are actually installed at each of
-the <code>LOCATIONs</code>
-.  Then it writes a new config file, the
-<code>SPECIFIC-CONFIG</code>
- that has <code>CONTENTS</code>
- which specify those <code>REVISIONS</code>
-
-precisely.   This is useful, for example, for recording the specific
-revisions you are about to turn into a distribution.
+<p>Additionally, the option <code>--snap</code>
+ can be usefully applied to a
+configuration that names subproces by version rather than revision.
+It examines the project tree to see what revisions are actually
+installed at each of the <code>LOCATIONs</code>
+.  Then it writes a new config
+which specify those <code>REVISIONS</code>
+ precisely.  This is useful, for
+example, for recording the specific revisions you are about to turn
+into a distribution.
 </p>
 
 

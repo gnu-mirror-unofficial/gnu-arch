@@ -169,7 +169,7 @@ tree:
 the version passed to <code>init-tree</code>
 :
 </p><pre>
-        % tla logs
+        % tla log-versions
         lord@emf.net--2003-example/hello-world--mainline--0.1
 
 </pre>
@@ -252,7 +252,7 @@ output from both of these commands is not what we want:
         % tla tree-version
         lord@emf.net--2003-example/hello-world--mainlin--0.1
 
-        % tla logs
+        % tla log-versions
         lord@emf.net--2003-example/hello-world--mainlin--0.1
 
 
@@ -267,28 +267,28 @@ output from both of these commands is not what we want:
 
 
 </pre>
-<p>Patch logs are a little trickier.  We have to delete the log we
-don't want, and add a log that we do want:
+<p>Patch logs are a little trickier.  We have to delete the logs we
+don't want, and add those that we do want:
 </p><pre>
-        % tla add-log hello-world--mainline--0.1
+        % tla add-log-version hello-world--mainline--0.1
 
-        % tla logs
+        % tla log-versions
         lord@emf.net--2003-example/hello-world--mainlin--0.1
         lord@emf.net--2003-example/hello-world--mainline--0.1
 
-        % tla remove-log hello-world--mainlin--0.1
+        % tla remove-log-version hello-world--mainlin--0.1
 
-        % tla logs
+        % tla log-versions
         lord@emf.net--2003-example/hello-world--mainline--0.1
 
 
 </pre>
-<p><strong><u>WARNING:</u></strong> <code>remove-log</code>
- is a dangerous command: it will remove a patch
-log that you might need if you ask it to.  You should only use
-<code>remove-log</code>
- when you are certain, as we were above, that the log
-being removed is one you do not want.
+<p><strong><u>WARNING:</u></strong> <code>remove-log-version</code>
+ is a dangerous command: it will remove
+patch logs that you might need if you ask it to.  You should only use
+<code>remove-log-version</code>
+ when you are certain, as we were above, that what
+is being removed is one you do not want.
 </p>
 
 
@@ -322,16 +322,23 @@ being removed is one you do not want.
 source tree.   What's in there?
 </p><pre>
         % ls {arch}
-        ++default-version       hello-world
+        ++default-version       =tagging-method         hello-world
 
         % cat {arch}/++default-version
         lord@emf.net--2003-example/hello-world--mainline--0.1
+
+        % cat {arch}/=tagging-method
+        [... long output ...]
 
 
 </pre>
 <p><code>{arch}/hello-world</code>
  is the root of a fairly deep tree.  Patch logs
 are stored within that tree.
+</p><p><code>{arch}/=tagging-method</code>
+ is a configuration file that you can use to
+customize the naming conventions that apply to this tree.  It is
+explained in a later chapter (see <a href="naming-conventions.html#Customizing_the_inventory_Naming_Conventions">Customizing the inventory Naming Conventions</a>).
 </p><p><strong><u>Note:</u></strong> You should not, of course, edit the contents of the <code>{arch}</code>
 
 directory by hand.
