@@ -1,0 +1,173 @@
+<html>
+<head>
+<title>Customizing the inventory Naming Conventions</title>
+</head>
+<body>
+
+<a name="Customizing_the_inventory_Naming_Conventions"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Customizing the inventory Naming Conventions</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="glossary.html#Glossary">Glossary</a></br>
+
+<b>prev: </b><a href="changeset-format.html#The_arch_Changeset_Format">The arch Changeset Format</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p>In <a href="inventories.html#Project_Tree_Inventories">Project Tree Inventories</a>, you learned how the <code>tla
+inventory</code>
+ command classifies files within a project tree using a set
+of naming conventions.   This appendix explains how you can customize
+those naming conventions.
+</p>
+<a name="When_to_Customize_Naming_Conventions"></a>
+
+
+
+<h3 align=center>When to Customize Naming Conventions</h3>
+
+
+
+
+
+
+
+
+
+
+<p>It's best to make customizations to the naming conventions of a
+project at the outset: before you <code>import</code>
+ your first revision.
+</p><p>If you <em>must</em> make changes later, then it's <strong>essential</strong> that your
+changes do not change the classification of files already in the
+latest revision(s) of your project at the time you make the change
+(otherwise, you are likely to experience perplexing and undesirable
+behavior).
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="How_to_Customize_Naming_Conventions"></a>
+
+
+
+<h3 align=center>How to Customize Naming Conventions</h3>
+
+
+
+
+
+
+
+
+
+
+<p>You should begin by reviewing the naming convention algorithm in
+<a href="inventories.html#The_arch_Naming_Conventions">The arch Naming Conventions</a>.  You can modify that algorithm by
+changing the regular expression used for each category test.
+</p><p>You can customize naming conventions by modifying the file
+<code>./{arch}/=tagging-method</code>
+ in your project trees.  That file is
+created by the <code>tagging-method</code>
+ command and initially, it contains a
+single line which names the tagging method (<code>names</code>
+, <code>explicit</code>
+, 
+<code>tagline</code>
+ (or the now deprecated, but popular in some older projects,
+including arch itself, <code>implicit</code>
+)).
+</p><p>In particular, <code>=tagging-method</code>
+ can contain blank lines and comments
+(lines beginning with <em>
+<a name="index-pt:0"></a>
+
+#
+</em>
+) and directives, one per line.  The
+permissible directives are:
+</p><pre>
+        tagline
+        implicit
+        explicit
+        names
+                specify the tagging method to use for this tree
+
+</pre>
+<pre>
+        exclude RE
+        junk RE
+        backup RE
+        precious RE
+        unrecognized RE
+        source RE
+                specify a regular expression to use for the indicated
+                category of files.
+
+</pre>
+<p>Regular expressions are specified in Posix ERE syntax (the same syntax
+used by <em>
+<a name="index-pt:1"></a>
+
+egrep
+</em>
+, <em>
+<a name="index-pt:2"></a>
+
+grep -E
+</em>
+, and <em>
+<a name="index-pt:3"></a>
+
+awk
+</em>
+) and have default values which
+implement the naming conventions described in <a href="inventories.html#The_arch_Naming_Conventions">The arch Naming Conventions</a>.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

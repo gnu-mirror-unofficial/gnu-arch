@@ -1,0 +1,162 @@
+<html>
+<head>
+<title>Cherrypicking Changes</title>
+</head>
+<body>
+
+<a name="Cherrypicking_Changes"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Cherrypicking Changes</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="multi-tree-projects.html#Multi-tree_Projects_and_Configuration_Management">Multi-tree Projects and Configuration Management</a></br>
+
+<b>prev: </b><a href="symbolic-tags.html#Symbolic_Tags">Symbolic Tags</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p><a name="index-pt:0"></a>
+
+</p><p>So far we've learned about elementary branches for maintaining changes
+apart from a primary development branch and development branches for
+coordinating asynchronous work on a single project (see
+<a href="elementary-branches.html#Elementary_Branches_--_Maintaining_Private_Changes">Elementary Branches -- Maintaining Private Changes</a> and
+<a href="development-branches.html#Development_Branches_--_The_star-merge_Style_of_Cooperation">Development Branches -- The star-merge Style of Cooperation</a>).
+</p><p>In this chapter, we'll briefly describe a third kind of branch that's
+useful when a project consists of multiple &quot;forks&quot; -- multiple,
+equally primary branches.
+</p><p>Let's suppose, somewhat abstractly, that Alice and Bob's mainline has
+grown quite large:
+</p><pre>
+
+        mainline
+        --------
+        base-0
+        patch-1
+        ....
+        patch-23
+        patch-24
+        patch-25
+        ...
+        patch-42
+
+
+
+</pre>
+<p>At some point, perhaps because some controversy has emerged over
+choices made in the <code>mainline</code>
+, a new developer, Derick, declares 
+a fork and starts his own branch:
+</p><pre>
+
+        mainline                derick
+        --------                ------
+        base-0          ------> base-0
+        patch-1        '
+        ....          '
+        patch-23 ----'
+        patch-24
+        patch-25
+        ...
+        patch-42
+
+
+
+</pre>
+<p>We already know that Derick can use <code>update</code>
+ or <code>replay</code>
+ to keep
+current with the mainline, but what he doesn't want to?   What if
+Derick wants the changes in <code>patch-25</code>
+ and <code>patch-42</code>
+, but none of the
+other post-<code>patch-23</code>
+ changes from the <code>mainline</code>
+?
+</p><p>Derick can apply specific changes from the <code>mainline</code>
+ by using the
+<code>--exact</code>
+ option to <code>replay</code>
+:
+</p><pre>
+
+        % cd ~/wd
+
+        % tla get hello-world--derick--0.1 derick
+
+        % cd derick
+
+        % tla replay --exact -A lord@emf.net--2003-example \
+                 hello-world--mainline--0.1--patch-23
+
+        % tla replay --exact -A lord@emf.net--2003-example \
+                 hello-world--mainline--0.1--patch-42
+
+        % tla whats-missing -A lord@emf.net--2003-example \
+                 hello-world--mainline--0.1
+        patch-24
+        patch-25
+        ...
+        patch-41
+
+
+        % tla log-ls -A lord@emf.net--2003-example \
+                 hello-world--mainline--0.1
+        base-0
+        patch-1
+        ...
+        patch-22
+        patch-23
+        patch-42
+
+
+
+</pre>
+<p><em>
+<a name="index-pt:1"></a>
+
+Cherrypicking
+</em>
+ changes in this manner isn't necessarily easy or even
+practical.  It depends, for example, on the <code>mainline</code>
+ changes being
+&quot;clean changesets&quot; (see <a href="exploring-changesets.html#Using_commit_Well_--_The_Idea_of_a_Clean_Changeset">Using commit Well -- The Idea of a Clean Changeset</a>).
+</p><p>Nevertheless, for some projects, especially those characterized by
+lots of &quot;forks&quot;, this technique can be useful.
+</p><p><strong><u>Learning Note:</u></strong>  The <code>replay</code>
+ command also has a <code>--list</code>
+ option
+which can useful for cherrypicking many changes at once.  If you find
+yourself using <code>replay --exact</code>
+ often, you should take a look at the
+<code>--list</code>
+ option in <code>tla replay --help</code>
+.
+</p>
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

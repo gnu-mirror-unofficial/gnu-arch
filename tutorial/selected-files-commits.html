@@ -1,0 +1,182 @@
+<html>
+<head>
+<title>Selected Files Commit</title>
+</head>
+<body>
+
+<a name="Selected_Files_Commit"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Selected Files Commit</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="elementary-branches.html#Elementary_Branches_--_Maintaining_Private_Changes">Elementary Branches -- Maintaining Private Changes</a></br>
+
+<b>prev: </b><a href="introducing-replay.html#Introducing_replay_--_An_Alternative_to_update">Introducing replay -- An Alternative to update</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p>Earlier, you learned how to commit all of the changes within a tree at
+once (see <a href="checking-in-changes.html#Checking-in_Changes">Checking-in Changes</a>).
+</p><p>You also have read a bit about the importance of making &quot;clean&quot;
+changesets (see <a href="exploring-changesets.html#Using_commit_Well_--_The_Idea_of_a_Clean_Changeset">Using commit Well -- The Idea of a Clean Changeset</a>).
+</p><p>This chapter shows you a little trick that you can use in a very
+specific but common situation.
+</p>
+<a name="The_Quick_Fix_Problem"></a>
+
+
+
+<h3 align=center>The Quick Fix Problem</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Let's suppose that you have a large project tree and you're in the
+middle of making some complicated change.   You've modified many
+files, but there are many others that you haven't touched.
+</p><p>Suddenly, you notice a trivial bug <strong>in one of the untouched files</strong>.
+</p><p>What you'd really like to do is:
+</p><p><strong><u>1)</u></strong> Stop and fix the trivial bug.
+</p><p><strong><u>2)</u></strong> Commit just that trivial bug fix.
+</p><p><strong><u>3)</u></strong> Get back to work on the complicated changes.
+</p><p>How can you do that?
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="The_Brute_Force_Solution_to_the_Quick_Fix_Problem"></a>
+
+
+
+<h3 align=center>The Brute Force Solution to the Quick Fix Problem</h3>
+
+
+
+
+
+
+
+
+
+
+<p>There's an easy &quot;brute force&quot; solution to the problem.  
+</p><p>Simply:
+</p><p><strong><u>Check out a fresh copy of the latest revision.</u></strong>  In other words,
+create a second project tree with no modifications.
+</p><p><strong><u>Fix the trivial bug in the new tree and commit.</u></strong> Now you've committed
+a clean change with just the trivial bug fix.
+</p><p><strong><u>Use update or replay to Bring Your Original Tree Up to Date.</u></strong>  That
+will add the trivial bug fix back to your tree with the partially
+completed changes.
+</p><p>That works, but it can be a little awkward.  Do you <em>really</em> need to
+start a second project tree just to fix this trivial bug?
+</p><p>Sometimes the awkwardness is well worth it.   For example, your
+project might have a policy the before every <code>commit</code>
+, you must run
+some tests.   In that case, yes, you really do need a second tree.
+</p><p>Sometimes the awkwardness is nearly unavoidable.  For example, if the
+trivial bug fix involves modifying files that you've already heavily
+modified, then again, the brute force technique may be the simplest
+approach (but also, take a look at <code>tla undo --help</code>
+ and <code>larch redo
+--help</code>
+).
+</p><p>But there is a simpler way that sometimes applies:
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Solving_the_Quick_Fix_Problem_with_commit_--files"></a>
+
+
+
+<h3 align=center>Solving the Quick Fix Problem with commit --files</h3>
+
+
+
+
+
+
+
+
+
+
+<p>As it turns out, the <code>commit</code>
+ command has an option <code>--files</code>
+ that
+let's you commit only the changes made to just a few files.
+</p><p>If your quick fix changes <code>file-a.c</code>
+ and <code>file-b.c</code>
+, then after
+preparing a log message, you can commit just those files with:
+</p><pre>
+        % tla commit --files -- file-a.c file-b.c
+
+</pre>
+<p>You should note that the files committed by <code>commit --files</code>
+ must not
+be new files and that, even if those files have been renamed, the
+<code>commit</code>
+ will record only the changes internal to those files, not the
+renames. 
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

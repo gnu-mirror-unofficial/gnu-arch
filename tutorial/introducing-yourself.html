@@ -1,0 +1,103 @@
+<html>
+<head>
+<title>Introducing Yourself to arch</title>
+</head>
+<body>
+
+<a name="Introducing_Yourself_to_arch"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Introducing Yourself to arch</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="new-archive.html#Creating_a_New_Archive">Creating a New Archive</a></br>
+
+<b>prev: </b><a href="in-general.html#arch_Commands_in_General">arch Commands in General</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p><a name="index-pt:0"></a>
+
+</p><p>The first step to using arch is to set your id with a command like:
+</p><pre>
+        % tla my-id &quot;Tom Lord &lt;lord@emf.net>&quot;
+
+</pre>
+<p>Your id should be your name, followed by your email address in angle
+brackets.
+</p><p><code>arch</code>
+ records your id in various log messages that it creates.
+</p><p>You can find out your id with:
+</p><pre>
+        % tla my-id
+        Tom Lord &lt;lord@emf.net>
+
+</pre>
+
+<a name="How_it_Works_--_Your_arch_Id"></a>
+
+
+
+<h3 align=center>How it Works -- Your arch Id</h3>
+
+
+
+
+
+
+
+
+
+
+<p>After the command above, you will have some new files in your home
+directory:
+</p><pre>
+        % ls ~/.arch-params
+        =id
+
+        % cat ~/.arch-params/=id
+        Tom Lord &lt;lord@emf.net>
+
+
+</pre>
+<p><strong><u>Caution:</u></strong> You usually should not edit files in <code>~/.arch-params/</code>
+
+&quot;by hand.&quot;
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

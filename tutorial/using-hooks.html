@@ -1,0 +1,332 @@
+<html>
+<head>
+<title>Driving Process Automation with arch Hooks</title>
+</head>
+<body>
+
+<a name="Driving_Process_Automation_with_arch_Hooks"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Driving Process Automation with arch Hooks</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="changeset-format.html#The_arch_Changeset_Format">The arch Changeset Format</a></br>
+
+<b>prev: </b><a href="revision-libraries.html#Speeding_up_arch_with_Revision_Tree_Libraries">Speeding up arch with Revision Tree Libraries</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p>In some circumstances, it is very useful to trigger actions upon the
+detection of changes to an archive.  For example, you might want to
+send an email notification whenever new revisions are checked in.
+</p><p>This process occurs through arch by use of hooks. Each time that arch
+performs a command that modifies an archive, arch will attempt to 
+run ~/.arch-params/hook, which must be set as executable.
+</p><p>Aguments given to the hook
+        $1 : action performed (e.g. <em>
+<a name="index-pt:0"></a>
+
+commit
+</em>
+)
+</p><p>Environment Variables 
+</p>
+<a name="Arguments_Given_to_hook"></a>
+
+
+
+<h3 align=center>Arguments Given to hook</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Whenever arch performs a command that affects an archive, arch will run 
+hook with the first argument set as the action performed. If I user runs
+a command (such as make-archive) then hook will be called multiple times
+with multiple arguments (such as make-archive, make-category, make branch
+and make-version)
+</p><p>The arguments that may be seen are: 
+</p><p>import, commit, tag, make-archive, make-category, make-branch and
+make-version.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Environment_Variables_Passed_to_hook"></a>
+
+
+
+<h3 align=center>Environment Variables Passed to hook</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Tla also passes certain variables to the hook when appropriate. Variables
+passed by Tla are prefaced with ARCH_. Variables that may be passed include:
+</p><p>Name            : ARCH_ARCHIVE
+Description     : The archive involved in the action
+Seen            : all actions
+Example : lord@emf.net--2003-example
+</p><p>Name            : ARCH_CATEGORY
+Description     : Name of category created
+Seen            : make-category
+Example : hello-world
+</p><p>Name            : ARCH_BRANCH 
+Description     : Name of branch being created
+Seen            : make-branch
+Example : mainline
+</p><p>Name            : ARCH_VERSION
+Description     : Name of version being created
+Seen            : make-version
+Example : <code>0</code>
+.1
+</p><p>Name            : ARCH_REVISION
+Descriptoin     : Name of revision involved
+Seen            : import, tag, commit
+Example : patch-6
+</p><p>Name            : ARCH_LOCATION
+Description     : Location of archive being created
+Seen            : make-archive 
+Example : /usr/lord/<code>archives</code>
+/2003-example
+</p><p>Name            : ARCH_TREE_ROOT
+Description     : 
+Seen            : commit, import
+Example : /home/lord/wd
+</p><p>Name            : ARCH_TAGGED_ARCHIVE 
+Description     :
+Seen            : tag
+Example :
+</p><p>Name            : ARCH_TAGGED_REVISION
+Description     : 
+Seen            :
+Example :
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="An_Example_of_Using_hook"></a>
+
+
+
+<h3 align=center>An Example of Using hook</h3>
+
+
+
+
+
+
+
+
+
+
+<p>#!/bin/sh
+</p><p>if [ <em>
+<a name="index-pt:1"></a>
+
+$1
+</em>
+ == <em>
+<a name="index-pt:2"></a>
+
+commit
+</em>
+ ]; then
+   tla push-mirror tla push-mirror lord@emf.net--2003-example \
+      lord@emf.net--2003-example-MIRROR;
+   fi
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="A_more_complex_Examples_of_Using_hook"></a>
+
+
+
+<h3 align=center>A more complex Examples of Using hook</h3>
+
+
+
+
+
+
+
+
+
+
+<p>#!/bin/sh
+</p><p>case <em>
+<a name="index-pt:3"></a>
+
+$1
+</em>
+ in
+   commit)
+      case <em>
+<a name="index-pt:4"></a>
+
+$ARCH_CATEGORY
+</em>
+ in
+         hello-world)
+            case <em>
+<a name="index-pt:5"></a>
+
+$ARCH_BRANCH
+</em>
+ in
+                   mainline)
+                        RELEASETYPE=<em>
+<a name="index-pt:6"></a>
+
+stable
+</em>
+
+                   ;;
+                   devel)
+                      RELEASETYPE=<em>
+<a name="index-pt:7"></a>
+
+unstable
+</em>
+
+                   ;;
+)
+</p><pre>
+            echo &quot;The $RELEASETYPE version of Hello, World been upgraded. \
+               New versions are available at ftp.hello.com&quot; |\
+               mailto hello-users@hello.com -s &quot;Hello upgraded&quot;
+         ;;
+         goodbye-world)
+            case &quot;$ARCH_BRANCH&quot; in
+                   mainline)
+                        RELEASETYPE=&quot;stable&quot;
+                   ;;
+                   devel)
+                      RELEASETYPE=&quot;unstable&quot;
+                   ;;
+                      RELEASETYPE=&quot;[unknown]&quot;
+)
+            esac;
+            echo &quot;The stable version of Goodbye, Cruel World been upgraded. \
+               New versions are available at ftp.hello.com&quot; |\
+               mailto hello-users@hello.com -s &quot;Hello upgraded&quot;
+         ;;
+       esac
+   ;;
+esac
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="Robustness_Issues_with_hook"></a>
+
+
+
+<h3 align=center>Robustness Issues with hook</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Unfortunately, some fundamental physical properties of the universe
+make it impossible for arch to guarantee that hook will be
+invoked only once for each new category, branch, version, or revision.
+A (presumably rare) well timed interrupt or system failure can cause
+<code>notify</code>
+ to invoke actions more than once for a given change to the
+archive. 
+</p><p>Consequently, actions should be designed to be robust against that
+eventuality.
+</p><p>Additionally, if arch has been run concurrantly, then the hook may run
+concurrantly as well. This means that projects using hook should take
+care that hook is capable of running with simultaneous copies.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

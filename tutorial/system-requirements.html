@@ -1,0 +1,135 @@
+<html>
+<head>
+<title>System Requirements</title>
+</head>
+<body>
+
+<a name="System_Requirements"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>System Requirements</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="about.html#About_This_Manual">About This Manual</a></br>
+
+<b>prev: </b><a href="introduction.html#Introducing_arch">Introducing arch</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p>In order to use <code>arch</code>
+, there are some software tools that you must
+already have available.  These don't necessarily need to be on your
+<code>PATH</code>
+ -- <code>arch</code>
+ can use a separate <code>PATH</code>
+ if you need it to.
+</p><p><strong><u>GNU Make</u></strong> You will need <code>GNU Make</code>
+ in order to build <code>arch</code>
+.
+</p><p><strong><u>GNU Tar</u></strong> You must have <code>GNU tar</code>
+.  More specifically, you must have
+a version of tar that has options:
+</p><pre>
+        -zcf F          to create a gzip-compressed tar file called
+                        F, where F may be `-', meaning to write
+                        the tar file to the standard-output stream
+
+</pre>
+<pre>
+        -zxf F          to extract files from a gzip-compressed tar
+                        file called F, where F may be `-', meaning
+                        to read the tar file from the standard-input
+                        stream.  
+
+</pre>
+<pre>
+        -T -            This option reads a list of files from
+                        standard input.  Only those files are 
+                        read or written to the archive -- others
+                        are ignored.
+
+</pre>
+<pre>
+        -m              When extracting files, don't restore
+                        modification times.
+
+</pre>
+<p><strong><u>GNU diff and GNU patch</u></strong> After much deliberation, I've decided to go
+ahead and rely on the <strong>GNU</strong> versions of <code>diff</code>
+ and <code>patch</code>
+.
+Specifically, you need a version of <code>diff</code>
+ that can generate &quot;unified
+format&quot; output (option <code>-u</code>
+) and a version of <code>patch</code>
+ that
+understands that format and that understand <code>--posix</code>
+.  (It would be
+trivial to use &quot;context diffs&quot; and, thus, standard <code>diff</code>
+ and
+<code>patch</code>
+, however, unified diffs are much easier to read, and I'm
+hoping that picking specific implementations of these critical
+sub-components will help contribute to the long-term stability of
+<code>arch</code>
+.)
+</p><p><strong><u>Standard Posix Shell Tools</u></strong> The package framework (i.e., the
+configure and build process) assumes that some standard Posix shell
+tools are available on your system:
+</p><pre>
+        awk
+        cat
+        chmod
+        date
+        echo
+        find
+        fold
+        grep
+        head
+        ls
+        mkdir
+        printf
+        pwd
+        rm
+        sed
+        sh
+        tee
+        test
+        touch
+        tsort
+        wc
+        xargs
+
+</pre>
+<p><strong><u>The null Device</u></strong> Your system must have <code>/dev/null</code>
+.  Output directed
+to <code>/dev/null</code>
+ should simply disappear from the universe, in the usual
+way.
+</p>
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

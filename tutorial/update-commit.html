@@ -1,0 +1,475 @@
+<html>
+<head>
+<title>The update/commit Style of Cooperation</title>
+</head>
+<body>
+
+<a name="The_update/commit_Style_of_Cooperation"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>The update/commit Style of Cooperation</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="introducing-changesets.html#Introducing_Changesets">Introducing Changesets</a></br>
+
+<b>prev: </b><a href="mirroring-archives.html#Creating_Local_Mirrors,_Remote_Mirrors,_and_Remote_Archives">Creating Local Mirrors, Remote Mirrors, and Remote Archives</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p>In earlier chapters, you learned how to add a project to an archive,
+store the initial sources, store changes made to those sources, and
+retrieve revisions from the archive.
+</p><p>In the previous chapter, you learned how to make an archive network
+accessible.
+</p><p>This chapter will begin to explore how multiple programmers can share
+an archive, with each of them making changes to a particular project.
+</p><p>You should take note at the outset that there are really many subtle
+variations on how programmers can share archives and otherwise
+cooperate on a given project.   We're starting here with one of the
+very <em>simplest</em> techniques.
+</p>
+<a name="Alice_and_Bob_Hack_main"></a>
+
+
+
+<h3 align=center>Alice and Bob Hack main</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Let's suppose that Alice and Bob are both working on the <code>hello-world</code>
+
+project and that they are sharing a single archive.  In the examples
+that follow, we'll play both roles.
+</p><p>For starters, each programmer will need their own project tree:
+</p><pre>
+        % cd ~/wd
+
+        % [ ... remove any directories left from earlier examples ...]
+
+
+        % tla get hello-world--mainline--0.1  hello-world-Alice
+        [....]
+
+        % tla get hello-world--mainline--0.1  hello-world-Bob
+        [....]
+
+</pre>
+<p>Alice's task is to add some legal notices to each file.  When she's
+done (but has not yet used <code>commit</code>
+ to write her changes to the
+archive), the files look this way:
+</p><pre>
+        % cd ~/wd/hello-world-Alice
+
+        % head -3 main.c
+        /* Copywrong 1998 howdycorp inc.  All rights reversed.*/
+
+        extern void hello_world (void);
+
+        % head hw.c
+        /* Copywrong 1998 howdycorp inc.  All rights reversed. */
+
+        #include &lt;stdio.h>
+
+</pre>
+<p>Bob, meanwhile, has added a much-needed comment to <code>main</code>
+:
+</p><pre>
+        % cd ~/wd/hello-world-Bob
+
+        % cat main.c
+        extern void hello_world (void);
+
+        int
+        main (int argc, char * argv[])
+        {
+          hello_world ();
+
+          /* Exit with status 0
+           */
+          return 0;
+        }
+
+        /* arch-tag: main module of the hello-world project
+         */
+
+</pre>
+<p>Note that the two programmers now have modified versions of
+<code>hello-world</code>
+, but neither programmer has the other's changes.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Bob_commits_First"></a>
+
+
+
+<h3 align=center>Bob commits First</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Let's suppose that Bob is the first to try to commit his changes.
+Just to review, there are two steps.
+</p><p>First, Bob prepares a log message:
+</p><pre>
+   % cd ~/wd/hello-world-Bob
+
+   % tla make-log
+   ++log.hello-world--mainline--0.1--lord@emf.net--2003-example
+
+   [Bob edits the log message.]
+
+   % cat ++log.hello-world--mainline--0.1--lord@emf.net--2003-example
+   Summary: commented return from main
+   Keywords: 
+
+   Added a comment explaining how the return from `main'
+   relates to the exit status of the program.
+
+
+</pre>
+<p>Then he calls <code>commit</code>
+:
+</p><pre>
+   % tla commit
+   [...]
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="Alice_Can_Not_commit_Yet"></a>
+
+
+
+<h3 align=center>Alice Can Not commit Yet</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Now it's Alice's turn:
+</p><pre>
+   % cd ~/wd/hello-world-Alice
+
+   % tla make-log
+   ++log.hello-world--mainline--0.1--lord@emf.net--2003-example
+
+   [Alice edits the log message.]
+
+   % cat ++log.hello-world--mainline--0.1--lord@emf.net--2003-example
+   Summary: added copywrong statements
+   Keywords: 
+
+   Added copywrong statements to the source files so 
+   that nobody can steal HowdyCorp's code.
+
+
+</pre>
+<p>And then tries to commit:
+</p><pre>
+   % tla commit
+   cmtrev: tree is not up-to-date (missing latest revision is lord@emf.net--2003b--2003-example/hello-world--mainline--0.1--patch-2)
+
+</pre>
+<p>The problem here is that Bob's changes have already been stored in the
+archive, but Alice's tree doesn't reflect those changes.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Studying_Why_Alice_Can_Not_commit"></a>
+
+
+
+<h3 align=center>Studying Why Alice Can Not commit</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:0"></a>
+
+<a name="index-pt:1"></a>
+
+</p><p>The <code>commit</code>
+ command told Alice that here tree is &quot;out of date&quot;. 
+That means that changes have been committed to the archive that her
+tree doesn't have yet.   
+</p><p>She can examine the situation in a little more depth by asking
+what her tree is missing:
+</p><pre>
+        % tla whats-missing
+        patch-2
+
+</pre>
+<p>or for more detail:
+</p><pre>
+        % tla whats-missing --summary
+        patch-2
+            commented return from main
+
+</pre>
+<p>which you should recognize as the <code>Summary:</code>
+ line from Bob's log
+message.
+</p><p>She can get even more detail with the (previously introduced)
+<code>revisions</code>
+ command (see <a href="importing-first.html#Storing_the_First_Revision_in_the_Archive">Storing the First Revision in the Archive</a>).
+</p><p>She can view Bob's entire log message:
+</p><pre>
+    % tla cat-archive-log hello-world--mainline--0.1--patch-2
+    Revision: hello-world--mainline--0.1--patch-2
+    Archive: lord@emf.net--2003-example
+    Creator: Tom (testing) Lord &lt;lord@emf.net>
+    Date: Wed Jan 29 12:46:50 PST 2003
+    Standard-date: 2003-01-29 20:46:50 GMT
+    Summary: commented return from main
+    Keywords: 
+    New-files: {arch}/hello-world/[....]
+    Modified-files: main.c
+    New-patches: \
+      lord@emf.net--2003-example/hello-world--mainline--0.1--patch-2
+
+    Added a comment explaining how the return from `main'
+    relates to the exit status of the program.
+
+
+</pre>
+<p>By looking at the headers of that message, Alice can figure out, for
+example, that Bob modified the file <code>main.c</code>
+.
+</p><p>In later chapters, we'll explore more commands that Alice can use to
+study the changes that Bob made, but for now, let's turn to how Alice
+can add those changes to her tree.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="The_update_Command"></a>
+
+
+
+<h3 align=center>The update Command</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Alice needs to combine her changes with Bob's before she can <code>commit</code>
+
+her changes.   One easy way to do that is the <code>update</code>
+ command:
+</p><pre>
+        % cd ~/wd
+
+        % tla update --in-place hello-world-Alice
+        [....]
+
+
+</pre>
+<p>Now she will find Bob's changes added to her tree:
+</p><pre>
+        % cd hello-world-Alice
+
+        % cat main.c
+        /* Copywrong 1998 howdycorp inc.  All rights reversed. */
+
+        extern void hello_world (void);
+
+        int
+        main (int argc, char * argv[])
+        {
+          hello_world ();
+
+          /* Exit with status 0
+           */
+          return 0;
+        }
+
+        /* arch-tag: main module of the hello-world project
+         */
+
+</pre>
+<p>Since no further changes are missing:
+</p><pre>
+        % tla whats-missing
+        [no output]
+
+</pre>
+<p><code>commit</code>
+ is happy to proceed:
+</p><pre>
+        % tla commit
+        [....]
+
+</pre>
+<p><strong><u>Learning Note:</u></strong> If you're following along with the examples, you
+should still have a tree in <code>hello-world-Bob</code>
+ that has Bob's changes,
+but not Alice's.   Try various commands for that directory to explore
+(<code>whats-missing</code>
+, <code>update</code>
+, <code>what-changed</code>
+ and so forth).
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="How_it_Works_--_The_update_Command"></a>
+
+
+
+<h3 align=center>How it Works -- The update Command</h3>
+
+
+
+
+
+
+
+
+
+
+<p>A <em>full</em> explanation of how <code>update</code>
+ works is a little beyond the
+scope of this chapter.  You'll be able understand <code>update</code>
+ in detail
+after a few of the later chapters (on changesets and patch logs).
+</p><p>For now, if you are familiar with <code>diff</code>
+ and <code>patch</code>
+, you can think of
+it this way:
+</p><p>When <code>update</code>
+ is run in Alice's tree, it notices that the archive is
+up to a <code>patch-2</code>
+ revision, but that her tree was checked out as a
+<code>get</code>
+ of the <code>patch-1</code>
+ revision.   <code>update</code>
+ works in three steps:
+</p><p>First, it uses a command called <code>mkpatch</code>
+ (which is kind of a fancier
+variation on <code>diff</code>
+) to compute a changeset (a fancy patch set)
+that describes the changes Alice made to her tree.
+</p><p>Second, it checks out a copy of the <code>patch-2</code>
+ revision and replaces 
+Alice's tree with that revision.
+</p><p>Third, <code>update</code>
+ uses <code>dopatch</code>
+ (a fancier <code>patch</code>
+) to apply the 
+changeset from the first step to the new tree.
+</p><p>You may be wondering how patch conflicts are handled.  The examples
+above were carefully crafted to avoid any conflicts.  Don't worry --
+we'll get to that topic soon enough (see <a href="introducing-changesets.html#Inexact_Patching_--_How_Conflicts_are_Handled">Inexact Patching -- How Conflicts are Handled</a>).
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

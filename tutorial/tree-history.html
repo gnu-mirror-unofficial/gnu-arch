@@ -1,0 +1,558 @@
+<html>
+<head>
+<title>Patch Logs and Project Tree History</title>
+</head>
+<body>
+
+<a name="Patch_Logs_and_Project_Tree_History"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Patch Logs and Project Tree History</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="development-branches.html#Development_Branches_--_The_star-merge_Style_of_Cooperation">Development Branches -- The star-merge Style of Cooperation</a></br>
+
+<b>prev: </b><a href="elementary-branches.html#Elementary_Branches_--_Maintaining_Private_Changes">Elementary Branches -- Maintaining Private Changes</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p><a name="index-pt:0"></a>
+
+</p><p>In the previous chapter, we began to learn about branching and
+merging.   We saw how commands like <code>whats-missing</code>
+, <code>update</code>
+, and
+<code>replay</code>
+ can be used to keep track of and apply changes from multiple 
+branches of a project.
+</p><p>In this chapter, we'll explain a bit about <em>
+<a name="index-pt:1"></a>
+
+patch logs
+</em>
+: the mechanism
+that is used to keep track of the history of a project tree, including
+that part of the history that is used for intelligent merging.
+</p><p>You should recall first encountering patch logs in earlier chapters
+(for example, when first initializing a project tree, in
+<a href="new-source.html#Starting_a_New_Source_Tree">Starting a New Source Tree</a>).   In this chapter, patch logs are
+explained in greater depth.
+</p>
+<a name="Project_Trees_Have_Patch_Logs"></a>
+
+
+
+<h3 align=center>Project Trees Have Patch Logs</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:2"></a>
+
+<a name="index-pt:3"></a>
+
+<a name="index-pt:4"></a>
+
+</p><p>Recall that every initial import, tag revision, and changeset revision
+in an archive has an associated log message.   That message consists
+of the headers and body that you supply to commands such as <code>import</code>
+
+and <code>commit</code>
+, plus additional headers that are automatically generated
+by <code>arch</code>
+.
+</p><p>When a project tree is first imported to an archive, the patch log
+entry for the new revision is added to the tree.   When a <code>commit</code>
+
+takes place, as part of the process of committing, the log entry for
+the new revision is added to the tree.   If you <code>get</code>
+ a revision
+created by the <code>tag</code>
+ command, you'll also find that it contains a
+patch log entry for the tag revision.
+</p><p>Patch log entries <em>accumulate</em>.  Thus, for example, each commit adds a
+new log entry and all earlier log entries are preserved.   Each tag
+revision includes not only the entry for the tag, but all log entries
+inherited from the revision being tagged.
+</p><p>Returning to our earlier examples, let's take a look at Alice and
+Bob's <code>patch-2</code>
+ revision:
+</p><pre>
+
+        % cd ~/wd
+
+        [... remove directories from earlier examples ...]
+
+        % tla get -A lord@emf.net--2003-example \
+                    hello-world--mainline--0.1--patch-2 \
+                    hw-AnB-2
+
+        [...]
+
+        % cd ~/hw-AnB-2
+
+
+</pre>
+<p>First, we note that patch logs are sorted by <code>arch</code>
+ version names.  
+This tree has logs from only one version:
+</p><pre>
+
+        % tla logs
+        lord@emf.net--2003-example/hello-world--mainline--0.1
+
+
+</pre>
+<p>Within that log, it has logs for the initial import, and two
+changesets:
+</p><pre>
+
+        % tla log-ls -A lord@emf.net--2003-example \
+                       --summary \
+                       hello-world--mainline--0.1
+        base-0
+            initial import
+        patch-1
+            Fix bugs in the &quot;hello world&quot; string
+        patch-2
+            commented return from main
+
+
+</pre>
+<p>Examining one of those log entries in particular:
+</p><pre>
+
+        % tla cat-log -A lord@emf.net--2003-example \
+                        hello-world--mainline--0.1--patch-2
+        Revision: hello-world--mainline--0.1--patch-2
+        Archive: lord@emf.net--2003-example
+        Creator: Tom (testing) Lord &lt;lord@emf.net>
+        Date: Wed Jan 29 12:46:50 PST 2003
+        Standard-date: 2003-01-29 20:46:50 GMT
+        Summary: commented return from main
+        Keywords: 
+        New-files: \
+          {arch}/[...]/hello-world--mainline--0.1/[...]/patch-log/patch-2
+        Modified-files: main.c
+        New-patches: \
+          lord@emf.net--2003-example/hello-world--mainline--0.1--patch-2
+
+        Added a comment explaining how the return from `main'
+        relates to the exit status of the program.
+
+
+
+</pre>
+<p>we can see, for example, that the <code>patch-2</code>
+ changeset modified the
+file <code>main.c</code>
+ and added a new file, the log entry itself (whose name
+is abbreviated in the output displayed above).
+</p><p>Other examples worth considering come from Candice's tree.   Recall
+that she used <code>tag</code>
+ to fork from Alice and Bob's tree at their
+<code>patch-1</code>
+ revision.  Therefore we see:
+</p><pre>
+
+        % cd ~/wd
+
+        % tla get -A candice@candice.net--2003-candice \
+                    hello-world--candice--0.1--patch-2 \
+                    hw-C-0
+
+        [...]
+
+        % cd ~/hw-C-0
+
+        % tla logs
+        candice@candice.net--2003-candice/hello-world--candice--0.1
+        lord@emf.net--2003-example/hello-world--mainline--0.1
+
+        % tla log-ls  -A lord@emf.net--2003-example \
+                        --summary \
+                        hello-world--mainline--0.1
+        base-0
+            initial import
+        patch-1
+            Fix bugs in the &quot;hello world&quot; string
+
+
+        % tla log-ls  -A candice@candice.net--2003-candice \
+                        --summary \
+                        hello-world--candice--0.1
+        base-0
+            tag of \
+              lord@emf.net--2003-example/hello-world--mainline--0.1--patch-1
+
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="How_It_Works_--_whats-missing"></a>
+
+
+
+<h3 align=center>How It Works -- whats-missing</h3>
+
+
+
+
+
+
+
+
+
+
+<p>In earlier chapters, you learned how the command <code>whats-missing</code>
+ can
+tell you about changes commited to archives, but not yet present in a
+given project tree (see <a href="update-commit.html#Studying_Why_Alice_Can_Not_commit">Studying Why Alice Can Not commit</a> and
+<a href="elementary-branches.html#Exploring_the_New_Branch">Exploring the New Branch</a>).
+</p><p>It should now be easy to understand how those commands work.   <code>arch</code>
+
+can find the list of all revisions in a given version using the
+<code>revisions</code>
+ command:
+</p><pre>
+
+        % tla revisions -A lord@emf.net--2003-example \
+                          hello-world--mainline--0.1
+        base-0
+        patch-1
+        patch-2
+        patch-3
+
+
+</pre>
+<p>Those are the logs in the archive.  <code>arch</code>
+ can find out the list of
+revisions for which a project tree has log entries with <code>log-ls</code>
+:
+</p><pre>
+
+        % tla log-ls -A lord@emf.net--2003-example \
+                       hello-world--mainline--0.1
+        base-0
+        patch-1
+        patch-2
+
+
+</pre>
+<p>The difference between those two lists is the output of
+<code>whats-missing</code>
+:
+</p><pre>
+
+        % tla whats-missing -A lord@emf.net--2003-example \
+                              hello-world--mainline--0.1
+        patch-3
+
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="The_Concept_of_Change_History_and_Tree_Ancestry"></a>
+
+
+
+<h3 align=center>The Concept of Change History and Tree Ancestry</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Patch logs give important insight into the history of a tree.   There
+are two views worth mentioning:  the <em>
+<a name="index-pt:5"></a>
+
+change history
+</em>
+ view, and the
+<em>
+<a name="index-pt:6"></a>
+
+tree ancestry
+</em>
+ view.
+</p>
+<a name="Change_History"></a>
+
+
+
+<h4 align=center>Change History</h4>
+
+
+
+
+
+
+
+
+
+
+<p>When a tree has a log for a given <code>commit</code>
+ changeset, that means that
+the changes from that <code>commit</code>
+ have been applied to the tree: the
+<code>commit</code>
+ changeset is part of the &quot;change history&quot; of the tree.  If
+the changeset were a bug fix, for example, then this is a likely
+indication that the bug fix is present in the tree.
+</p><p><strong><u>Note:</u></strong> The mere fact that a given changeset is part of the change
+history of a tree isn't absolute proof that the changes made by that
+changeset are present in the tree.   For example, those changes might
+have been &quot;undone&quot; by a later change.   Nevertheless, the change
+history of a tree is a useful tool for exploring and understanding its
+state.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="Tree_Ancestry"></a>
+
+
+
+<h3 align=center>Tree Ancestry</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Informally, we say that an archived revision is a <em>
+<a name="index-pt:7"></a>
+
+tree ancestor
+</em>
+ of a
+given project tree if it has patch log entries for all of the
+revisions in the version of that archived revision up to to the
+archived revision itself.
+</p><p>Thus, for example, Candice's tag revision has Alice and Bob's
+<code>patch-1</code>
+ revision as an ancestor because it has logs for Alice and
+Bob's revisions:
+</p><pre>
+        base-0
+        patch-1
+
+</pre>
+<p>And Candices's <code>patch-2</code>
+ revision, which merges in changes from Alice
+and Bob's <code>patch-2</code>
+ and <code>patch-3</code>
+, has both of those additional
+revisions as ancestors (see <a href="elementary-branches.html#Updating_from_a_Branched-from_Version">Updating from a Branched-from Version</a>).
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Automated_ChangeLogs"></a>
+
+
+
+<h3 align=center>Automated ChangeLogs</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:8"></a>
+
+</p><p>The command <code>tla changelog</code>
+ generates a GNU-style <code>ChangeLog</code>
+ file from
+a patch log:
+</p><pre>
+        
+  % cd ~/wd
+
+  % tla get -A candice@candice.net--2003-candice \
+              hello-world--candice--0.1 \
+              hw-C-latest
+  [....]
+
+  % cd ~/wd/hw-C-latest
+
+  % tla changelog
+  # do not edit -- automatically generated by arch changelog
+  # arch-tag: automatic-ChangeLog-- [...]
+  #
+
+  2003-01-30 GMT  Tom (testing) Lord &lt;lord@emf.net>       patch-2
+
+      Summary:
+        merge from mainline sources
+      Revision:
+        hello-world--candice--0.1--patch-2
+  
+      Patches applied:
+      
+        * lord@emf.net--2003-example/hello-world--mainline--0.1--patch-3
+           added copywrong statements
+      
+        * lord@emf.net--2003-example/hello-world--mainline--0.1--patch-2
+           commented return from main
+      
+  
+      new files:
+       {arch}/ [...] /hello-world--mainline--0.1 [...] /patch-2
+       {arch}/ [...] /hello-world--mainline--0.1 [...] /patch-3
+  
+      modified files:
+       hw.c main.c
+  
+      new patches:
+       lord@emf.net--2003-example/hello-world--mainline--0.1--patch-2
+       lord@emf.net--2003-example/hello-world--mainline--0.1--patch-3
+  
+  
+  2003-01-30 GMT  Tom (testing) Lord &lt;lord@emf.net>       patch-1
+  
+      Summary:
+        Punctuated the output correctly
+      Revision:
+        hello-world--candice--0.1--patch-1
+  
+      
+      This program should say &quot;hello, world&quot; not &quot;hello world&quot;.
+      
+  
+      modified files:
+       hw.c
+  
+  
+  2003-01-30 GMT  Tom (testing) Lord &lt;lord@emf.net>       base-0
+  
+      Summary:
+        tag of lord@emf.net--2003-example/hello-world--mainline--0.1--patch-1
+      Revision:
+        hello-world--candice--0.1--base-0
+  
+      (automatically generated log message)
+      
+  
+      new patches:
+       lord@emf.net--2003-example/hello-world--mainline--0.1--base-0
+       lord@emf.net--2003-example/hello-world--mainline--0.1--patch-1
+  
+
+
+</pre>
+<p>Note that the generated <code>ChangeLog</code>
+ includes a <code>tag</code>
+ line.  If you
+save the output of the <code>changelog</code>
+ command in a project tree, either
+using tagline tags or giving it an explicit tag that matches the <code>tag</code>
+
+line, the commands such as <code>commit</code>
+ will automatically keep the
+<code>ChangeLog</code>
+ up to date.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

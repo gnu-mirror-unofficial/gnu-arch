@@ -1,0 +1,298 @@
+<html>
+<head>
+<title>Retrieving Earlier Revisions</title>
+</head>
+<body>
+
+<a name="Retrieving_Earlier_Revisions"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Retrieving Earlier Revisions</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="examples-quickstart.html#Quick_Start_Examples">Quick Start Examples</a></br>
+
+<b>prev: </b><a href="checking-in-changes.html#Checking-in_Changes">Checking-in Changes</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p>If you've followed along with the examples in earlier chapters, you
+should have:
+</p><p><strong><u>Your First Archive</u></strong> which is also your default archive:
+</p><pre>
+        % tla my-default-archive
+        lord@emf.net--2003-example
+
+        % tla whereis-archive lord@emf.net--2003-example
+        /usr/lord/examples/{archives}/2003-example
+
+
+</pre>
+<p><strong><u>A hello-world Project in Your Archive</u></strong>
+</p><pre>
+        % tla categories 
+        hello-world
+
+        % tla branches hello-world
+        hello-world--mainline
+
+        % tla versions hello-world--mainline
+        hello-world--mainline--0.1
+
+
+</pre>
+<p><strong><u>Two Revisions of the hello-world Project</u></strong>
+</p><pre>
+        % tla revisions hello-world--mainline--0.1
+        base-0
+        patch-1
+
+</pre>
+<p>In this chapter, you'll learn how to retrieve revisions from your
+archive.
+</p>
+<a name="Checking_Out_the_Latest_Revision"></a>
+
+
+
+<h3 align=center>Checking Out the Latest Revision</h3>
+
+
+
+
+
+
+
+
+
+
+<p>You might also have a left-over project tree.  If so, let's get rid of
+that:
+</p><pre>
+        % cd ~/wd
+
+        % ls
+        hello-world
+
+        % rm -rf hello-world
+
+
+</pre>
+<p>Let's suppose that you now want to get the latest sources for the 
+hello world project.  For that, you want to use the <code>get</code>
+ command:
+</p><pre>
+        % tla get hello-world--mainline--0.1 hello-world
+        [...]
+
+
+        % ls 
+        hello-world
+
+        % ls hello-world
+        hw.c    main.c  {arch}
+
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="Checking_Out_An_Earlier_Revision"></a>
+
+
+
+<h3 align=center>Checking Out An Earlier Revision</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Let's suppose we want to check out an earlier version of the
+<code>hello-world</code>
+ project. 
+</p><p>Notice that in the previous example, we asked just for a particular
+version of the project:
+</p><pre>
+        % tla get hello-world--mainline--0.1 hello-world
+                    ^^^^^^^^^^^  ^^^^^^^^  ^^^ ^^^^^^^^^^^
+                         |           |      |       |
+                         |           |      |  target directory
+                         |           |      |
+                         |           |      |
+                         |           |   version number
+                         |           |
+                         |      branch name
+                         |
+                   category name
+
+</pre>
+<p>We can get an earlier revision name by specifying its <strong>patch level</strong> 
+explicitly:
+</p><pre>
+        % tla get hello-world--mainline--0.1--base-0 hello-world-0
+                    ^^^^^^^^^^^  ^^^^^^^^  ^^^  ^^^^^^ ^^^^^^^^^^^^^
+                         |           |      |      |        |
+                         |           |      |      |  target directory
+                         |           |      |      |
+                         |           |      | patch level name
+                         |           |      |
+                         |           |   version number
+                         |           |
+                         |      branch name
+                         |
+                   category name
+
+
+
+
+        % ls
+        hello-world     hello-world-0
+
+        % ls hello-world-0
+        hw.c    main.c  {arch}
+
+
+</pre>
+<p>You can see the changes made from <code>base-0</code>
+ to <code>patch-1</code>
+ with, for
+example, <code>diff -r</code>
+:
+</p><pre>
+        % diff -r hello-world-0 hello-world
+        diff -r hello-world-0/hw.c hello-world/hw.c
+        7c7
+        &lt;   (void)printf (&quot;hello warld&quot;);
+        ---
+        >   (void)printf (&quot;hello world\n&quot;);
+        [...]
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="How_it_Works_--_Retrieving_Revisions_With_get"></a>
+
+
+
+<h3 align=center>How it Works -- Retrieving Revisions With get</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Retrieving the <code>base-0</code>
+ revision is easy.  As you should recall, the
+<code>base-0</code>
+ revision is stored as a compressed tar file of the complete
+source tree (see <a href="importing-first.html#How_it_Works_--_What_import_Does">How it Works -- What import Does</a>).  When 
+asked to retrieve <code>base-0</code>
+, the <code>get</code>
+ command essentially just unpacks
+that tar file.
+</p><p>Retrieving the <code>patch-1</code>
+ revision happens in two steps.  Recall that
+<code>patch-1</code>
+ is stored as a <em>changeset</em> that describes the differences
+between <code>base-0</code>
+ and <code>patch-1</code>
+ (see <a href="checking-in-changes.html#How_it_Works_--_commit_of_a_New_Revision">How it Works -- commit of a New Revision</a>).  Therefore, <code>get</code>
+ works by first retrieving the
+<code>base-0</code>
+ revision, then retrieving the <code>patch-1</code>
+ changeset, then using
+that changeset to modify the <code>base-0</code>
+ tree and turn it into a
+<code>patch-1</code>
+ tree.  Internally, <code>get</code>
+ uses a tla command called
+<code>dopatch</code>
+ to apply a changeset, but if you are familiar with
+<code>diff/patch</code>
+ patchsets, then you can think of <code>dopatch</code>
+ as &quot;patch on
+steroids&quot;.
+</p><p>Let's suppose that instead of committing just one change you'd
+committed many changes:  not just a <code>patch-1</code>
+ revision but <code>patch-2</code>
+,
+<code>patch-3</code>
+ and so forth.  In essence, <code>get</code>
+ will apply each changeset
+in order to create the revision you requested.
+</p><p><strong><u>Note:</u></strong>  In fact, <code>get</code>
+ is a bit more complicated than is described
+here.  On the one hand, there are performance optimizations that can
+spare <code>get</code>
+ from having to apply a long list of changesets.  On the
+other hand, there can be revisions created by <code>tag</code>
+ rather than
+<code>commit</code>
+, for which different rules apply.  You'll learn more about
+these exceptions in later chapters.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

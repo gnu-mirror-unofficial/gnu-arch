@@ -1,0 +1,450 @@
+<html>
+<head>
+<title>Speeding up arch with Revision Tree Libraries</title>
+</head>
+<body>
+
+<a name="Speeding_up_arch_with_Revision_Tree_Libraries"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Speeding up arch with Revision Tree Libraries</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="using-hooks.html#Driving_Process_Automation_with_arch_Hooks">Driving Process Automation with arch Hooks</a></br>
+
+<b>prev: </b><a href="archive-caching.html#Speeding_up_arch_by_Caching_Revisions_in_Archives">Speeding up arch by Caching Revisions in Archives</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p><a name="index-pt:0"></a>
+
+</p><p>For many purposes, it is useful to have a library containing pristine
+trees of a large number of revisions -- for example, all of the
+revisions in a particular version.  To be practical, though, such a
+library must be represented in a space-efficient way.
+</p><p>Unix hard-links provide a natural way to store such a library.  Each
+successive revision in a series is a copy of the previous, but with
+unmodified files shared via hard-links.
+</p><p><code>arch</code>
+ provides commands to help you build, maintain, and browse such
+a library.
+</p><p>As a pleasant side effect, many <code>arch</code>
+ commands are speeded up if the
+revisions they need to operate are present in your revision library.
+You can read more about this in the next chapter.
+</p>
+<a name="Your_Revision_Library_Location"></a>
+
+
+
+<h3 align=center>Your Revision Library Location</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:1"></a>
+
+</p><p>To begin a new revision library, first create a new directory (<code>DIR</code>
+)
+and then register its location:
+</p><pre>
+        % tla my-revision-library DIR
+
+</pre>
+<p>You can check the location of your library with:
+</p><pre>
+        % tla my-revision-library
+
+</pre>
+<p>or unregister it with:
+</p><pre>
+        % tla my-revision-library -d
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="Revision_Library_Format"></a>
+
+
+
+<h3 align=center>Revision Library Format</h3>
+
+
+
+
+
+
+
+
+
+
+<p>A revision library has subdirectories of the form:
+</p><pre>
+        ARCHIVE-NAME/CATEGORY/BRANCH/VERSION/REVISION/
+
+</pre>
+<p>Each <code>REVISION</code>
+ directory contains the complete source of a particular
+revision, along with some supplemantary subdirectories and files:
+</p><pre>
+
+        REVISION/,,patch-set/
+
+                The patch set that creates this revision from
+                its ancestor (unless the revision is a full-source
+                base revision).
+
+
+</pre>
+<p>Although the permissions on files in the revision library are
+determined as determined by patch sets, <strong>you must never modify files
+int the revision library</strong>.  Doing so will cause odd errors and
+failures in various <code>arch</code>
+ commands.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Adding_a_Revision_to_the_Library"></a>
+
+
+
+<h3 align=center>Adding a Revision to the Library</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:2"></a>
+
+</p><p>You can add a selected revision to your revision library with:
+</p><pre>
+        % tla library-add REVISION
+
+</pre>
+<p>That will add not only <code>REVISION</code>
+ to the library, but all directly
+preceeding revisions (recursively) which are either from the same
+archive, or from other archives which are also in the same library.
+(&quot;Directly preceeding&quot; in this case means the previous patch level,
+for ordinary revisions, or the tagged revision (for revisions which
+are tags).)
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Finding_a_Revision_in_the_Library"></a>
+
+
+
+<h3 align=center>Finding a Revision in the Library</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:3"></a>
+
+</p><p>You can find a particular revision in the library with <code>library-find</code>
+:
+</p><pre>
+        % tla library-find REVISION
+        PATH-TO-REVSION
+
+</pre>
+<p>The output is an absolute path name to the library directory containing
+the revision.  (Once again, you must not modify files in that
+directory.)
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Removing_a_Revision_from_the_Library"></a>
+
+
+
+<h3 align=center>Removing a Revision from the Library</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:4"></a>
+
+</p><p>To remove a particular revision from the library, use:
+</p><pre>
+        % tla library-remove REVISION
+
+</pre>
+<p>Be aware of the following limitation in the current release:  suppose
+that you add three successive revisions, <code>A</code>
+, <code>B</code>
+, and <code>C</code>
+.  Then you
+remove <code>B</code>
+, then re-add <code>B</code>
+.  Now there is a chance that the file
+sharing between <code>B</code>
+ and <code>C</code>
+ will be less than optimal, causing your
+library to be larger than it needs to be.  (You can fix this by then
+removing and re-adding <code>C</code>
+.)
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Listing_Library_Contents"></a>
+
+
+
+<h3 align=center>Listing Library Contents</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:5"></a>
+
+<a name="index-pt:6"></a>
+
+<a name="index-pt:7"></a>
+
+<a name="index-pt:8"></a>
+
+<a name="index-pt:9"></a>
+
+</p><p>The command <code>library-archives</code>
+ lists all archives with records in the library:
+</p><pre>
+        % tla library-archives
+        ARCHIVE-NAME
+        ARCHIVE-NAME
+        ...
+
+</pre>
+<p>Similarly, you can list categories, branches, versions, or revisions:
+</p><pre>
+        % tla library-categories [ARCHIVE]
+        % tla library-branches [ARCHIVE/CATEGORY]
+        % tla library-versions [ARCHIVE/BRANCH]
+        % tla library-revisions [ARCHIVE/VERSION]
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="Individual_Files_in_the_Revision_Library"></a>
+
+
+
+<h3 align=center>Individual Files in the Revision Library</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:10"></a>
+
+<a name="index-pt:11"></a>
+
+</p><p>You can locate an individual file in a revision library with:
+</p><pre>
+        % archive library-file FILE [REVISION]
+        PATH
+
+</pre>
+<p>or obtain its contents with:
+</p><pre>
+        % archive cat-library-file FILE [REVISION]
+        ...file contents...
+
+</pre>
+<p>Both commands accept the options <code>--tag</code>
+ and <code>--this</code>
+.  With <code>--tag</code>
+,
+the argument <code>FILE</code>
+ is interpreted as an inventory tag, and the file
+with that tag is found.
+</p><p>With <code>--this</code>
+, <code>FILE</code>
+ is interpreted as a file relative to the current
+directory, which should be part of a project tree.  The file's
+inventory tag is computed and the corresponding file found in
+<code>REVISION</code>
+.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Determining_Patch_Set_Prerequisits"></a>
+
+
+
+<h3 align=center>Determining Patch Set Prerequisits</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:12"></a>
+
+</p><pre>
+          % tla touched-files-prereqs REVISION
+
+</pre>
+<p>That command looks at the patch set for <code>REVISION</code>
+ and at all
+preceding patch sets in the same version (it searches your library
+rather than your repository for this purpose).  It reports the list of
+patches that touch overlapping sets of files and directories -- in
+other words, it tells you what patches can be applied independently of
+others.  The command has an option to exclude from consideration file
+names matching a certain pattern (e.g. <em>
+<a name="index-pt:13"></a>
+
+=README
+</em>
+ or <em>
+<a name="index-pt:14"></a>
+
+ChangeLog
+</em>
+).  It
+has an option to exclude from the output list patches which have
+already been applied to a given project tree.  It has an option to
+report the specific files which are overlapped.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

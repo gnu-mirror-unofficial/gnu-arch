@@ -1,0 +1,118 @@
+<html>
+<head>
+<title>Speeding up arch by Caching Revisions in Archives</title>
+</head>
+<body>
+
+<a name="Speeding_up_arch_by_Caching_Revisions_in_Archives"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Speeding up arch by Caching Revisions in Archives</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="revision-libraries.html#Speeding_up_arch_with_Revision_Tree_Libraries">Speeding up arch with Revision Tree Libraries</a></br>
+
+<b>prev: </b><a href="multi-tree-projects.html#Multi-tree_Projects_and_Configuration_Management">Multi-tree Projects and Configuration Management</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p>This chapter will teach you one technique for speeding up access to an
+<code>arch</code>
+ archive.
+</p><p>Consider an <code>arch</code>
+ version that contains many revisions:
+</p><pre>
+
+        mainline
+        --------
+        base-0
+        patch-1
+        ....
+        patch-23
+        patch-24
+        patch-25
+        ...
+        patch-42
+
+
+
+</pre>
+<p>Suppose that a user (with no local pristine cache) wants to <code>get</code>
+ the
+<code>patch-42</code>
+ revision.   <code>get</code>
+ proceeds by first getting and unpacking
+the <code>base-0</code>
+ revision, then getting each <code>patch-&lt;N></code>
+ changeset, in
+order, and applying those to the tree.
+</p><p>If the list of changesets that need to be applied is long, or the sum
+of their sizes large in comparison to the tree side, then this
+implementation of <code>get</code>
+ is needlessly inefficient.
+</p><p>One way to speed up <code>get</code>
+ is by <em>
+<a name="index-pt:0"></a>
+
+archive caching revisions
+</em>
+ -- storing
+&quot;pre-built&quot; copies of some revisions with the archive.
+</p><p>For example, the command:
+</p><pre>
+
+        % tla cacherev -A lord@emf.net--2003-example \
+                hello-world--mainline--0.1--patch-40
+
+
+
+</pre>
+<p>will build the <code>patch-40</code>
+ revision, package it up as a tar bundle, and
+store a copy of that tar bundle in the <code>patch-40</code>
+ directory of the
+archive.
+</p><p>Subsequently, a <code>get</code>
+ of <code>patch-42</code>
+ will work by first fetching the
+cached copy of the <code>patch-40</code>
+ revision, then getting and applying the
+changesets for <code>patch-41</code>
+ and <code>patch-42</code>
+:  a savings of <code>40</code>
+ changesets.
+</p><p><strong><u>Usage Note:</u></strong>  At this time, it's left up to you to decide which
+revisions to cache and which not.   You might decide, for example, to
+automatically cache certain revisions from a <code>cron</code>
+ job or to simply
+cache revisions by-hand whenever you notice that <code>get</code>
+ is too slow.
+In the future, we hope to add better support for automatically caching
+revisions.
+</p>
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>
