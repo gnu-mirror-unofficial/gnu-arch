@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<HTML>
+<HEAD>
+<TITLE>GNU arch - Projekto GNU - Free Software Foundation (FSF)</TITLE>
+<META HTTP-EQUIV="content-type" CONTENT="text/html; charset=UTF-8">
+<LINK REV="made" HREF="mailto:webmasters@gnu.org">
+<LINK REV="translated" HREF="mailto:ludovic.courtes@laas.fr">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#1F00FF" ALINK="#FF0000" VLINK="#9900DD">
+<H3>GNU arch</H3>
+
+<A HREF="graphics/octopus-a-small.png"><IMG SRC="graphics/octopus-a-small.png"
+   ALT=" [bildo de la polpo de GNU arch þpruciganta inkon] "></A>
+
+[
+<!-- Please keep this list alphabetical -->
+<!-- PLEASE UPDATE THE LIST AT THE BOTTOM (OR TOP) OF THE PAGE TOO! -->
+  <A HREF="/software/gnu-arch/">English</A>
+  | <A HREF="/software/gnu-arch/index.eo.html">Esperanto</A>
+  | <A HREF="/software/gnu-arch/index.jp.html">Japanese</A>
+<!-- Please keep this list alphabetical -->
+<!-- PLEASE UPDATE THE LIST AT THE BOTTOM (OR TOP) OF THE PAGE TOO! -->
+]
+
+<P>
+
+<H4>Enhavo</H4>
+<UL>
+  <LI><A HREF="#maintainer" NAME="TOCmaintainer">Projektofondinto seræas
+  dungon</A>
+  <LI><A HREF="#introduction" NAME="TOCintroduction">Enkonduko al arch</A>
+  <LI><A HREF="#downloading" NAME="TOCdownloading">Elþuti arch</A>
+  <LI><A HREF="#links" NAME="TOClinks">arch ligiloj</A>
+</UL>
+
+<P>
+<HR>
+
+<P>
+<H4><A HREF="#TOCmaintainer" NAME="maintainer">Projektofondinto seræas
+dungon</A></H4>
+
+Vidu la <A HREF="resume.html">vivoprotokolon de Tom Lord</A>.
+
+
+<P>
+
+<P>
+<H4><A HREF="#TOCintroduction" NAME="introduction">Enkonduko al arch</A></H4>
+
+<P>
+GNU arch estas versitena sistemo, simila cele al iloj kiel CVS, SCCS kaj
+Subversion.  Øi estas uzata por sekvigi þanøojn faritaj en fonto
+dosierujo kaj por helpi al la programuloj kombini aý pli øenerale uzi
+þanøojn faritaj de diversaj personoj aý je diversaj momentoj.
+
+<P>
+GNU arch havas funkciojn, kiuj utiligas øin por publikaj
+liberprogramaraj projektoj: øi estas facile lernebla; øi estas nekoste
+kaj facile prizorgita; øi estas disa sistemo do doni atingopermisojn al
+æiuj projektopartoprenantoj ne estas bezonata; øi enhavas bonegajn
+funkciojn por la kategorioj de disbranæiøo kaj kunfandon, kiuj povas
+lumigi liberprogramaran teamon.
+
+<P>
+Estas iom konata afero, ke kelkaj programistoj el la æefa programada
+teamo de la kerno Linux uzis <EMPH>neliberan</EMPH> versitenan
+programon.  Bezonas krei liberan anstataýon de tiu sistemo kaj fari tion
+estas unu el la celoj de la projekto arch.
+
+<P>
+Alia celo de la projekto arch estas <EMPH>helpi liberprogramajn
+projektojn pli bone funkcii</EMPH>: migri el CVS aý alia sistemo al arch
+devus helpi vian projekton operacii pli kompetente.  Se vi tenadas
+GNU-an aý alian liberprograman projekton, bonvolu konsideri aliøi al la
+<I>gnu-arch-users</I> dissendolisto kaj esplori kiel arch povas utili
+viajn taskojn.
+
+<P>
+GNU Arch estis kreita kaj prilaborita æefe de <A
+HREF="mailto:lord@emf.net">Tom Lord</A>.  GNU&nbsp;Arch&nbsp;1 (ankaý konata kiel
+`tla') estas nune tenata de <A HREF="mailto:atai@gnu.org">Andy
+Tai</A>.
+
+
+<P>
+<H4><A HREF="#TOCdownloading" NAME="downloading">Elþuti arch</A></H4>
+
+<P>
+GNU arch estas elþutebla el <A
+        HREF="http://ftp.gnu.org/gnu/gnu-arch/">http://ftp.gnu.org/gnu/gnu-arch/ [per
+        HTTP]</A> kaj <A
+        HREF="ftp://ftp.gnu.org/gnu/gnu-arch/">ftp://ftp.gnu.org/gnu/gnu-arch/ [per
+        FTP]</a>.  Øi ankaý troviøas en unu el <A
+        HREF="/prep/ftp.html">niaj FTP-speguloj</A>.
+
+<P>
+Kaptoj de la lastaj programofontoj troviøas æe
+<a href="http://www.atai.org/gnuarch/snapshots/">http://www.atai.org/gnuarch/snapshots/</a>.
+
+<P>
+Nunaj programfontoj estas akireblaj sekvante tiujn paþojn:
+<P>
+(supozante ke vi jam havas kopion de tla; krome, elþutu oficialan
+eldona¼on aý kapton kaj muntu øin)
+
+<P>
+Kiam vi havas <TT>tla</TT> en via seræovojo, por elpreni la fonton la
+unuan fojon, tajpu:
+
+<pre>
+
+  cd <I>via-labordosierujo</I>
+  tla register-archive http://www.atai.org/archarchives/lord@emf.net--2005-MIRROR/
+  tla register-archive http://www.atai.org/archarchives/atai@atai.org--public/
+  tla get tla--atai-dists--1.3.4 tla-fonto
+  cd tla-fonto
+  tla build-config config
+</pre>
+
+Poste, vi povos:
+
+ <pre>
+   cd tla-fonto/tla
+   tla update
+ </pre>
+
+por aktualigi vian kopion konforme al la lastaj fontoj.
+
+<P>
+La oficialaj fontoj estas subskribitaj per tiu PGP
+<A HREF="http://www.atai.org/public_key.txt">publika þlosilo</A>.
+
+<P>
+
+
+<P>
+<H4><A HREF="#TOClinks" NAME="links">arch ligiloj</A></H4>
+
+<P>
+<UL>
+<LI> <A HREF="http://savannah.gnu.org/projects/gnu-arch">projekto æe
+Savannah </A>
+<LI> <A HREF="http://savannah.gnu.org/mail/?group=gnu-arch">dissendolistoj
+</A>
+<LI> <A HREF="http://savannah.gnu.org/bugs/?group=gnu-arch">
+erarolisto</A>
+<LI> <A HREF="/software/gnu-arch/tutorial/arch.html">reta lernilo (Angle)</A>
+<LI> <A HREF="http://regexps.srparish.net/www">hejmpaøo de la tenadulo
+</A>
+<LI> <A HREF="ftp://arch.linuxguru.net/pub/arch-tla">nokta fontkaptoj
+de la lastaj programofontoj</A>
+<LI> <A HREF="http://wiki.gnuarch.org">komunuma vikio</A>
+</UL>
+
+<HR>
+
+[
+<!-- Please keep this list alphabetical -->
+<!-- PLEASE UPDATE THE LIST AT THE BOTTOM (OR TOP) OF THE PAGE TOO! -->
+  <A HREF="/software/gnu-arch/">English</A>
+  | <A HREF="/software/gnu-arch/index.eo.html">Esperanto</A>
+  | <A HREF="/software/gnu-arch/index.jp.html">Japanese</A>
+<!-- Please keep this list alphabetical -->
+<!-- PLEASE UPDATE THE LIST AT THE BOTTOM (OR TOP) OF THE PAGE TOO! -->
+]
+
+
+<P>
+Reiro al la <a href="http://www.gnu.org/home.html">hejmpaøo de GNU</a>.
+</P>
+
+
+Sendu informopetojn kaj demandojn pri GNU kaj FSF al
+
+<A HREF="mailto:gnu@gnu.org"><EM>gnu@gnu.org</EM></A>.
+Ankaý estas <A HREF="/home.html#ContactInfo">aliaj manieroj por
+kontakti</A> FSF.
+<P>
+
+Sendu rimarkojn pri æi tiuj retpaøoj al
+
+<A HREF="mailto:webmasters@gnu.org"><EM>webmasters@gnu.org</EM></A>,
+kaj aliajn demandojn al
+<A HREF="mailto:gnu@gnu.org"><EM>gnu@gnu.org</EM></A>.
+
+<P>
+Copyright (C) 2001, 2005 Free
+Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+02110,  USA
+<BR>
+
+<P>
+Reproduktado kaj disvastigado de neþanøitaj kopioj de æi tiu artikolo
+estas permetitaj en iu ajn formo senpage kondiæe ke æi tiu atentigo
+restas.
+
+<P>
+Øisdatigita:
+<!-- timestamp start -->
+$Date: 2006/01/06 17:54:31 $ $Author: atai $
+<!-- timestamp end -->
+<HR>
+</BODY>
+</HTML>
+
