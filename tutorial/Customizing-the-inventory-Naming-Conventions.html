@@ -1,0 +1,133 @@
+<html lang="en">
+<head>
+<title>Customizing the inventory Naming Conventions - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Customizing-Arch.html#Customizing-Arch" title="Customizing Arch">
+<link rel="next" href="Revision-Library-Basics.html#Revision-Library-Basics" title="Revision Library Basics">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Customizing-the-inventory-Naming-Conventions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Revision-Library-Basics.html#Revision-Library-Basics">Revision Library Basics</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Customizing-Arch.html#Customizing-Arch">Customizing Arch</a>
+<hr>
+</div>
+
+<h3 class="section">6.1 Customizing the inventory Naming Conventions</h3>
+
+<p>In <a href="Project-Tree-Inventories.html#Project-Tree-Inventories">Project Tree Inventories</a>, you learned how the <code>tla
+inventory</code> command classifies files within a project tree using a set
+of naming conventions.   This appendix explains how you can customize
+those naming conventions.
+
+<h4 class="subsection">6.1.1 When to Customize Naming Conventions</h4>
+
+<p>It's best to make customizations to the naming conventions of a
+project at the outset: before you <code>import</code> your first revision.
+
+   <p>If you <em>must</em> make changes later, then it's <strong>essential</strong> that your
+changes do not change the classification of files already in the
+latest revision(s) of your project at the time you make the change
+(otherwise, you are likely to experience perplexing and undesirable
+behavior).
+
+<h4 class="subsection">6.1.2 How to Customize Naming Conventions</h4>
+
+<p>You should begin by reviewing the naming convention algorithm in
+<strong>The arch Naming Conventions</strong> in <a href="Project-Tree-Inventories.html#Project-Tree-Inventories">Project Tree Inventories</a>.  You can modify that algorithm by
+changing the regular expression used for each category test.
+
+   <p>You can customize naming conventions by modifying the file
+<code>./{arch}/=tagging-method</code> in your project trees.  That file is created
+by the <code>id-tagging-method</code> command and initially, it contains a single
+line which names the id tagging method (<code>names</code>, <code>explicit</code>, <code>tagline</code>
+(or the now deprecated, but popular in some older projects, including
+arch itself, <code>implicit</code>)).
+
+   <p>In particular, <code>=tagging-method</code> can contain blank lines and comments
+(lines beginning with <a name="index-g_t_0023-61"></a><dfn>#</dfn>) and directives, one per line.  The
+permissible directives are:
+
+<pre class="example">             tagline
+             implicit
+             explicit
+             names
+                     specify the id tagging method to use for this tree
+</pre>
+   <pre class="example">             exclude RE
+             junk RE
+             backup RE
+             precious RE
+             unrecognized RE
+             source RE
+                     specify a regular expression to use for the indicated
+                     category of files.
+</pre>
+   <p>Regular expressions are specified in Posix ERE syntax (the same syntax
+used by <a name="index-egrep-62"></a><dfn>egrep</dfn>, <a name="index-grep-_002dE-63"></a><dfn>grep -E</dfn>, and <a name="index-awk-64"></a><dfn>awk</dfn>) and have default values which
+implement the naming conventions described in <strong>The arch Naming Conventions</strong> in <a href="Project-Tree-Inventories.html#Project-Tree-Inventories">Project Tree Inventories</a>.
+
+   <p>A given regexp directive can occur more than once, in which case the
+regexps are concatenated as alternatives.   Thus, for example:
+
+<pre class="example">             source  .*\.c$
+             source  .*\.h$
+</pre>
+   <p class="noindent">is equivalent to:
+
+<pre class="example">             source (.*\.c$)|(.*\.h$)
+</pre>
+   <h4 class="subsection">6.1.3 Per-Directory Regexps</h4>
+
+<p><a name="index-g_t_002earch_002dinventory-65"></a>
+
+   <p>A source directory can contain a <code>.arch-inventory</code> file.
+
+   <p><code>.arch-inventory</code> files can contain regexp declarations just like
+those in =tagging-method (i.e., one for <code>excludes</code>, one for
+<code>junk</code>, etc.)   Let's call these the <a name="index-dir_002dlocal-regexps-66"></a><dfn>dir-local regexps</dfn>. 
+The <code>=tagging-method</code> regexps are the <a name="index-global-regexps-67"></a><dfn>global regexps</dfn>.
+
+   <p>While traversing a tree, each file is classified-by-name as follows. 
+the steps which are changed by <code>.arch-inventory</code> are marked with
+<code>[*]</code>:
+
+<pre class="example">             0) "." and ".." remain excluded files, no matter what.
+</pre>
+   <pre class="example">        [*]  1) if excluded files are being omitted from the inventory,
+                and either the dir-local or global regexp, the file
+                is excluded
+</pre>
+   <pre class="example">             2) if the file is a control file, it is source
+</pre>
+   <pre class="example">             3) if the file falls into one of the "mandatory categories"
+                (",," and "++" files) it is categorized as junk or
+                precious respectively.
+</pre>
+   <pre class="example">        [*]  4) the dir-local (only) regexps are tried in the usual order:
+                junk, backup, precious, unrecognized, source.  If the file
+                matches, it is suitably categorized.
+</pre>
+   <pre class="example">             5) the global regexps are tried in the same order.
+</pre>
+   <pre class="example">             6) otherwise the file is unrecognized.
+</pre>
+   </body></html>
+

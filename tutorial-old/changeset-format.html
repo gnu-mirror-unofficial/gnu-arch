@@ -1,0 +1,212 @@
+<html>
+<head>
+<title>The arch Changeset Format</title>
+</head>
+<body>
+
+<a name="The_arch_Changeset_Format"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>The arch Changeset Format</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="naming-conventions.html#Customizing_the_inventory_Naming_Conventions">Customizing the inventory Naming Conventions</a></br>
+
+<b>prev: </b><a href="using-hooks.html#Driving_Process_Automation_with_arch_Hooks">Driving Process Automation with arch Hooks</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p><a name="index-pt:0"></a>
+
+</p><p>An arch changeset is a directory containing a number of files and
+subdirectories.  Each is described below.
+</p><p><strong><u>Files:</u></strong>
+</p><pre>
+        orig-dirs-index
+        mod-dirs-index
+        orig-files-index
+        mod-files-index
+
+</pre>
+<p><strong><u>Format:</u></strong>
+</p><pre>
+        &lt;file path>&lt;tab>&lt;id>
+
+</pre>
+<p><strong><u>Sorting:</u></strong>
+</p><pre>
+        sort -k 2
+
+</pre>
+<p>These contain indexes for all files and directories added, removed, or
+modified between the two trees.
+</p><p><strong><u>Files:</u></strong>
+</p><pre>
+        original-only-dir-metadata
+        modified-only-dir-metadata
+
+</pre>
+<p><strong><u>Format:</u></strong>
+</p><pre>
+        &lt;metadata>&lt;tab>&lt;name>
+
+</pre>
+<p><strong><u>Sorting:</u></strong>
+</p><pre>
+        sort -t '&lt;tab>' -k 2
+
+</pre>
+<p>The field <code>&lt;metadata></code>
+ contains literal output from the program
+<code>file-metadata</code>
+ given the options <code>--permissions</code>
+.  Some example
+output is:
+</p><pre>
+        --permissions 777
+
+</pre>
+<p>That output is also suitable for use as options and option arguments
+to the program <code>set-file-metadata</code>
+.   Future releases <code>arch</code>
+ might add
+additional flags (beside just <code>permissions</code>
+).
+</p><p>The list records the file permissions for all directories present in
+only one of the two trees.
+</p><p><strong><u>Directories:</u></strong>
+</p><pre>
+        removed-files-archive
+        new-files-archive
+
+</pre>
+<p>Each of these directories contains complete copies of all files that
+occur in only the original tree (<code>removed-files-archive</code>
+) or modified
+tree (<code>new-files-archive</code>
+).  Each saved file is archived at the same
+relative location it had in its source tree, with permissions (at
+least) preserved.
+</p><p><strong><u>Directory:</u></strong>
+</p><pre>
+        patches
+
+</pre>
+<p>This directory contains a tree whose directory structure is a subset
+of the directory structure of the modified tree.  It contains
+modification data for directories and files common to both trees.
+</p><p>For a file stored in the modified tree at the path <code>new_name</code>
+, the
+<code>patches</code>
+ directory may contain:
+</p><pre>
+
+        new_name.link-orig
+
+                The original file is a symbolic link.
+                `new_name.link-orig' is a text file containing the
+                target of that link plus a final newline.
+
+                This file is only present if link target has changed,
+                or if the link was replaced by a regular file.
+
+
+        new_name.link-mod
+
+                The modified file is a symbolic link and this file
+                is a text file containing the target for the link plus
+                a final newline.
+
+                This file is only present if the link target has
+                changed, or if the link replaces a regular file.
+
+
+        new_name.original
+
+                This is a complete copy of the file from the original
+                tree, preserving (at least) permissions.
+
+                This file is only present if the file was replaced by
+                a symbolic link, or if the file contents can not be
+                handled by `diff(1)'.
+
+
+        new_name.modified
+
+                This is a complete copy of the file from the modified
+                tree, preserving (at least) permissions.
+
+                This file is only present if the file replaces a
+                symbolic link, or if the file contents can not be
+                handled by `diff(1)'.
+
+        new_name.patch
+
+                This is a standard context diff between the original
+                file and modified file.  One popular version of diff
+                (`GNU diff') generates non-standard context diffs by
+                omitting one copy of lines of context that are
+                identical between the original and modified file, so
+                for now, `.patch' files may have the same bug.
+                Fortunately, the only popular version of `patch'
+                (``GNU patch'') is tolerant of receiving such input.
+
+                
+
+        new_name.meta-orig
+        new_name.meta-mod
+
+                File metadata (currently only permissions) changed
+                between the two versions of the file.  These files
+                contain output from the `file-metadata' program with
+                the flags `--symlink --permissions', suitable for
+                comparison to similar output, and for use as options
+                and option arguments to `set-file-metadata'.
+
+                These files are also included if a regular file has
+                replaced a symbolic link or vice versa.
+
+                
+        new_name/=dir-meta-orig
+        new_name/=dir-meta-mod
+
+                Directory metadata (currently only permissions) changed
+                between the two versions of the directory containing
+                these files.  These files contain output from the
+                `file-metadata' program with the flags `--symlink
+                --permissions', suitable for comparison to similar
+                output, and for use as options and option arguments to
+                `set-file-metadata'.
+
+
+</pre>
+<p><strong><u>Note:</u></strong> If a regular file (or symbolic link) replaces a directory, or
+vice versa, this is recorded as a file (or link) removed (or added) in
+one tree and added (or removed) in the other.
+</p>
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

@@ -1,0 +1,69 @@
+<html lang="en">
+<head>
+<title>Introducing Yourself to arch - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Getting-Started.html#Getting-Started" title="Getting Started">
+<link rel="prev" href="arch-Commands-in-General.html#arch-Commands-in-General" title="arch Commands in General">
+<link rel="next" href="Creating-a-New-Archive.html#Creating-a-New-Archive" title="Creating a New Archive">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Introducing-Yourself-to-arch"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Creating-a-New-Archive.html#Creating-a-New-Archive">Creating a New Archive</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="arch-Commands-in-General.html#arch-Commands-in-General">arch Commands in General</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Getting-Started.html#Getting-Started">Getting Started</a>
+<hr>
+</div>
+
+<h3 class="section">3.2 Introducing Yourself to arch</h3>
+
+<p><a name="index-my_002did-2"></a>
+
+   <p>The first step to using arch is to set your id with a command like:
+
+<pre class="example">             % tla my-id "Tom Lord &lt;lord@emf.net&gt;"
+</pre>
+   <p>Your id should be your name, followed by your email address in angle
+brackets.
+
+   <p><code>arch</code> records your id in various log messages that it creates.
+
+   <p>You can find out your id with:
+
+<pre class="example">             % tla my-id
+             Tom Lord &lt;lord@emf.net&gt;
+</pre>
+   <h4 class="subsection">3.2.1 How it Works &ndash; Your arch Id</h4>
+
+<p>After the command above, you will have some new files in your home
+directory:
+
+<pre class="example">             % ls ~/.arch-params
+             =id
+
+             % cat ~/.arch-params/=id
+             Tom Lord &lt;lord@emf.net&gt;
+
+</pre>
+   <p><strong>Caution:</strong> You usually should not edit files in <code>~/.arch-params/</code>
+"by hand."
+
+   </body></html>
+

@@ -1,0 +1,206 @@
+<html lang="en">
+<head>
+<title>Revision Library Basics - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Customizing-Arch.html#Customizing-Arch" title="Customizing Arch">
+<link rel="prev" href="Customizing-the-inventory-Naming-Conventions.html#Customizing-the-inventory-Naming-Conventions" title="Customizing the inventory Naming Conventions">
+<link rel="next" href="Advanced-Revision-Library-Use.html#Advanced-Revision-Library-Use" title="Advanced Revision Library Use">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Revision-Library-Basics"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Advanced-Revision-Library-Use.html#Advanced-Revision-Library-Use">Advanced Revision Library Use</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Customizing-the-inventory-Naming-Conventions.html#Customizing-the-inventory-Naming-Conventions">Customizing the inventory Naming Conventions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Customizing-Arch.html#Customizing-Arch">Customizing Arch</a>
+<hr>
+</div>
+
+<h3 class="section">6.2 Revision Library Basics</h3>
+
+<p><a name="index-revision-library-68"></a>
+
+   <p>For many purposes, it is useful to have a library containing pristine
+trees of a large number of revisions &ndash; for example, all of the
+revisions in a particular version.  To be practical, though, such a
+library must be represented in a space-efficient way.
+
+   <p>Unix hard-links provide a natural way to store such a library.  Each
+successive revision in a series is a copy of the previous, but with
+unmodified files shared via hard-links.
+
+   <p><code>arch</code> provides commands to help you build, maintain, and browse such
+a library.
+
+   <p>As a pleasant side effect, many <code>arch</code> commands are speeded up if the
+revisions they need to operate are present in your revision library. 
+You can read more about this in the next chapter.
+
+<h4 class="subsection">6.2.1 Your Revision Library Locations</h4>
+
+<p><a name="index-my_002drevision_002dlibrary-69"></a>
+
+   <p>To begin a new revision library, first create a new directory (<code>DIR</code>)
+and then register its location:
+
+<pre class="example">             % tla my-revision-library DIR
+</pre>
+   <p>You can check the location of your library with:
+
+<pre class="example">             % tla my-revision-library
+</pre>
+   <p class="noindent">or unregister it with:
+
+<pre class="example">             % tla my-revision-library -d DIR
+</pre>
+   <p>Note that you can have more than one revision library: in effect you
+have a "path" listing all of your library locations.
+
+<h4 class="subsection">6.2.2 Revision Library Format</h4>
+
+<p>A revision library has subdirectories of the form:
+
+<pre class="example">             ARCHIVE-NAME/CATEGORY/BRANCH/VERSION/REVISION/
+</pre>
+   <p>Each <code>REVISION</code> directory contains the complete source of a particular
+revision, along with some supplemantary subdirectories and files:
+
+<pre class="example">
+             REVISION/,,patch-set/
+
+                     The patch set that creates this revision from
+                     its ancestor (unless the revision is a full-source
+                     base revision).
+
+</pre>
+   <p>Although the permissions on files in the revision library are
+determined as determined by patch sets, <strong>you must never modify files
+int the revision library</strong>.  Doing so will cause odd errors and
+failures in various <code>arch</code> commands.
+
+<h4 class="subsection">6.2.3 Adding a Revision to the Library By Hand</h4>
+
+<p><a name="index-library_002dadd-70"></a>
+
+   <p>You can add a selected revision to your revision library with:
+
+<pre class="example">             % tla library-add REVISION
+</pre>
+   <p><code>library-add</code> will normally add not only <code>REVISION</code> to the library,
+but all directly preceeding revisions (recursively) which are from the
+version as REVISION.
+
+   <p>If you want to add only REVISION and no others, use the <code>--sparse</code>
+option:
+
+<pre class="example">             % tla library-add --sparse REVISION
+</pre>
+   <h4 class="subsection">6.2.4 Finding a Revision in the Library</h4>
+
+<p><a name="index-library_002dfind-71"></a>
+
+   <p>You can find a particular revision in the library with <code>library-find</code>:
+
+<pre class="example">             % tla library-find REVISION
+             PATH-TO-REVSION
+</pre>
+   <p>The output is an absolute path name to the library directory containing
+the revision.  (Once again, you must not modify files in that
+directory.)
+
+<h4 class="subsection">6.2.5 Removing a Revision from the Library</h4>
+
+<p><a name="index-library_002dremove-72"></a>
+
+   <p>To remove a particular revision from the library, use:
+
+<pre class="example">             % tla library-remove REVISION
+</pre>
+   <p>Be aware of the following limitation in the current release:  suppose
+that you add three successive revisions, <code>A</code>, <code>B</code>, and <code>C</code>.  Then you
+remove <code>B</code>, then re-add <code>B</code>.  Now there is a chance that the file
+sharing between <code>B</code> and <code>C</code> will be less than optimal, causing your
+library to be larger than it needs to be.  (You can fix this by then
+removing and re-adding <code>C</code>.)
+
+<h4 class="subsection">6.2.6 Listing Library Contents</h4>
+
+<p><a name="index-library_002darchives-73"></a>
+<a name="index-library_002dcategories-74"></a>
+<a name="index-library_002dbranches-75"></a>
+<a name="index-library_002dversions-76"></a>
+<a name="index-library_002drevisions-77"></a>
+
+   <p>The command <code>library-archives</code> lists all archives with records in the library:
+
+<pre class="example">             % tla library-archives
+             ARCHIVE-NAME
+             ARCHIVE-NAME
+             ...
+</pre>
+   <p>Similarly, you can list categories, branches, versions, or revisions:
+
+<pre class="example">             % tla library-categories [ARCHIVE]
+             % tla library-branches [ARCHIVE/CATEGORY]
+             % tla library-versions [ARCHIVE/BRANCH]
+             % tla library-revisions [ARCHIVE/VERSION]
+</pre>
+   <h4 class="subsection">6.2.7 Individual Files in the Revision Library</h4>
+
+<p><a name="index-library_002dfile-78"></a>
+<a name="index-cat_002dlibrary_002dfile-79"></a>
+
+   <p>You can locate an individual file in a revision library with:
+
+<pre class="example">             % tla library-file FILE [REVISION]
+             PATH
+</pre>
+   <p class="noindent">or obtain its contents with:
+
+<pre class="example">             % tla cat-library-file FILE [REVISION]
+             ...file contents...
+</pre>
+   <p>Both commands accept the options <code>--id</code> and <code>--this</code>.  With <code>--id</code>,
+the argument <code>FILE</code> is interpreted as an inventory id, and the file
+with that id is found.
+
+   <p>With <code>--this</code>, <code>FILE</code> is interpreted as a file relative to the current
+directory, which should be part of a project tree.  The file's
+inventory id is computed and the corresponding file found in
+<code>REVISION</code>.
+
+<h4 class="subsection">6.2.8 Determining Patch Set Prerequisits</h4>
+
+<p><a name="index-touched_002dfile_002dprereqs-80"></a>
+
+<pre class="example">               % tla touched-files-prereqs REVISION
+</pre>
+   <p>That command looks at the patch set for <code>REVISION</code> and at all
+preceding patch sets in the same version (it searches your library
+rather than your repository for this purpose).  It reports the list of
+patches that touch overlapping sets of files and directories &ndash; in
+other words, it tells you what patches can be applied independently of
+others.  The command has an option to exclude from consideration file
+names matching a certain pattern (e.g. <a name="index-g_t_003dREADME-81"></a><dfn>=README</dfn> or <a name="index-ChangeLog-82"></a><dfn>ChangeLog</dfn>).  It
+has an option to exclude from the output list patches which have
+already been applied to a given project tree.  It has an option to
+report the specific files which are overlapped.
+
+   </body></html>
+

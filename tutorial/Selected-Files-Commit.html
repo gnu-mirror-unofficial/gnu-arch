@@ -1,0 +1,121 @@
+<html lang="en">
+<head>
+<title>Selected Files Commit - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Working-With-Arch.html#Working-With-Arch" title="Working With Arch">
+<link rel="prev" href="Retrieving-Earlier-Revisions.html#Retrieving-Earlier-Revisions" title="Retrieving Earlier Revisions">
+<link rel="next" href="Symbolic-Tags.html#Symbolic-Tags" title="Symbolic Tags">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Selected-Files-Commit"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Symbolic-Tags.html#Symbolic-Tags">Symbolic Tags</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Retrieving-Earlier-Revisions.html#Retrieving-Earlier-Revisions">Retrieving Earlier Revisions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Working-With-Arch.html#Working-With-Arch">Working With Arch</a>
+<hr>
+</div>
+
+<h3 class="section">4.3 Selected Files Commit</h3>
+
+<p>Earlier, you learned how to commit all of the changes within a tree at
+once (see <a href="Checking_002din-Changes.html#Checking_002din-Changes">Checking-in Changes</a>).
+
+   <p>You also have read a bit about the importance of making "clean"
+changesets (see <strong>Using commit Well &ndash; The Idea of a Clean Changeset</strong> in <a href="Exploring-Changesets.html#Exploring-Changesets">Exploring Changesets</a>).
+
+   <p>This chapter shows you a little trick that you can use in a very
+specific but common situation.
+
+<h4 class="subsection">4.3.1 The Quick Fix Problem</h4>
+
+<p>Let's suppose that you have a large project tree and you're in the
+middle of making some complicated change.   You've modified many
+files, but there are many others that you haven't touched.
+
+   <p>Suddenly, you notice a trivial bug <strong>in one of the untouched files</strong>.
+
+   <p>What you'd really like to do is:
+
+   <p><strong>1)</strong> Stop and fix the trivial bug.
+
+   <p><strong>2)</strong> Commit just that trivial bug fix.
+
+   <p><strong>3)</strong> Get back to work on the complicated changes.
+
+   <p>How can you do that?
+
+<h4 class="subsection">4.3.2 The Brute Force Solution to the Quick Fix Problem</h4>
+
+<p>There's an easy "brute force" solution to the problem.
+
+   <p>Simply:
+
+   <p><strong>Check out a fresh copy of the latest revision.</strong>  In other words,
+create a second project tree with no modifications.
+
+   <p><strong>Fix the trivial bug in the new tree and commit.</strong> Now you've committed
+a clean change with just the trivial bug fix.
+
+   <p><strong>Use update or replay to Bring Your Original Tree Up to Date.</strong>  That
+will add the trivial bug fix back to your tree with the partially
+completed changes.
+
+   <p>That works, but it can be a little awkward.  Do you <em>really</em> need to
+start a second project tree just to fix this trivial bug?
+
+   <p>Sometimes the awkwardness is well worth it.   For example, your
+project might have a policy the before every <code>commit</code>, you must run
+some tests.   In that case, yes, you really do need a second tree.
+
+   <p>Sometimes the awkwardness is nearly unavoidable.  For example, if the
+trivial bug fix involves modifying files that you've already heavily
+modified, then again, the brute force technique may be the simplest
+approach (but also, take a look at <code>tla undo --help</code> and <code>tla redo
+--help</code>).
+
+   <p>But there is a simpler way that sometimes applies:
+
+<h4 class="subsection">4.3.3 Solving the Quick Fix Problem with commit &ndash;</h4>
+
+<p>As it turns out, <code>commit</code>
+lets you commit only the changes made to just a few files.
+
+   <p>If your quick fix changes <code>file-a.c</code> and <code>file-b.c</code>, then after
+preparing a log message, you can commit just those files with:
+
+<pre class="example">             % tla commit -- file-a.c file-b.c
+</pre>
+   <p>You should note that the files committed this way must not
+be new files and that, even if those files have been renamed, the
+<code>commit</code> will record only the changes internal to those files, not the
+renames.
+
+<h4 class="subsection">4.3.4 The Quick Fix Problem &ndash; There's More Than One Way to Do It</h4>
+
+<p>In the text above, we speculated about a "brute force" solution to
+the quick-fix problem that involved checking out a whole new project
+tree.
+
+   <p>Two other command, <code>tla undo</code> and <code>tla redo</code>, provide an alternative
+"brute force" solution with some advantages.   These are described
+in a later chapter (see xref :<a name="index-g_t_0021_0021_0021-41"></a><dfn>!!!</dfn>)../
+
+   </body></html>
+

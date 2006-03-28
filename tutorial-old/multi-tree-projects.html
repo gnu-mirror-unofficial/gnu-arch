@@ -1,0 +1,170 @@
+<html>
+<head>
+<title>Multi-tree Projects and Configuration Management</title>
+</head>
+<body>
+
+<a name="Multi-tree_Projects_and_Configuration_Management"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Multi-tree Projects and Configuration Management</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="archive-caching.html#Speeding_up_arch_by_Caching_Revisions_in_Archives">Speeding up arch by Caching Revisions in Archives</a></br>
+
+<b>prev: </b><a href="cherrypicking-changes.html#Cherrypicking_Changes">Cherrypicking Changes</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p>You can define <em>
+<a name="index-pt:0"></a>
+
+meta-projects
+</em>
+ which are combinations of individual
+projects that are separately tracked by <code>arch</code>
+.  This allows you to
+divide a large project into smaller, more manageable pieces, each of
+which can develop independently of the others, and each of which can
+be a part of more than one meta-project.
+</p><p>This is accomplished by writing <em>
+<a name="index-pt:1"></a>
+
+config specs
+</em>
+, which define the
+contents of the meta-project and how they should be arranged in a
+source tree.
+</p><p>For example, <code>arch</code>
+ itself is a meta-project.  The source tree
+contains:
+</p><pre>
+        dists/
+          dists/src/
+            dists/src/arch/
+            dists/src/file-utils/
+            dists/src/ftp-utils/
+            dists/src/hackerlab/
+            dists/src/shell-utils/
+
+</pre>
+<p>Each of those directories is the root of a project tree (contains a
+subdirectory named <em>
+<a name="index-pt:2"></a>
+
+{arch}
+</em>
+).
+</p><p>The topmost directory, <code>dists</code>
+ also contains a subdirectory named
+<code>configs</code>
+.  In that subdirectory are the meta-project configuration
+files.  For example:
+</p><pre>
+        dists/
+          dists/configs/
+            dists/configs/regexps.com/  # Tom's configuration files
+              dists/configs/regexps.com/devo.arch
+              dists/configs/regexps.com/release-template.arch
+
+</pre>
+<p>Here are the contents of <code>devo.arch</code>
+:
+</p><pre>
+     # 
+     # Check out an arch distribution from the devo branches.  
+     # Latest revisions.
+     #
+
+</pre>
+<pre>
+     ./src                   lord@regexps.com--2002/package-framework--devo
+     ./src/arch              lord@regexps.com--2002/arch--devo
+     ./src/file-utils        lord@regexps.com--2002/file-utils--devo
+     ./src/ftp-utils         lord@regexps.com--2002/ftp-utils--devo
+     ./src/hackerlab         lord@regexps.com--2002/hackerlab--devo
+     ./src/shell-utils       lord@regexps.com--2002/shell-utils--devo
+     ./src/text-utils        lord@regexps.com--2002/text-utils--devo
+
+</pre>
+<p>Each (non-blank, non-comment) line in that file has the format:
+</p><pre>
+        LOCATION             CONTENTS
+
+</pre>
+<p>which means, to create the meta-project, get the revision indicated by
+<code>CONTENTS</code>
+ and install it at <code>LOCATION</code>
+.  The <code>CONTENTS</code>
+ field can be
+a branch (meaning, get the latest revision of the latest version on
+that branch), a version (meaning get the latest revision in that
+version), or a revision name (meaning get that revision, exactly).
+</p><p>To check out an entire <code>arch</code>
+ tree, I first check out <code>dists</code>
+ from
+<code>devo</code>
+, then use <code>build-config</code>
+:
+</p><pre>
+        % tla get dists--devo dists
+        [....]
+
+</pre>
+<pre>
+        % cd dists
+
+</pre>
+<pre>
+        % tla build-config regexps.com/dists.devo
+        [....]
+
+</pre>
+<p>Once you have a meta-project tree, some other useful commands are:
+</p><pre>
+     cat-config : output information about a multi-project config
+
+</pre>
+<p>One use of that command is to generate a list of sub-projects to which 
+some other command can be iteratively applied:
+</p><pre>
+        % tla cat-config CFGNAME | awk '{print $1}' | xargs ...
+
+</pre>
+<p>Additionally, the option <code>--snap</code>
+ can be usefully applied to a
+configuration that names subproces by version rather than revision.
+It examines the project tree to see what revisions are actually
+installed at each of the <code>LOCATIONs</code>
+.  Then it writes a new config
+which specify those <code>REVISIONS</code>
+ precisely.  This is useful, for
+example, for recording the specific revisions you are about to turn
+into a distribution.
+</p>
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

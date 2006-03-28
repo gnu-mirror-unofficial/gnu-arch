@@ -1,0 +1,181 @@
+<html lang="en">
+<head>
+<title>Retrieving Earlier Revisions - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Working-With-Arch.html#Working-With-Arch" title="Working With Arch">
+<link rel="prev" href="Checking_002din-Changes.html#Checking_002din-Changes" title="Checking-in Changes">
+<link rel="next" href="Selected-Files-Commit.html#Selected-Files-Commit" title="Selected Files Commit">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Retrieving-Earlier-Revisions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Selected-Files-Commit.html#Selected-Files-Commit">Selected Files Commit</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Checking_002din-Changes.html#Checking_002din-Changes">Checking-in Changes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Working-With-Arch.html#Working-With-Arch">Working With Arch</a>
+<hr>
+</div>
+
+<h3 class="section">4.2 Retrieving Earlier Revisions</h3>
+
+<p>If you've followed along with the examples in earlier chapters, you
+should have:
+
+   <p><strong>Your First Archive</strong> which is also your default archive:
+
+<pre class="example">             % tla my-default-archive
+             lord@emf.net--2003-example
+
+             % tla whereis-archive lord@emf.net--2003-example
+             /usr/lord/examples/archives/2003-example
+
+</pre>
+   <p><strong>A hello-world Project in Your Archive</strong>
+
+<pre class="example">             % tla categories
+             hello-world
+
+             % tla branches hello-world
+             hello-world--mainline
+
+             % tla versions hello-world--mainline
+             hello-world--mainline--0.1
+
+</pre>
+   <p><strong>Two Revisions of the hello-world Project</strong>
+
+<pre class="example">             % tla revisions hello-world--mainline--0.1
+             base-0
+             patch-1
+</pre>
+   <p>In this chapter, you'll learn how to retrieve revisions from your
+archive.
+
+<h4 class="subsection">4.2.1 Checking Out the Latest Revision</h4>
+
+<p>You might also have a left-over project tree.  If so, let's get rid of
+that:
+
+<pre class="example">             % cd ~/wd
+
+             % ls
+             hello-world
+
+             % rm -rf hello-world
+
+</pre>
+   <p>Let's suppose that you now want to get the latest sources for the
+hello world project.  For that, you want to use the <code>get</code> command:
+
+<pre class="example">             % tla get hello-world--mainline--0.1 hello-world
+             [...]
+
+             % ls
+             hello-world
+
+             % ls hello-world
+             hw.c    main.c  {arch}
+
+</pre>
+   <h4 class="subsection">4.2.2 Checking Out An Earlier Revision</h4>
+
+<p>Let's suppose we want to check out an earlier version of the
+<code>hello-world</code> project.
+
+   <p>Notice that in the previous example, we asked just for a particular
+version of the project:
+
+<pre class="example">             % tla get hello-world--mainline--0.1 hello-world
+                       ^^^^^^^^^^^  ^^^^^^^^  ^^^ ^^^^^^^^^^^
+                            |           |      |       |
+                            |           |      |  target directory
+                            |           |      |
+                            |           |      |
+                            |           |   version number
+                            |           |
+                            |      branch name
+                            |
+                      category name
+</pre>
+   <p>We can get an earlier revision name by specifying its <strong>patch level</strong>
+explicitly:
+
+<pre class="example">             % tla get hello-world--mainline--0.1--base-0 hello-world-0
+                       ^^^^^^^^^^^  ^^^^^^^^  ^^^  ^^^^^^ ^^^^^^^^^^^^^
+                            |           |      |      |        |
+                            |           |      |      |  target directory
+                            |           |      |      |
+                            |           |      | patch level name
+                            |           |      |
+                            |           |   version number
+                            |           |
+                            |      branch name
+                            |
+                      category name
+
+             % ls
+             hello-world     hello-world-0
+
+             % ls hello-world-0
+             hw.c    main.c  {arch}
+
+</pre>
+   <p>You can see the changes made from <code>base-0</code> to <code>patch-1</code> with, for
+example, <code>diff -r</code>:
+
+<pre class="example">             % diff -r hello-world-0 hello-world
+             diff -r hello-world-0/hw.c hello-world/hw.c
+             7c7
+             &lt;   (void)printf ("hello warld");
+             ---
+             &gt;   (void)printf ("hello world\n");
+             [...]
+</pre>
+   <h4 class="subsection">4.2.3 How it Works &ndash; Retrieving Revisions With get</h4>
+
+<p>Retrieving the <code>base-0</code> revision is easy.  As you should recall, the
+<code>base-0</code> revision is stored as a compressed tar file of the complete
+source tree (see <strong>How it Works &ndash; What import Does</strong> in <a href="Importing-the-First-Revision.html#Importing-the-First-Revision">Importing the First Revision</a>).  When
+asked to retrieve <code>base-0</code>, the <code>get</code> command essentially just unpacks
+that tar file.
+
+   <p>Retrieving the <code>patch-1</code> revision happens in two steps.  Recall that
+<code>patch-1</code> is stored as a <em>changeset</em> that describes the differences
+between <code>base-0</code> and <code>patch-1</code> (see <strong>How it Works &ndash; commit of a New Revision</strong> in <a href="Checking_002din-Changes.html#Checking_002din-Changes">Checking-in Changes</a>).  Therefore, <code>get</code> works by first retrieving the
+<code>base-0</code> revision, then retrieving the <code>patch-1</code> changeset, then using
+that changeset to modify the <code>base-0</code> tree and turn it into a
+<code>patch-1</code> tree.  Internally, <code>get</code> uses a tla command called
+<code>dopatch</code> to apply a changeset, but if you are familiar with
+<code>diff/patch</code> patchsets, then you can think of <code>dopatch</code> as "patch on
+steroids".
+
+   <p>Let's suppose that instead of committing just one change you'd
+committed many changes:  not just a <code>patch-1</code> revision but <code>patch-2</code>,
+<code>patch-3</code> and so forth.  In essence, <code>get</code> will apply each changeset
+in order to create the revision you requested.
+
+   <p><strong>Note:</strong>  In fact, <code>get</code> is a bit more complicated than is described
+here.  On the one hand, there are performance optimizations that can
+spare <code>get</code> from having to apply a long list of changesets.  On the
+other hand, there can be revisions created by <code>tag</code> rather than
+<code>commit</code>, for which different rules apply.  You'll learn more about
+these exceptions in later chapters.
+
+   </body></html>
+

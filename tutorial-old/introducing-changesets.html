@@ -1,0 +1,437 @@
+<html>
+<head>
+<title>Introducing Changesets</title>
+</head>
+<body>
+
+<a name="Introducing_Changesets"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Introducing Changesets</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="exploring-changesets.html#Exploring_Changesets">Exploring Changesets</a></br>
+
+<b>prev: </b><a href="update-commit.html#The_update/commit_Style_of_Cooperation">The update/commit Style of Cooperation</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p><a name="index-pt:0"></a>
+
+</p><p>It is often extremely useful to compare two project trees (usually for
+the same project) and figure out exactly what has changed between
+them.  A record of such changes is called a <em>
+<a name="index-pt:1"></a>
+
+changeset
+</em>
+ or a <em>
+<a name="index-pt:2"></a>
+
+delta
+</em>
+.
+</p><p>Changesets are a very central concept to <code>arch</code>
+ -- much of <code>arch</code>
+ is
+defined in terms of operations performed with changesets.
+</p><p>If you have a changeset between an &quot;old tree&quot; and a &quot;new tree&quot;,
+you can &quot;apply the changeset&quot; to the old tree to get the new tree --
+in other words, you can automatically make the editing changes
+described by a changeset.  If you have some third tree, you can apply
+the patch to get an approximation of making the same changes to that
+third tree.
+</p><p><code>arch</code>
+ includes sophisticated tools for creating and applying
+changesets.
+</p><ul>
+<li><a href="introducing-changesets.html#mkpatch">mkpatch</a></li>
+<li><a href="introducing-changesets.html#dopatch">dopatch</a></li>
+<li><a href="introducing-changesets.html#Inexact_Patching_--_How_Conflicts_are_Handled">Inexact Patching -- How Conflicts are Handled</a></li>
+</ul>
+
+<hr>
+
+<a name="mkpatch"></a>
+
+
+
+<h3 align=center>mkpatch</h3>
+
+
+
+
+<small>
+<b>up: </b><a href="introducing-changesets.html#Introducing_Changesets">Introducing Changesets</a></br>
+<b>next: </b><a href="introducing-changesets.html#dopatch">dopatch</a></br>
+
+
+</small>
+<br>
+
+
+
+
+
+
+<p><a name="index-pt:3"></a>
+
+<a name="index-pt:4"></a>
+
+</p><p><code>mkpatch</code>
+ computes a changeset describing the differences between two
+trees.  The basic command syntax is:
+</p><pre>
+        % tla mkpatch ORIGINAL MODIFIED DESTINATION
+
+</pre>
+<p>which compares the trees <code>ORIGINAL</code>
+ and <code>MODIFIED</code>
+.  
+</p><p><code>mkpatch</code>
+ creates a new directory, <code>DESTINATION</code>
+, and stores the
+changeset there.
+</p><p>When <code>mkpatch</code>
+ compares trees, it uses inventory ids.  For example, it
+considers two directories or two files to be &quot;the same directory (or
+file)&quot; if they have the same id -- regardless of where each is located
+in its respective tree.  (See <a href="inventory-ids.html#Inventory_Ids_for_Source">Inventory Ids for Source</a>.)
+</p><p>A changeset produced by <code>mkpatch</code>
+ describes what files and directories
+have been added or removed, which have been renamed, which files have
+been changed (and how they have been changed), and what file
+permissions have changed (and how).  When regular text files are
+compared, <code>mkpatch</code>
+ produces a context diff describing the
+differences.  <code>mkpatch</code>
+ can compare binary files (saving complete
+copies of the old and new versions if they differ) and symbolic links
+(saving the old and new link targets, if they differ).
+</p><p>A detailed description of the format of a changeset is provided in an
+appendix (see <a href="changeset-format.html#The_arch_Changeset_Format">The arch Changeset Format</a>).
+</p>
+
+
+
+
+
+
+
+
+
+
+<hr>
+
+<a name="dopatch"></a>
+
+
+
+<h3 align=center>dopatch</h3>
+
+
+
+
+<small>
+<b>up: </b><a href="introducing-changesets.html#Introducing_Changesets">Introducing Changesets</a></br>
+<b>next: </b><a href="introducing-changesets.html#Inexact_Patching_--_How_Conflicts_are_Handled">Inexact Patching -- How Conflicts are Handled</a></br>
+
+<b>prev: </b><a href="introducing-changesets.html#mkpatch">mkpatch</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p><a name="index-pt:5"></a>
+
+</p><p><code>dopatch</code>
+ is used to apply a changeset to tree:
+</p><pre>
+        % tla dopatch PATCH-SET TREE
+
+</pre>
+<p>If <code>tree</code>
+ is exactly the same as the the &quot;original&quot; tree seen by
+<code>mkpatch</code>
+, then the effect is to modify <code>tree</code>
+ so that it is exactly
+the same as the the &quot;modified&quot; tree seen by <code>mkpatch</code>
+, with one
+exception (explained below).
+</p><p>&quot;Exactly the same&quot; means that the directory structure is the same,
+symbolic link targets are the same, the contents of regular files are
+the same, and file permissions are the same.  Modification times,
+files with multiple (hard) links, and file ownership are not reliably
+preserved.
+</p><p>The exception to the &quot;exactly the same&quot; rule is that if the patch
+requires that files or directories be removed from <code>tree</code>
+, those files
+and directories will be saved in a subdirectory of <code>tree</code>
+ with an
+eye-splitting name matching the pattern:
+</p><pre>
+        ++removed-by-dopatch-PATCH--DATE
+
+</pre>
+<p>where <code>PATCH</code>
+ is the name of the patch-set directory and <code>DATE</code>
+ a
+timestamp. 
+</p>
+
+
+
+
+
+
+
+
+
+
+<hr>
+
+<a name="Inexact_Patching_--_How_Conflicts_are_Handled"></a>
+
+
+
+<h3 align=center>Inexact Patching -- How Conflicts are Handled</h3>
+
+
+
+
+<small>
+<b>up: </b><a href="introducing-changesets.html#Introducing_Changesets">Introducing Changesets</a></br>
+
+<b>prev: </b><a href="introducing-changesets.html#dopatch">dopatch</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p><a name="index-pt:6"></a>
+
+<a name="index-pt:7"></a>
+
+</p><p>What if a tree patched by <code>dopatch</code>
+ is not exactly the same as the
+original tree seen by <code>mkpatch</code>
+?
+</p><p>Below is a brief description of what to expect.  Complete
+documentation of the <code>dopatch</code>
+ process is included with the source
+code.
+</p><p><code>dopatch</code>
+ takes an inventory of the tree being patched.  It uses
+inventory ids to decide which files and directories expected by the
+changeset are present or missing from the tree, and to figure out
+where each file and directory is located in the tree.
+</p><p><strong><u>Simple Patches</u></strong> If the changeset contains an ordinary patch or
+metadata patch for a link, directory or file, and that file is present
+in the tree, <code>dopatch</code>
+ applies the patch in the ordinary way.  If the
+patch applies cleanly, the modified file, link, or directory is left
+in place.
+</p><p>If a simple patch fails to apply cleanly, <code>dopatch</code>
+ will always leave
+behind a <code>.orig</code>
+ file (the file originally in the tree being patched,
+without any changes) and a <code>.rej</code>
+ file (the part of the patch that
+could not be applied).  
+</p><p>If the patch was a context diff, <code>dopatch</code>
+ will also leave behind the
+file itself -- partially patched.
+</p><p>If an (unsuccessful) patch was for a binary file, no partially-patched
+file will be left.  Instead, there will be:
+</p><pre>
+        .orig   -- the file originally in the tree being patched,
+                   without modifications.
+
+        .rej    -- a complete copy of the file from the modified tree,
+                   with permissions copied from `.orig'.
+
+        .patch-orig -- a complete copy of the file from the original
+                       tree seen by `mkpatch', with permissions
+                       retained from that original
+
+                        -or-
+
+                       the symbolic link from the original tree seen
+                       by `mkpatch' with permissions as in the original
+                       tree.
+
+
+
+</pre>
+<p>If an (unsuccessful) patch was for a symbolic link, no partially
+patched file will be left.  Instead there will be:
+</p><pre>
+        .orig   -- the unmodified file from the original tree
+
+        .rej    -- a symbolic link with the target intended by the
+                   patch and permissions copied from .orig
+
+        .patch-orig -- a complete copy of the file from the original
+                       tree seen by `mkpatch', with permissions 
+                       retained from that original
+
+                        -or-
+
+                       the symbolic link from the original tree seen
+                       by `mkpatch' with permissions as in the original
+                       tree.
+
+
+
+</pre>
+<p><strong><u>Patches for Missing Files</u></strong>
+</p><p>All patches for missing files and directories are stored in a
+subdirectory of the root of the tree being patched called 
+</p><pre>
+        ==missing-file-patches-PATCH-DATE
+
+</pre>
+<p>where <code>PATCH</code>
+ is the basename of the changeset directory and <code>DATE</code>
+ a
+time-stamp.
+</p><p><strong><u>Directory Rearrangements and New Directories</u></strong>
+</p><p>Directories are added, deleted, and rearranged much as you would
+expect, even if you don't know it's what you'd expect.
+</p><p>Suppose that when <code>mkpatch</code>
+ was called the <code>ORIGINAL</code>
+ tree had:
+</p><pre>
+        Directory or file:              Id:
+
+        a/x.c                           id_1
+        a/bar.c                         id_2
+
+
+</pre>
+<p>but the <code>MODIFIED</code>
+ tree had:
+</p><pre>
+        a/x.c                           id_1
+        a/y.c                           id_2
+
+</pre>
+<p>with changes to both files.  The patch will want to rename the file
+with id <code>id_2</code>
+ to <code>y.c</code>
+, and change the contents of the files with
+ids <code>id_1</code>
+ and <code>id_2</code>
+.
+</p><p>Suppose, for example, that you have a tree with:
+</p><pre>
+        a/foo.c                         id_1
+        a/zip.c                         id_2
+
+</pre>
+<p>and the you apply the patch to that tree.  After the patch, you'll be
+left with:
+</p><pre>
+        a/foo.c                         id_1
+        a/y.c (was zip.c)               id_2
+
+</pre>
+<p>with patches made to the contents of both files.
+</p><p>Here's a sample of some subtleties and ways of handling conflicts:
+</p><p>Suppose that the original tree seen by mkpatch has:
+</p><pre>
+        Directory or file:              Id:
+
+        ./a                             id_a
+        ./a/b                           id_b
+        ./a/b/c                         id_c
+
+
+</pre>
+<p>and that the modified directory has:
+</p><pre>
+        ./a                             id_a
+        ./a/c                           id_c
+        ./a/c/b                         id_b
+
+</pre>
+<p>Finally, suppose that the tree has:
+</p><pre>
+        ./x                             id_a
+        ./x/b                           id_b
+        ./x/c                           id_new_directory
+        ./x/c/b                         id_different_file_named_b
+        ./x/c/q                         id_c
+
+</pre>
+<p>When patch gets done with the tree, it will have:
+</p><pre>
+        ./x                             id_a
+                Since the patch doesn't do anything 
+                to change the directory with id_a.
+
+        ./x/c.orig                      id_new_directory
+        ./x/c.rej                       id_c
+                Since the patch wants to make the 
+                directory with id_c a subdirectory named &quot;c&quot;
+                of the directory with id_a, but the tree
+                already had a different directory there,
+                with the id id_new_directory.
+
+        ./x/c.rej/b                     id_b
+                Since the patch wants to rename the directory
+                with id_b to be a subdirectory named &quot;b&quot;
+                of the directory with id_c.
+
+        ./x/c.orig/b                    id_different_file_named_b
+                Since the patch made new changes to this file,
+                it stayed with its parent directory.
+                
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

@@ -1,0 +1,126 @@
+<html lang="en">
+<head>
+<title>Exploring Changesets - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Advanced-Topics.html#Advanced-Topics" title="Advanced Topics">
+<link rel="prev" href="Introducing-Changesets.html#Introducing-Changesets" title="Introducing Changesets">
+<link rel="next" href="The-arch-Changeset-Format.html#The-arch-Changeset-Format" title="The arch Changeset Format">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Exploring-Changesets"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="The-arch-Changeset-Format.html#The-arch-Changeset-Format">The arch Changeset Format</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Introducing-Changesets.html#Introducing-Changesets">Introducing Changesets</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Advanced-Topics.html#Advanced-Topics">Advanced Topics</a>
+<hr>
+</div>
+
+<h3 class="section">A.3 Exploring Changesets</h3>
+
+<p>The previous chapter introduced <em>changesets</em> and the commands
+<code>mkpatch</code> and <code>dopatch</code> (fancy variations on the theme of the
+traditional <code>diff</code> and <code>patch</code> programs).
+
+   <p>In this chapter, we'll look in a bit more detail about how changesets
+are used in archives, how they are used by the <code>commit</code> and <code>update</code>
+commands, and what this implies for how you can make the best use of
+<code>arch</code>.
+
+<h4 class="subsection">A.3.1 How it Works &ndash; commit Stores a Changeset in the Archive</h4>
+
+<p>Suppose that you <code>get</code> the latest revision of a project, make some
+changes, write a log message, and <code>commit</code> those changes to an
+archive.   What happens?
+
+   <p>In essence, commit:
+
+   <p><strong>1</strong> Computes a changeset that describes what changes you've made
+compared to the latest revision.
+
+   <p><strong>2</strong> Creates a directory for the new revision in the archive.
+
+   <p><strong>3</strong> Stores your log message and the changeset in the archive.
+
+   <p>In that light, you might want to go back and review an earlier
+section: <strong>How it Works &ndash; commit of a New Revision</strong> in <a href="Checking_002din-Changes.html#Checking_002din-Changes">Checking-in Changes</a>.
+
+<h4 class="subsection">A.3.2 get-changeset Retrieves a Changeset from an Archive</h4>
+
+<p><a name="index-get_002dchangeset-103"></a>
+
+   <p>Earlier, you learned that the <code>cat-archive-log</code> command retrieves a
+log message from an archive (see <strong>Studying Why Alice Can Not commit</strong> in <a href="The-update_002fcommit-Style-of-Cooperation.html#The-update_002fcommit-Style-of-Cooperation">The update/commit Style of Cooperation</a>).
+
+   <p>You can also retrieve a changeset from an archive:
+
+<pre class="example">
+             % cd ~/wd
+
+             % tla get-changeset hello-world--mainline--0.1--patch-1 patch-1
+             [...]
+
+</pre>
+   <p><code>get-changeset</code> retrieves the changeset from the archive and, in this
+case, stores it in a directory called <code>patch-1</code>.
+
+   <p>(The format of changesets is described in <a href="The-arch-Changeset-Format.html#The-arch-Changeset-Format">The arch Changeset Format</a>.)
+
+<h4 class="subsection">A.3.3 Using show-changeset to Examine a Changeset</h4>
+
+<p><a name="index-show_002dchangeset-104"></a>
+
+   <p>The changeset format is optimized for use by programs, not people. 
+It's awkward to look at a changeset "by hand".   Instead, you
+may wish to consider getting a report of the patch in diff format
+by using:
+
+<pre class="example">             % tla show-changeset --diffs patch-1
+</pre>
+   <pre class="example">             [...]
+</pre>
+   <p>If you've been following along with the examples, you'll recognize the
+output format of <code>show-changeset</code> from the <code>changes</code> command introduced
+earlier (see <strong>Oh My Gosh &ndash; What Have I Done?</strong> in <a href="Checking_002din-Changes.html#Checking_002din-Changes">Checking-in Changes</a>).
+
+<h4 class="subsection">A.3.4 Using commit Well &ndash; The Idea of a Clean Changeset</h4>
+
+<p>When you commit a set of changes, it is generally "best practice" to
+make sure you are creating a <a name="index-clean-changeset-105"></a><dfn>clean changeset</dfn>.
+
+   <p>A clean changeset is one that contains only changes that are all
+related and for a single purpose.   For example, if you have several
+bugs to fix, or several features to add, try not to mix those changes
+up in a single <code>commit</code>.
+
+   <p>There are many advantages to clean changesets but foremost among them
+are:
+
+   <p><strong>Easier Review</strong>  It is easy for someone to understand a changeset if
+it is only trying to do one thing.
+
+   <p><strong>Easier Merging</strong> As we'll learn in later chapters, there are
+circumstances in which you'll want to look at a collection of
+changesets in an archive and pick-and-choose among them.  Perhaps you
+want to grab "bug fix A" but not "new feature B".   If each
+changeset has only one purpose, that kind of <a name="index-cherrypicking-106"></a><dfn>cherrypicking</dfn> is much
+more practical.
+
+   </body></html>
+

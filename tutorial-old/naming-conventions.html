@@ -1,0 +1,273 @@
+<html>
+<head>
+<title>Customizing the inventory Naming Conventions</title>
+</head>
+<body>
+
+<a name="Customizing_the_inventory_Naming_Conventions"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Customizing the inventory Naming Conventions</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="document-license.html#The_GNU_Free_Documentation_License">The GNU Free Documentation License</a></br>
+
+<b>prev: </b><a href="changeset-format.html#The_arch_Changeset_Format">The arch Changeset Format</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p>In <a href="inventories.html#Project_Tree_Inventories">Project Tree Inventories</a>, you learned how the <code>tla
+inventory</code>
+ command classifies files within a project tree using a set
+of naming conventions.   This appendix explains how you can customize
+those naming conventions.
+</p>
+<a name="When_to_Customize_Naming_Conventions"></a>
+
+
+
+<h3 align=center>When to Customize Naming Conventions</h3>
+
+
+
+
+
+
+
+
+
+
+<p>It's best to make customizations to the naming conventions of a
+project at the outset: before you <code>import</code>
+ your first revision.
+</p><p>If you <em>must</em> make changes later, then it's <strong>essential</strong> that your
+changes do not change the classification of files already in the
+latest revision(s) of your project at the time you make the change
+(otherwise, you are likely to experience perplexing and undesirable
+behavior).
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="How_to_Customize_Naming_Conventions"></a>
+
+
+
+<h3 align=center>How to Customize Naming Conventions</h3>
+
+
+
+
+
+
+
+
+
+
+<p>You should begin by reviewing the naming convention algorithm in
+<a href="inventories.html#The_arch_Naming_Conventions">The arch Naming Conventions</a>.  You can modify that algorithm by
+changing the regular expression used for each category test.
+</p><p>You can customize naming conventions by modifying the file
+<code>./{arch}/=tagging-method</code>
+ in your project trees.  That file is created
+by the <code>id-tagging-method</code>
+ command and initially, it contains a single
+line which names the id tagging method (<code>names</code>
+, <code>explicit</code>
+, <code>tagline</code>
+
+(or the now deprecated, but popular in some older projects, including
+arch itself, <code>implicit</code>
+)).
+</p><p>In particular, <code>=tagging-method</code>
+ can contain blank lines and comments
+(lines beginning with <em>
+<a name="index-pt:0"></a>
+
+#
+</em>
+) and directives, one per line.  The
+permissible directives are:
+</p><pre>
+        tagline
+        implicit
+        explicit
+        names
+                specify the id tagging method to use for this tree
+
+</pre>
+<pre>
+        exclude RE
+        junk RE
+        backup RE
+        precious RE
+        unrecognized RE
+        source RE
+                specify a regular expression to use for the indicated
+                category of files.
+
+</pre>
+<p>Regular expressions are specified in Posix ERE syntax (the same syntax
+used by <em>
+<a name="index-pt:1"></a>
+
+egrep
+</em>
+, <em>
+<a name="index-pt:2"></a>
+
+grep -E
+</em>
+, and <em>
+<a name="index-pt:3"></a>
+
+awk
+</em>
+) and have default values which
+implement the naming conventions described in <a href="inventories.html#The_arch_Naming_Conventions">The arch Naming Conventions</a>.
+</p><p>A given regexp directive can occur more than once, in which case the 
+regexps are concatenated as alternatives.   Thus, for example:
+</p><pre>
+        source  .*\.c$
+        source  .*\.h$
+
+</pre>
+<p>is equivalent to:
+</p><pre>
+        source (.*\.c$)|(.*\.h$)
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="Per-Directory_Regexps"></a>
+
+
+
+<h3 align=center>Per-Directory Regexps</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:4"></a>
+
+</p><p>A source directory can contain a <code>.arch-inventory</code>
+ file.
+</p><p><code>.arch-inventory</code>
+ files can contain regexp declarations just like
+those in =tagging-method (i.e., one for <code>excludes</code>
+, one for
+<code>junk</code>
+, etc.)   Let's call these the <em>
+<a name="index-pt:5"></a>
+
+dir-local regexps
+</em>
+.
+The <code>=tagging-method</code>
+ regexps are the <em>
+<a name="index-pt:6"></a>
+
+global regexps
+</em>
+.
+</p><p>While traversing a tree, each file is classified-by-name as follows.
+the steps which are changed by <code>.arch-inventory</code>
+ are marked with
+<code>[*]</code>
+:
+</p><pre>
+        0) &quot;.&quot; and &quot;..&quot; remain excluded files, no matter what.
+
+</pre>
+<pre>
+   [*]  1) if excluded files are being omitted from the inventory,
+           and either the dir-local or global regexp, the file
+           is excluded
+
+</pre>
+<pre>
+        2) if the file is a control file, it is source
+
+</pre>
+<pre>
+        3) if the file falls into one of the &quot;mandatory categories&quot;
+           (&quot;,,&quot; and &quot;++&quot; files) it is categorized as junk or 
+           precious respectively.
+
+</pre>
+<pre>
+   [*]  4) the dir-local (only) regexps are tried in the usual order:
+           junk, backup, precious, unrecognized, source.  If the file
+           matches, it is suitably categorized.
+
+</pre>
+<pre>
+        5) the global regexps are tried in the same order.
+
+</pre>
+<pre>
+        6) otherwise the file is unrecognized.
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

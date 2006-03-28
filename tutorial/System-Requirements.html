@@ -1,0 +1,98 @@
+<html lang="en">
+<head>
+<title>System Requirements - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Introducing-arch.html#Introducing-arch" title="Introducing arch">
+<link rel="next" href="Getting-Started.html#Getting-Started" title="Getting Started">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="System-Requirements"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Getting-Started.html#Getting-Started">Getting Started</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Introducing-arch.html#Introducing-arch">Introducing arch</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">2 System Requirements</h2>
+
+<p>In order to use <code>arch</code>, there are some software tools that you must
+already have available.
+
+<h3 class="section">2.1 Tools Used to Build arch</h3>
+
+<p><strong>GNU Make</strong> You will need <code>GNU Make</code> in order to build <code>arch</code>.
+
+   <p><strong>Standard Posix Shell Tools</strong> The package framework (i.e., the
+configure and build process) assumes that some standard Posix shell
+tools are available on your system:
+
+<pre class="example">             awk     find    mkdir   sh      wc
+             cat     fold    printf  tee     xargs
+             chmod   grep    pwd     test
+             date    head    rm      touch
+             echo    ls      sed     tsort
+</pre>
+   <p><em>Note:</em>  On some systems, the program installed as <code>/bin/sh</code> is
+<em>not</em> a Posix shell (it may be a variant of <code>csh</code> or a very buggy
+implementation of Posix <code>sh</code>).   On such systems, you should use a
+different shell to run <code>configure</code>, such as:
+
+<pre class="example">       % /usr/local/bin/bash ../configure --config-shell /usr/local/bin/bash
+</pre>
+   <p><strong>The null Device</strong> Your system must have <code>/dev/null</code>.  Information
+directed to <code>/dev/null</code> should simply disappear from the universe.  As
+a special "Green Software" measure, we have made provisions that
+will enable your computers to convert that discarded information into
+<em>heat</em>, which you may use to supplement conventional heating
+systems.
+
+<h3 class="section">2.2 Tools Used Internally by arch</h3>
+
+<p>The remaining tools are used internally by arch itself.  They don't
+necessarily need to be on your <code>PATH</code> &ndash; when you build <code>arch</code> from
+source, run the configure script:
+
+<pre class="example">            % ./configure --help
+</pre>
+   <p class="noindent">and
+
+<pre class="example">             % ./configure --help-options
+</pre>
+   <p class="noindent">for information about how to point <code>arch</code> to the correct versions.
+
+   <p><strong>GNU Tar</strong> You must have <code>GNU tar</code>.  <code>arch</code> invokes <code>tar</code> internally to
+pack and unpack files that it stores in archives.   It is important
+that all versions of <code>arch</code> use a compatible version of <code>tar</code>, for
+which purpose <code>GNU tar</code> was chosen.
+
+   <p><strong>GNU diff and GNU patch</strong> After much deliberation, I've decided to go
+ahead and rely on the <strong>GNU</strong> versions of <code>diff</code> and <code>patch</code>. 
+Specifically, you need a version of <code>diff</code> that can generate "unified
+format" output (option <code>-u</code>) and a version of <code>patch</code> that
+understands that format and that understands <code>--posix</code>.  (It would be
+trivial to use "context diffs" and, thus, standard <code>diff</code> and
+<code>patch</code>, however, unified diffs are much easier to read, and I'm
+hoping that picking specific implementations of these critical
+sub-components will help contribute to the long-term stability of
+<code>arch</code>.)
+
+   </body></html>
+

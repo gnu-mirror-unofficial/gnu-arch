@@ -1,0 +1,381 @@
+<html lang="en">
+<head>
+<title>Development Branches -- The star-merge Style of Cooperation - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Collaborating-With-Other-People.html#Collaborating-With-Other-People" title="Collaborating With Other People">
+<link rel="prev" href="Elementary-Branches-_002d_002d-Maintaining-Private-Changes.html#Elementary-Branches-_002d_002d-Maintaining-Private-Changes" title="Elementary Branches -- Maintaining Private Changes">
+<link rel="next" href="Cherrypicking-Changes.html#Cherrypicking-Changes" title="Cherrypicking Changes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Development-Branches----The-star-merge-Style-of-Cooperation"></a>
+<a name="Development-Branches-_002d_002d-The-star_002dmerge-Style-of-Cooperation"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Cherrypicking-Changes.html#Cherrypicking-Changes">Cherrypicking Changes</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Elementary-Branches-_002d_002d-Maintaining-Private-Changes.html#Elementary-Branches-_002d_002d-Maintaining-Private-Changes">Elementary Branches -- Maintaining Private Changes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Collaborating-With-Other-People.html#Collaborating-With-Other-People">Collaborating With Other People</a>
+<hr>
+</div>
+
+<h3 class="section">5.5 Development Branches &ndash; The star-merge Style of Cooperation</h3>
+
+<p>In earlier chapters, we developed an extended example out of the
+<code>hello-world</code> project.
+
+   <p>Alice and Bob, the primary programmers on the project, started one
+archive and created some revisions there.
+
+   <p>Candice, a user of the project, created her own archive, started a
+branch of the <code>hello-world</code> project, and began maintaining her own
+local modifications.
+
+   <p>In this chapter, we'll begin to consider a situation that is more
+typical of free software projects in the real world.   Here, we'll
+consider Alice and Bob to be the maintainers of a public project, and
+Candice as a major remote contributor to the project.  We'll identify
+the new revision control needs that arise from that arrangement, and
+look at some <code>arch</code> commands that help to satisfy those needs.
+
+<h4 class="subsection">5.5.1 Promoting an Elementary Branch to a Development Branch</h4>
+
+<p>So far, if you've been following the examples, Candice has an
+elementary branch.  She made a branch from the mainline, made some
+local changes, and has kept her branch up-to-date with Alice and Bob's
+mainline.
+
+   <p>We're supposing, at this point, that Alice and Bob want to merge
+Candice's changes into the mainline.
+
+   <p>Well, that merging work has already been done.  Candice's latest
+revision is exactly the tree that Alice and Bob want.   They can
+incorporate that merge into their mainline very simply, by committing
+Candice's latest revision to their own mainline:
+
+<pre class="example">
+             % tla get -A candice@candice.net--2003-candice \
+                         hello-world--candice--0.1 \
+                         hw-C
+             [...]
+
+             % cd hw-C
+
+             % tla set-tree-version -A lord@emf.net--2003-example \
+                         hello-world--mainline--0.1
+
+             % tla make-log
+             ++log.hello-world--mainline--0.1--lord@emf.net--2003-example
+
+             [... edit log file (consider `tla log-for-merge') ... ]
+
+             % cat ++log.hello-world--mainline--0.1--lord@emf.net--2003-example
+             Summary: merge from Candice's Branch
+             Keywords:
+
+             Patches applied:
+
+               * candice@candice.net--2003-candice/hello-world--candice--0.1--patch-2
+                  merge from mainline sources
+
+               * candice@candice.net--2003-candice/hello-world--candice--0.1--patch-1
+                  Punctuated the output correctly
+
+               * candice@candice.net--2003-candice/hello-world--candice--0.1--base-0
+                  tag of
+                   lord@emf.net--2003-example/hello-world--mainline--0.1--patch-1
+
+             % tla commit
+             [....]
+
+</pre>
+   <p><strong>Read Carefully Note:</strong>  Note carefully the <a name="index-trick-57"></a><dfn>trick</dfn> we just used. 
+Candice's latest revision was exactly what Alice and Bob wanted &ndash;
+they combined <code>get</code> with <code>set-tree-version</code> to turn Candice's tree
+into one they could easily commit to their own mainline.
+
+<h4 class="subsection">5.5.2 Simple Development Branches</h4>
+
+<p>Let's consider what happens as development proceeds on both branches. 
+For this purpose, we'll introduce something new: a way of diagraming
+branches and the merges between them.
+
+   <p>After the examples so far, we have this situation:
+
+<pre class="example">
+           mainline--0.1                    candice--0.1
+           -------------                    ------------
+             base-0             -----------&gt; base-0 (a tag)
+             patch-1  ---------'             patch-1
+             patch-2             ----------&gt; patch-2
+             patch-3  ----------'  --------'
+             patch-4  &lt;-----------'
+
+</pre>
+   <p class="noindent">which tells us that the <code>candice</code> branch is a tag
+of <code>patch-1</code> from the mainline;  that at <code>patch-2</code> of the <code>candice</code>
+branch, there was a merge of everything up to <code>patch-3</code> of the
+<code>mainline</code>; and finally that <code>patch-4</code> of the mainline merges
+in everything up to <code>patch-2</code> from the <code>candice</code> branch.
+
+   <p>Whenever we have a such a diagram in which none of the merge lines
+cross, that is a <a name="index-simple-development-branch-58"></a><dfn>simple development branch</dfn>.
+
+   <p>The significance of a simple development branch is that it's a model
+for how two development efforts can work asynchronously on one
+project.  Within each effort &ndash; on each branch &ndash; programmer's use the
+"update/commit" style of cooperation (see <a href="The-update_002fcommit-Style-of-Cooperation.html#The-update_002fcommit-Style-of-Cooperation">The update/commit Style of Cooperation</a>).   However, changes on one branch have no
+effect on the other until the two branches are merged.
+
+<h4 class="subsection">5.5.3 Introducing The Development Branch Merging Problem</h4>
+
+<p>Let's suppose that more work happens on both the <code>mainline</code> and
+<code>candice</code> branches, leaving us with:
+
+<pre class="example">
+           mainline--0.1                    candice--0.1
+           -------------                    ------------
+             base-0             -----------&gt; base-0 (a tag)
+             patch-1  ---------'             patch-1
+             patch-2             ----------&gt; patch-2
+             patch-3  ----------'  --------' patch-3
+             patch-4  &lt;-----------'          patch-4
+             patch-5
+             patch-6
+
+             % tla revisions --summary -A candice@candice.net--2003-candice \
+                               hello-world--candice--0.1
+             base-0
+                 tag of
+                 lord@emf.net--2003-example/hello-world--mainline--0.1--patch-1
+             patch-1
+                 Punctuated the output correctly
+             patch-2
+                 merge from mainline sources
+             patch-3
+                 added a period to output string
+             patch-4
+                 capitalized the output string
+
+             % tla revisions --summary -A lord@emf.net--2003-example \
+                               hello-world--mainline--0.1
+             base-0
+                 initial import
+             patch-1
+                 Fix bugs in the "hello world" string
+             patch-2
+                 commented return from main
+             patch-3
+                 added copywrong statements
+             patch-4
+                 merge from Candice's Branch
+             patch-5
+                 fixed the copyrwrong for hw.c
+             patch-6
+                 fixed the copyrwrong for main.c
+
+</pre>
+   <p>Let's consider a scenario in which our goal is to merge the new work
+on the <code>mainline</code> branch into the <code>candice</code> branch.  In other words,
+we want to wind up with:
+
+<pre class="example">
+           mainline--0.1                    candice--0.1
+           -------------                    ------------
+             base-0             -----------&gt; base-0 (a tag)
+             patch-1  ---------'             patch-1
+             patch-2             ----------&gt; patch-2
+             patch-3  ----------'  --------' patch-3
+             patch-4  &lt;-----------'          patch-4
+             patch-5               --------&gt; patch-5
+             patch-6  ------------'
+
+</pre>
+   <p>How can we perform that merge?  Let's start with the latest pre-merge
+candice revision (<code>patch-4</code>):
+
+<pre class="example">
+             % tla get -A candice@candice.net--2003-candice \
+                            hello-world--candice--0.1--patch-4 \
+                            hw-C-4
+             [....]
+
+             % cd hw-C-4
+
+</pre>
+   <p>Here are two techniques that <strong>don't</strong> work:
+
+<h5 class="subsubsection">5.5.3.1 replay Does Not Solve the Development Branch Merge Problem</h5>
+
+<p><code>replay</code> will try to apply all "missing" changes from the <code>mainline</code>
+into the <code>candice</code> tree.   The list of changeset it will apply is
+given by:
+
+<pre class="example">
+             % tla missing --summary \
+                           -A candice@candice.net--2003-example \
+                           hello-world--mainline--0.1
+             patch-4
+                 merge from Candice's Branch
+             patch-5
+                 fixed the copyrwrong for hw.c
+             patch-6
+                 fixed the copyrwrong for main.c
+
+</pre>
+   <p>Problematic in that list is <code>patch-4</code>.   It's a merge that includes
+all of the changes from the <code>candice</code> branch up to its <code>patch-2</code>
+level.   Yet those changes are already present in the <code>patch-4</code>
+revision of the <code>candice</code> branch &ndash; so <code>replay</code> will be applying them
+redundantly (cause patch conflicts).
+
+   <p><strong>Note of Warning:</strong> The <code>replay</code> command will not prevent you from running
+further replays even though the source tree is not in a consistant state. 
+TLA in its current incarnation does not merge reject files. This leaves
+open the possibility that patch rejects will be lost if a second <code>replay</code>
+is performed before the rejects from the first replay are resolved. (Some day
+TLA may be able to merge multiple rejects into a combined reject.)
+
+   <p><strong>Advanced User Note:</strong>  The <code>replay</code> command has options that would
+allows us to skip the <code>patch-4</code> revision from the mainline.   That
+<em>sort of</em> solves the problem, but it has some drawbacks.  First, it
+means that <code>patch-4</code> will continue to appear in the <code>missing</code> output
+of the <code>candice</code> branch.  Second, there is nothing that guarantees us
+that the <code>patch-4</code> changeset contains <em>only</em> merges from the <code>candice</code>
+branch.  If Alice and Bob made other changes in <code>patch-4</code>, and we skip
+that changeset, those other changes will be lost.
+
+<h5 class="subsubsection">5.5.3.2 update Does Not Solve the Development Branch Merge Problem</h5>
+
+<p>Suppose we try to <code>update</code> from the <code>mainline</code> branch.  Recall that
+<code>update</code> will compute a changeset from the youngest <code>mainline</code>
+ancestor of the project tree to the tree itself, then apply that
+changeset to the latest <code>mainline</code> revision.
+
+   <p>We have a notation for this.  A changeset from <code>X</code> to <code>Y</code> is written:
+
+<pre class="example">             delta(X, Y)
+</pre>
+   <p>In this case, <code>update</code> will start by computing a changeset from the
+<code>mainline</code> <code>patch-3</code> revision to our project tree:
+
+<pre class="example">             delta(mainline--0.1--patch-3, hw-C-4)
+</pre>
+   <p>The tree that results for applying a changeset from <code>X</code> to <code>Y</code> to a
+tree <code>Z</code> is written:
+
+<pre class="example">             delta(X, Y) [ Z ]
+</pre>
+   <p>In other words, the result of <code>update</code> in our example can be described
+as:
+
+<pre class="example">             delta(mainline--0.1--patch-3, hw-C-4) [mainline--0.1--patch-6]
+</pre>
+   <p>Here's the problem, though.   The <code>patch-3</code> revision of <code>mainline</code> was
+not previously merged with the <code>candice</code> branch.   Thus, the changeset
+
+<pre class="example">             delta(mainline--0.1--patch-3, hw-C-4)
+</pre>
+   <p class="noindent">will include, among other changes, the changes from <code>patch-1</code> and
+<code>patch-2</code> of the candice branch.
+
+   <p>Unfortunately, the tree we'll be applying that changeset to,
+<code>mainline--0.1--patch-6</code>, has already been merged with
+<code>base-0...patch-2</code> of the <code>candice</code> branch.
+
+   <p>As with <code>replay</code>, <code>update</code> will cause merge conflicts by making
+zredundant changes.
+
+<h4 class="subsection">5.5.4 Solving One Instance of the Development Branch Merging Problem</h4>
+
+<p>Using just our <code>delta</code> notation and merge diagrams, let's look at
+solving this merge problem cleanly.
+
+   <p>Remember that we currently have:
+
+<pre class="example">           mainline--0.1                    candice--0.1
+           -------------                    ------------
+             base-0             -----------&gt; base-0 (a tag)
+             patch-1  ---------'             patch-1
+             patch-2             ----------&gt; patch-2
+             patch-3  ----------'  --------' patch-3
+             patch-4  &lt;-----------'          patch-4
+             patch-5
+             patch-6
+</pre>
+   <p class="noindent">and our goal is to create a new merge, for patch-5 of Candice's
+branch:
+
+<pre class="example">                                   --------&gt; patch-5
+             patch-6  ------------'
+</pre>
+   <p>We might decide to start with a <code>mainline</code> branch and merge in missing
+<code>candice</code> changes, or start with a <code>candice</code> tree and merge in missing
+<code>mainline</code> changes.  Let's assume the latter (merging into a <code>candice</code>
+tree).
+
+   <p>In this case, <code>mainline-0.1</code> revision <code>patch-6</code> is "up to date" with
+<code>candice-0.1</code> revision <code>patch-2</code>.   We want too apply all changes
+since then to the latest <code>candice</code> revision:
+
+<pre class="example">             with:
+                     ancestor := candice--0.1--patch-2
+                     merge_in := mainline--0.1--patch-6
+                     target   := canidice--0.1--patch-4
+</pre>
+   <pre class="example">             answer := delta(ancestor, merge_in)[target]
+</pre>
+   <p>The arrows in the merge diagram are critical to figuring out the right
+answer.  For example, suppose that the arrow from Candice's <code>patch-2</code>
+to the <code>mainline</code> revision <code>patch-4</code> wasn't there.   Then the answer
+would be:
+
+<pre class="example">             with:
+                     ancestor := mainline--0.1--patch-3
+                     merge_in := mainline--0.1--patch-6
+                     target   := canidice--0.1--patch-4
+</pre>
+   <pre class="example">             answer := delta(ancestor, merge_in)[target]
+</pre>
+   <p>Tracing out the arrows for a given merge is a tedious process. 
+It's automated by the <code>star-merge</code> command:
+
+<h4 class="subsection">5.5.5 star-merge &ndash; Solving the Development Branch Merging Problem in General</h4>
+
+<p>It's a bit beyond the scope of this tutorial to explain the complete
+solution to the development branch merging problem in general.  The
+two solutions shown above illustrate two cases, but slightly different
+solutions are sometimes necessary.
+
+   <p>What you should know is that when you have simple development
+branches (see <strong>Simple Development Branches</strong> in <a href="Development-Branches-_002d_002d-The-star_002dmerge-Style-of-Cooperation.html#Development-Branches-_002d_002d-The-star_002dmerge-Style-of-Cooperation">Development Branches &ndash; The star-merge Style of Cooperation</a>), the command
+<code>star-merge</code> knows how to merge between them without causing spurious
+merge conflicts.
+
+   <p>In ordinary use, you invoke <code>star-merge</code> in the tree you want to merge
+info, providing as an argument the tree you want to merge from:
+
+<pre class="example">
+             % tla get -A candice@candice.net--2003-candice \
+                     hello-world--candice--0.1--patch-4 \
+                     merge-temp
+
+             % tla star-merge lord@emf.net--2003/hello-world--mainline--0.1
+
+</pre>
+   </body></html>
+

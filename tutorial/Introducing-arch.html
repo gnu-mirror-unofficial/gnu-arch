@@ -1,0 +1,126 @@
+<html lang="en">
+<head>
+<title>Introducing arch - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="index.html#Top" title="Top">
+<link rel="next" href="System-Requirements.html#System-Requirements" title="System Requirements">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Introducing-arch"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="System-Requirements.html#System-Requirements">System Requirements</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="index.html#Top">Top</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">1 Introducing arch</h2>
+
+<p><code>arch</code> is a revision control, source code management, and
+configuration management tool.
+
+   <p>This manual is an <code>arch</code> tutorial: its purpose is to help you get
+started using <code>arch</code> for the first time, and then learn some of the
+more advanced features of arch.
+
+<h3 class="section">1.1 Who is this Manual For?</h3>
+
+<p>In order to use this manual, you should be familiar with the basic
+unix command line tools (such as <code>ls</code>, <code>mv</code>, and <code>find</code>).
+
+   <p>In addition, you should be familiar with the programs <code>diff</code> and
+<code>patch</code> and the concept of a <code>patchset</code>.
+
+   <p>It is very helpful, but not strictly necessary if you have used or are
+at least familiar with other revision control systems such as <code>CVS</code>.
+
+<h3 class="section">1.2 Where's the Reference Manual?</h3>
+
+<p><code>arch</code> is largely a <em>self documenting</em> program.   The command:
+
+<pre class="example">             % tla help
+</pre>
+   <p class="noindent">will provide you with a categorized list of all available commands,
+and for a given command <code>foo</code>,
+
+<pre class="example">             % tla foo -H
+</pre>
+   <p class="noindent">will provide you with documentation for that command.
+
+<h3 class="section">1.3 Another Source of Help &ndash; the Mailing List</h3>
+
+<p>Arch is sufficiently different from older and competing systems that
+new users are often a bit disoriented for the first few days.  You may
+find it helpful to seek help on the <code>gnu-arch-users</code> mailing list
+which you can find via links from:
+
+<pre class="example">         http://www.gnu.org/software/gnu-arch
+</pre>
+   <h3 class="section">1.4 What is Revision Control?</h3>
+
+<p>A "revision control system" is a librarian and coordination tool for
+trees of files and the changes made to them.  For example, a typical
+software project uses revision control to keep track of how the
+project's source code evolves over time, to keep track of each change
+to that code (such as each bug fix or feature addition), to share
+those changes among all the programmers working on the project and
+help them remain in sync, and to combine changes made at different
+times and/or by different programmers into a single source tree.
+
+   <p>A "source management tool" is one that helps you to manage large
+source trees even if they have many more files that you can keep track
+of "by hand".  For example, a source management tool can <em>inventory</em>
+the source files in a tree, distinguish the source files from scratch
+files and and other files that maybe stored there, and inform you when
+source files are added and deleted.
+
+   <p>"Configuration Management" addresses the needs of projects which
+combine multiple, separately maintained source trees into a single
+tree.   A configuration management tool helps you to easily construct
+the combined project and to keep track of how development on the
+component parts is synchronized.
+
+<h3 class="section">1.5 Why Use arch?</h3>
+
+<p><code>arch</code> has a number of advantages compared to competing systems. 
+Among these are:
+
+   <p><strong>Works on Whole Trees</strong> <code>arch</code> keeps track of whole trees &ndash; not just
+individual files.  For example, if you change many files in a tree,
+<code>arch</code> can record all of those changes as a group rather than
+file-by-file; if you rename files or reorganize a tree, <code>arch</code> can
+record those tree arrangements along with your changes to file
+contents.
+
+   <p><strong>Changeset Oriented</strong> <code>arch</code> doesn't simply "snapshot" your project
+trees.  Instead, <code>arch</code> associates each revision with a particular
+<em>changeset</em>: a description of exactly what has changed.  <code>arch</code>
+provides changeset oriented commands to help you review changesets,
+merge trees by applying changesets, examine the history of a tree by
+asking what changesets have been applied to it, and so forth.
+
+   <p><strong>Fully Distributed</strong> <code>arch</code> doesn't rely on a <a name="index-central-repository-1"></a><dfn>central repository</dfn>. 
+For example, there is no need to give write access to a project's
+archive to all significant contributors, instead, each contributor can
+have their own archive for their work.  <code>arch</code> seamlessly operates
+across archive boundaries.
+
+   </body></html>
+

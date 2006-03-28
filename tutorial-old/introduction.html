@@ -1,0 +1,275 @@
+<html>
+<head>
+<title>Introducing arch</title>
+</head>
+<body>
+
+<a name="Introducing_arch"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Introducing arch</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="system-requirements.html#System_Requirements">System Requirements</a></br>
+
+
+</small>
+<br>
+
+
+
+
+
+
+<p><code>arch</code>
+ is a revision control, source code management, and
+configuration management tool.  
+</p><p>This manual is an <code>arch</code>
+ tutorial: its purpose is to help you get
+started using <code>arch</code>
+ for the first time, and then learn some of the
+more advanced features of arch.
+</p>
+<a name="Who_is_this_Manual_For?"></a>
+
+
+
+<h3 align=center>Who is this Manual For?</h3>
+
+
+
+
+
+
+
+
+
+
+<p>In order to use this manual, you should be familiar with the basic
+unix command line tools (such as <code>ls</code>
+, <code>mv</code>
+, and <code>find</code>
+).  
+</p><p>In addition, you should be familiar with the programs <code>diff</code>
+ and
+<code>patch</code>
+ and the concept of a <code>patchset</code>
+.
+</p><p>It is very helpful, but not strictly necessary if you have used or are
+at least familiar with other revision control systems such as <code>CVS</code>
+.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Where's_the_Reference_Manual?"></a>
+
+
+
+<h3 align=center>Where's the Reference Manual?</h3>
+
+
+
+
+
+
+
+
+
+
+<p><code>arch</code>
+ is largely a <em>self documenting</em> program.   The command:
+</p><pre>
+        % tla help
+
+</pre>
+<p>will provide you with a categorized list of all available commands,
+and for a given command <code>foo</code>
+,
+</p><pre>
+        % tla foo -H
+
+</pre>
+<p>will provide you with documentation for that command.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Another_Source_of_Help_--_the_Mailing_List"></a>
+
+
+
+<h3 align=center>Another Source of Help -- the Mailing List</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Arch is sufficiently different from older and competing systems that
+new users are often a bit disoriented for the first few days.  You may
+find it helpful to seek help on the <code>gnu-arch-users</code>
+ mailing list
+which you can find via links from:
+</p><pre>
+    http://www.gnu.org/software/gnu-arch
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="What_is_Revision_Control?"></a>
+
+
+
+<h3 align=center>What is Revision Control?</h3>
+
+
+
+
+
+
+
+
+
+
+<p>A &quot;revision control system&quot; is a librarian and coordination tool for
+trees of files and the changes made to them.  For example, a typical
+software project uses revision control to keep track of how the
+project's source code evolves over time, to keep track of each change
+to that code (such as each bug fix or feature addition), to share
+those changes among all the programmers working on the project and
+help them remain in sync, and to combine changes made at different
+times and/or by different programmers into a single source tree.
+</p><p>A &quot;source management tool&quot; is one that helps you to manage large
+source trees even if they have many more files that you can keep track
+of &quot;by hand&quot;.  For example, a source management tool can <em>inventory</em>
+the source files in a tree, distinguish the source files from scratch
+files and and other files that maybe stored there, and inform you when
+source files are added and deleted.
+</p><p>&quot;Configuration Management&quot; addresses the needs of projects which
+combine multiple, separately maintained source trees into a single
+tree.   A configuration management tool helps you to easily construct
+the combined project and to keep track of how development on the
+component parts is synchronized.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Why_Use_arch?"></a>
+
+
+
+<h3 align=center>Why Use arch?</h3>
+
+
+
+
+
+
+
+
+
+
+<p><code>arch</code>
+ has a number of advantages compared to competing systems.
+Among these are:
+</p><p><strong><u>Works on Whole Trees</u></strong> <code>arch</code>
+ keeps track of whole trees -- not just
+individual files.  For example, if you change many files in a tree,
+<code>arch</code>
+ can record all of those changes as a group rather than
+file-by-file; if you rename files or reorganize a tree, <code>arch</code>
+ can
+record those tree arrangements along with your changes to file
+contents.
+</p><p><strong><u>Changeset Oriented</u></strong> <code>arch</code>
+ doesn't simply &quot;snapshot&quot; your project
+trees.  Instead, <code>arch</code>
+ associates each revision with a particular
+<em>changeset</em>: a description of exactly what has changed.  <code>arch</code>
+
+provides changeset oriented commands to help you review changesets,
+merge trees by applying changesets, examine the history of a tree by
+asking what changesets have been applied to it, and so forth.
+</p><p><strong><u>Fully Distributed</u></strong> <code>arch</code>
+ doesn't rely on a <em>
+<a name="index-pt:0"></a>
+
+central repository
+</em>
+.
+For example, there is no need to give write access to a project's
+archive to all significant contributors, instead, each contributor can
+have their own archive for their work.  <code>arch</code>
+ seamlessly operates
+across archive boundaries.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

@@ -1,0 +1,66 @@
+<html lang="en">
+<head>
+<title>mkpatch - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Introducing-Changesets.html#Introducing-Changesets" title="Introducing Changesets">
+<link rel="next" href="dopatch.html#dopatch" title="dopatch">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="mkpatch"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="dopatch.html#dopatch">dopatch</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Introducing-Changesets.html#Introducing-Changesets">Introducing Changesets</a>
+<hr>
+</div>
+
+<h4 class="subsection">A.2.1 mkpatch</h4>
+
+<p><a name="index-mkpatch-98"></a>
+<a name="index-changeset-99"></a>
+
+   <p><code>mkpatch</code> computes a changeset describing the differences between two
+trees.  The basic command syntax is:
+
+<pre class="example">             % tla mkpatch ORIGINAL MODIFIED DESTINATION
+</pre>
+   <p class="noindent">which compares the trees <code>ORIGINAL</code> and <code>MODIFIED</code>.
+
+   <p><code>mkpatch</code> creates a new directory, <code>DESTINATION</code>, and stores the
+changeset there.
+
+   <p>When <code>mkpatch</code> compares trees, it uses inventory ids.  For example, it
+considers two directories or two files to be "the same directory (or
+file)" if they have the same id &ndash; regardless of where each is located
+in its respective tree.  (See <a href="Inventory-Ids-for-Source.html#Inventory-Ids-for-Source">Inventory Ids for Source</a>.)
+
+   <p>A changeset produced by <code>mkpatch</code> describes what files and directories
+have been added or removed, which have been renamed, which files have
+been changed (and how they have been changed), and what file
+permissions have changed (and how).  When regular text files are
+compared, <code>mkpatch</code> produces a context diff describing the
+differences.  <code>mkpatch</code> can compare binary files (saving complete
+copies of the old and new versions if they differ) and symbolic links
+(saving the old and new link targets, if they differ).
+
+   <p>A detailed description of the format of a changeset is provided in an
+appendix (see <a href="The-arch-Changeset-Format.html#The-arch-Changeset-Format">The arch Changeset Format</a>).
+
+   </body></html>
+

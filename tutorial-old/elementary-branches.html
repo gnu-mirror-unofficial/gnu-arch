@@ -1,0 +1,659 @@
+<html>
+<head>
+<title>Elementary Branches -- Maintaining Private Changes</title>
+</head>
+<body>
+
+<a name="Elementary_Branches_--_Maintaining_Private_Changes"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Elementary Branches -- Maintaining Private Changes</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="tree-history.html#Patch_Logs_and_Project_Tree_History">Patch Logs and Project Tree History</a></br>
+
+<b>prev: </b><a href="selected-files-commits.html#Selected_Files_Commit">Selected Files Commit</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p>In this chapter, we'll begin to explore the concept of <em>
+<a name="index-pt:0"></a>
+
+branching
+</em>
+,
+which you may be familiar with from other revision control systems.
+</p><p>If you are already familiar with the concept, you should be aware that
+branching in <code>arch</code>
+ almost certainly goes far beyond what you are
+accustomed to.
+</p><p>Regardless of whether or not you are familiar with the concept, fear
+not -- we'll be starting slow:
+</p>
+<a name="A_Branching_Scenario_--_The_Need_for_Private_Changes"></a>
+
+
+
+<h3 align=center>A Branching Scenario -- The Need for Private Changes</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Let's suppose for the moment that the <code>hello-world</code>
+ project is making
+its sources available as a public, read-only mirror (see
+<a href="shared-and-public-archives.html#Shared_and_Public_Archives">Shared and Public Archives</a>).
+</p><p>Early on, you (someone not involved in the <code>hello-world</code>
+ project)
+decides that you'll want to use their program, but that you'll need to
+make some local changes.
+</p><p>As a sort of toy example, let's suppose that you've decided that in
+your environment, saying <em>
+<a name="index-pt:1"></a>
+
+hello world
+</em>
+ is unacceptable -- you really
+require the more correctly punctuated <em>
+<a name="index-pt:2"></a>
+
+hello, world
+</em>
+.
+</p><p>Now, here's the problem:  sure, you can download their sources and
+make that change.  But meanwhile, the project is going to keep
+working.  They're going to keep making changes.   So, you'll be faced
+with a perpetual task of repeatedly downloading their latest sources
+and copying your changes to their latest version.
+</p><p><code>arch</code>
+ can help automate that task, and this chapter explains how.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Making_a_Branch_from_a_Remote_Project_in_a_Local_Archive"></a>
+
+
+
+<h3 align=center>Making a Branch from a Remote Project in a Local Archive</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:3"></a>
+
+</p><p>In the examples that follow, you'll be changing roles.  Instead of
+&quot;playing&quot; Alice or Bob, the programmers on the <code>hello-world</code>
+
+project, you'll be playing Candice: a third party.
+</p><p>Let's start by giving Candice her own archive to use, and making that
+the default archive:
+</p><pre>
+
+        % tla make-archive candice@candice.net--2003-candice \
+                             ~/{archives}/2003-candice
+
+        % tla my-default-archive candice@candice.net--2003-candice
+        default archive set (candice@candice.net--2003-candice)
+
+
+</pre>
+<p>(You can review what those commands do by reading <a href="new-archive.html#Creating_a_New_Archive">Creating a New Archive</a>.)
+</p><p>Candice needs to create a <code>hello-world</code>
+ project in her own archive.
+She can use:
+</p><pre>
+
+        % tla archive-setup  hello-world--candice--0.1
+
+
+</pre>
+<p>She doesn't <em>have</em> to use the same project name that Alice and Bob are
+using and, in fact, in this case she chose a different branch name.
+(To review those commands, see <a href="new-project.html#Starting_a_New_Project">Starting a New Project</a>.)
+</p><p>When Alice and Bob created their archive, they used <code>import</code>
+ to create
+the first revision.  Since we're creating a <em>branch</em>, we'll use a
+different command.
+</p><p>For the sake of example, let's suppose Candice is going to start from
+the <code>patch-1</code>
+ revision of Alice and Bob's archive:
+</p><pre>
+
+    % tla tag \
+        lord@emf.net--2003-example/hello-world--mainline--0.1--patch-1 \
+        hello-world--candice--0.1
+    [....]
+
+
+</pre>
+<p>There are a few things worth noting about that command.
+</p><p>First, note that we used a <strong>fully qualified revision name</strong> to refer to
+Alice and Bob's <code>patch-1</code>
+ revision.  That's because that revision is
+in some archive other than the current default archive.  (See
+<a href="shared-and-public-archives.html#Working_with_Several_Archives_at_Once">Working with Several Archives at Once</a>.)
+</p><p>Next, note that we specified the <code>patch-1</code>
+ revision explicitly.  If we
+had left of the <code>--patch-1</code>
+ suffix, then the <code>tag</code>
+ command would
+assume we meant the <em>latest</em> revision in Alice and Bob's archive
+(which happens to be <code>patch-3</code>
+).
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="What_tag_Just_Did"></a>
+
+
+
+<h3 align=center>What tag Just Did</h3>
+
+
+
+
+
+
+
+
+
+
+<p>After using <code>tag</code>
+, Candice now has a new revision in her archive:
+</p><pre>
+
+   % tla revisions --summary hello-world--candice--0.1
+   base-0
+       tag of lord@emf.net--2003-example/hello-world--mainline--0.1--patch-1
+
+
+
+</pre>
+<p>She can retrieve that revision in the usual way:
+</p><pre>
+
+   % tla get hello-world--candice--0.1 hw-candice
+   [...]
+
+   % ls hw-candice
+   hw.c         main.c          {arch}
+
+
+</pre>
+<p><strong><u>Nifty arch Feature:</u></strong> If you've followed along closely, you should
+have noticed that Candice created a branch in her archive from an arch
+revision stored in another archive entirely.  In our examples, both of
+these archives happen to be on the local file system but that isn't
+necessary: Candice could have formed her branch even if she was
+accessing Alice and Bob's archive over the network.
+</p><p><strong><u>Usage Caution:</u></strong>  Candice's job isn't quite done yet.   The next 
+section explains another step she'll <em>probably</em> want to take.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Caching_a_tag_Revision"></a>
+
+
+
+<h3 align=center>Caching a tag Revision</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:4"></a>
+
+</p><p>Candice used <code>tag</code>
+ to create a branch from Alice and Bob's archive.
+When she uses <code>get</code>
+ to check-out that revision, what happens?  Roughly
+speaking, <code>arch</code>
+ notices that the revision is a branch, then consults
+Alice and Bob's archive to really get the source.
+</p><p>The question then arises: what if Alice and Bob's archive &quot;goes
+away&quot;?  As things stand, if that happens, Candice will no longer be
+able to <code>get</code>
+ from her branch.
+</p><p>She can fix that though by caching in her archive all of the
+information needed to build the revision:
+</p><pre>
+
+   % tla cacherev hello-world--candice--0.1--base-0
+   [...]
+
+
+</pre>
+<p>and confirm that that worked with:
+</p><pre>
+
+   % tla cachedrevs hello-world--candice--0.1
+   hello-world--candice--0.1--base-0
+
+
+</pre>
+<p>Thereafter, <code>arch</code>
+ will no longer rely on Alice and Bob's archive to
+retrieve Candice's <code>base-0</code>
+ revision.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Exploring_the_New_Branch"></a>
+
+
+
+<h3 align=center>Exploring the New Branch</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Earlier, Candice created her branch and used <code>get</code>
+ to check it out.
+Let's examine that tree:
+</p><pre>
+
+        % cd ~/wd/hw-candice
+
+        % tla log-versions
+        candice@candice.net--2003-candice/hello-world--candice--0.1
+        lord@emf.net--2003-example/hello-world--mainline--0.1
+
+
+</pre>
+<p>Note that Candice's tree has patch logs both for Alice and Bob's
+versions, and for her own branch:
+</p><pre>
+
+    % tla logs --summary \
+            lord@emf.net--2003-example/hello-world--mainline--0.1
+    base-0
+        initial import
+    patch-1
+        Fix bugs in the &quot;hello world&quot; string
+
+
+    % tla logs --summary hello-world--candice--0.1
+    base-0
+        tag of \
+        lord@emf.net--2003-example/hello-world--mainline--0.1--patch-1
+
+
+
+</pre>
+<p>There are not any later changes on Candice's branch:
+</p><pre>
+        % tla missing hello-world--candice--0.1
+        [no output]
+
+</pre>
+<p>but recall that Alice and Bob are already up to <code>patch-3</code>
+:
+</p><pre>
+        % tla missing -A lord@emf.net--2003-example \
+                hello-world--mainline--0.1
+        patch-2
+        patch-3
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="Making_a_Local_Change"></a>
+
+
+
+<h3 align=center>Making a Local Change</h3>
+
+
+
+
+
+
+
+
+
+
+<p>After the initial <code>tag</code>
+, Candice can commit changes to her branch in
+the usual way.
+</p><p>Let's suppose that she has edited <code>hw.c</code>
+ so that it now reads (in
+part):
+</p><pre>
+
+        % cat hw.c
+        [...]
+        void
+        hello_world (void)
+        {
+          (void)printf (&quot;hello, world\n&quot;);
+        }
+        [...]
+
+
+</pre>
+<p>and that's she's prepared a log message:
+</p><pre>
+
+    % cat ++log.hello-world--candice--0.1--lord@emf.net--2003-candice
+    Summary: Punctuated the output correctly
+    Keywords: 
+
+
+    This program should say &quot;hello, world&quot; not &quot;hello world&quot;.
+
+
+</pre>
+<p>Now she can simply commit in the usual way, creating her own <code>patch-1</code>
+
+revision:
+</p><pre>
+
+   % tla commit
+   [....]
+
+   % tla revisions --summary hello-world--candice--0.1
+   base-0
+       tag of \
+       lord@emf.net--2003-example/hello-world--mainline--0.1--patch-1
+   patch-1
+       Punctuated the output correctly
+
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="Updating_from_a_Branched-from_Version"></a>
+
+
+
+<h3 align=center>Updating from a Branched-from Version</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:5"></a>
+
+<a name="index-pt:6"></a>
+
+</p><p>Meanwhile, Alice and Bob have gone on to create their revisions
+<code>patch-2</code>
+ and <code>patch-3</code>
+.   How can Candice add those changes to her
+branch?
+</p><p>Well, really, <code>arch</code>
+ provides lots of techniques.  Using commands
+we've already introduced, she could use either <code>update</code>
+ or <code>replay</code>
+.
+In this example, we'll demonstrate using <code>replay</code>
+.
+</p><pre>
+
+        % cd ~/wd/hw-candice
+
+        % tla replay -A lord@emf.net--2003-example \
+                hello-world--mainline--0.1
+        [...]
+
+
+</pre>
+<p>Note that we used a <code>-A</code>
+ argument to say which archive we are
+replaying changes from, and a version name to say which changes we
+want.  In this case, <code>replay</code>
+ applied the changesets for <code>patch-2</code>
+ and
+<code>patch-3</code>
+ to Candice's tree.
+</p><p>This use of <code>replay</code>
+ is a form of <em>
+<a name="index-pt:7"></a>
+
+merging
+</em>
+:  Candice's local changes
+have been merged with Alice and Bob's <code>mainline</code>
+ changes.
+</p><p><strong><u>Learning Note:</u></strong>  If you're following along with the examples, you
+should examine <code>hw.c</code>
+ and notice that Candice's change to the <code>printf</code>
+
+string and Alice's addition of a &quot;copywrong&quot; notice are both
+included.
+</p><p><strong><u>Learning Note:</u></strong> You should also check out a second copy of Candice's
+<code>patch-1</code>
+ revision and experiment with doing the same merge using
+<code>update</code>
+ instead of <code>replay</code>
+.  You might have to look at <code>tla update
+-help</code>
+ to figure out exactly what options and arguments to provide.
+</p><p>Note also that, so far, we've only made these changes to Candice's
+project tree -- they haven't been checked into Candice's archive.  To
+actually record the merge in her archive, she'll have to make a log
+message and commit in the usual way (see <a href="checking-in-changes.html#Checking-in_Changes">Checking-in Changes</a>).
+</p><p>There is, however, one more convenience to point out.  When Candice
+writes her log message, she'll presumably want to note that the merge
+took place and what it involves.  <code>arch</code>
+ includes a command whose
+output is ideal for inclusion in such a log message:
+</p><pre>
+
+  % cd ~/wd/hw-candice
+
+  % tla log-for-merge
+  Patches applied:
+
+    * lord@emf.net--2003-example/hello-world--mainline--0.1--patch-3
+       added copywrong statements
+
+    * lord@emf.net--2003-example/hello-world--mainline--0.1--patch-2
+       commented return from main
+
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="How_It_Works_--_tag_and_Elementary_Branches"></a>
+
+
+
+<h3 align=center>How It Works -- tag and Elementary Branches</h3>
+
+
+
+
+
+
+
+
+
+
+<p>What did <code>tag</code>
+ do?  Let's look at Candice's archive:
+</p><pre>
+
+        % cd ~/{archives}
+        % cd 2003-candice
+        % cd hello-world
+        % cd hello-world--candice
+        % cd hello-world--candice--0.1
+
+        % ls
+        +version-lock   base-0          patch-1
+        patch-2
+
+
+</pre>
+<p>Of particular interest is the <code>base-0</code>
+ revision -- the one created by
+<code>tag</code>
+:
+</p><pre>
+
+        % cd base-0
+
+        % ls
+        CONTINUATION
+        hello-world--candice--0.1--base-0.patches.tar.gz
+        hello-world--candice--0.1--base-0.tar.gz
+        log
+
+        % cat CONTINUATION
+        lord@emf.net--2003-example/hello-world--mainline--0.1--patch-1
+
+
+</pre>
+<p>The file <code>CONTINUATION</code>
+ identifies this revision as a <code>tag</code>
+ revision.
+Its contents tell us what revision we branched from.
+</p><p>The changeset for this revision (<code>....patches.tar.gz</code>
+) was also created
+by <code>tag</code>
+.  If you explore that changeset (recall <code>get-changeset</code>
+ and
+<code>show-changeset</code>
+) you'll see that all it does is add a log entry to the
+tree's patch log.
+</p><p>The source file (<code>...base-0.tar.gz</code>
+) was created by
+<code>archive-cache-revision</code>
+.   It contains a complete copy of Candice's
+<code>base-0</code>
+ revision.  Since that file is there, <code>get</code>
+ is not obligated
+to look at Alice and Bob's archive to construct this revision.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

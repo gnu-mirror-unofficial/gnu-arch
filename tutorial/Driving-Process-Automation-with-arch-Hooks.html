@@ -1,0 +1,179 @@
+<html lang="en">
+<head>
+<title>Driving Process Automation with arch Hooks - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Customizing-Arch.html#Customizing-Arch" title="Customizing Arch">
+<link rel="prev" href="Advanced-Revision-Library-Use.html#Advanced-Revision-Library-Use" title="Advanced Revision Library Use">
+<link rel="next" href="Speeding-up-arch-by-Caching-Revisions-in-Archives.html#Speeding-up-arch-by-Caching-Revisions-in-Archives" title="Speeding up arch by Caching Revisions in Archives">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Driving-Process-Automation-with-arch-Hooks"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Speeding-up-arch-by-Caching-Revisions-in-Archives.html#Speeding-up-arch-by-Caching-Revisions-in-Archives">Speeding up arch by Caching Revisions in Archives</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Advanced-Revision-Library-Use.html#Advanced-Revision-Library-Use">Advanced Revision Library Use</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Customizing-Arch.html#Customizing-Arch">Customizing Arch</a>
+<hr>
+</div>
+
+<h3 class="section">6.4 Driving Process Automation with arch Hooks</h3>
+
+<p>In some circumstances, it is very useful to trigger actions upon the
+detection of changes to an archive.  For example, you might want to
+send an email notification whenever new revisions are checked in.
+
+   <p>This process occurs through arch by use of hooks. Each time that arch
+performs a command that modifies an archive, arch will attempt to
+run ~/.arch-params/hook, which must be set as executable.
+
+   <p>Aguments given to the hook
+        $1 : action performed (e.g. <a name="index-commit-84"></a><dfn>commit</dfn>)
+
+   <p>Environment Variables
+
+<h4 class="subsection">6.4.1 Arguments Given to hook</h4>
+
+<p>Whenever arch performs a command that affects an archive, arch will run
+hook with the first argument set as the action performed. If I user runs
+a command (such as make-archive) then hook will be called multiple times
+with multiple arguments (such as make-archive, make-category, make branch
+and make-version)
+
+   <p>The arguments that may be seen are:
+
+<p class="noindent">import, commit, tag, make-archive, make-category, make-branch and
+make-version.
+
+<h4 class="subsection">6.4.2 Environment Variables Passed to hook</h4>
+
+<p>Tla also passes certain variables to the hook when appropriate. Variables
+passed by Tla are prefaced with ARCH_. Variables that may be passed include:
+
+   <p>Name            : ARCH_ARCHIVE
+Description     : The archive involved in the action
+Seen            : all actions
+Example : lord@emf.net&ndash;2003-example
+
+   <p>Name            : ARCH_CATEGORY
+Description     : Name of category created
+Seen            : make-category
+Example : hello-world
+
+   <p>Name            : ARCH_BRANCH
+Description     : Name of branch being created
+Seen            : make-branch
+Example : mainline
+
+   <p>Name            : ARCH_VERSION
+Description     : Name of version being created
+Seen            : make-version
+Example : <code>0</code>.1
+
+   <p>Name            : ARCH_REVISION
+Descriptoin     : Name of revision involved
+Seen            : import, tag, commit
+Example : patch-6
+
+   <p>Name            : ARCH_LOCATION
+Description     : Location of archive being created
+Seen            : make-archive
+Example : /usr/lord/<code>archives</code>/2003-example
+
+   <p>Name            : ARCH_TREE_ROOT
+Description     :
+Seen            : commit, import
+Example : /home/lord/wd
+
+   <p>Name            : ARCH_TAGGED_ARCHIVE
+Description     :
+Seen            : tag
+Example :
+
+   <p>Name            : ARCH_TAGGED_REVISION
+Description     :
+Seen            :
+Example :
+
+<h4 class="subsection">6.4.3 An Example of Using hook</h4>
+
+<pre class="example">          #!/bin/sh
+</pre>
+<pre class="example">          if [ "$1" == "commit" ]; then
+             tla push-mirror lord@emf.net--2003-example \
+                lord@emf.net--2003-example-MIRROR;
+             fi
+</pre>
+   <h4 class="subsection">6.4.4 A more complex Examples of Using hook</h4>
+
+<pre class="example">          #!/bin/sh
+</pre>
+<pre class="example">          case "$1" in
+             commit)
+                case "$ARCH_CATEGORY" in
+                   hello-world)
+                      case "$ARCH_BRANCH" in
+                        mainline)
+                             RELEASETYPE="stable"
+                        ;;
+                        devel)
+                           RELEASETYPE="unstable"
+                        ;;
+                        *)
+</pre>
+   <pre class="example">                      echo "The $RELEASETYPE version of Hello, World been upgraded. \
+                         New versions are available at ftp.hello.com" |\
+                         mailto hello-users@hello.com -s "Hello upgraded"
+                   ;;
+                   goodbye-world)
+                      case "$ARCH_BRANCH" in
+                        mainline)
+                             RELEASETYPE="stable"
+                        ;;
+                        devel)
+                           RELEASETYPE="unstable"
+                        ;;
+                           RELEASETYPE="[unknown]"
+                        *)
+                      esac;
+                      echo "The stable version of Goodbye, Cruel World been upgraded. \
+                         New versions are available at ftp.hello.com" |\
+                         mailto hello-users@hello.com -s "Hello upgraded"
+                   ;;
+                 esac
+             ;;
+          esac
+</pre>
+   <h4 class="subsection">6.4.5 Robustness Issues with hook</h4>
+
+<p>Unfortunately, some fundamental physical properties of the universe
+make it impossible for arch to guarantee that hook will be
+invoked only once for each new category, branch, version, or revision. 
+A (presumably rare) well timed interrupt or system failure can cause
+<code>notify</code> to invoke actions more than once for a given change to the
+archive.
+
+   <p>Consequently, actions should be designed to be robust against that
+eventuality.
+
+   <p>Additionally, if arch has been run concurrantly, then the hook may run
+concurrantly as well. This means that projects using hook should take
+care that hook is capable of running with simultaneous copies.
+
+   </body></html>
+

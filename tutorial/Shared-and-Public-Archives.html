@@ -1,0 +1,280 @@
+<html lang="en">
+<head>
+<title>Shared and Public Archives - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Collaborating-With-Other-People.html#Collaborating-With-Other-People" title="Collaborating With Other People">
+<link rel="prev" href="Introducing-replay-_002d_002d-An-Alternative-to-update.html#Introducing-replay-_002d_002d-An-Alternative-to-update" title="Introducing replay -- An Alternative to update">
+<link rel="next" href="Elementary-Branches-_002d_002d-Maintaining-Private-Changes.html#Elementary-Branches-_002d_002d-Maintaining-Private-Changes" title="Elementary Branches -- Maintaining Private Changes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Shared-and-Public-Archives"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Elementary-Branches-_002d_002d-Maintaining-Private-Changes.html#Elementary-Branches-_002d_002d-Maintaining-Private-Changes">Elementary Branches -- Maintaining Private Changes</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Introducing-replay-_002d_002d-An-Alternative-to-update.html#Introducing-replay-_002d_002d-An-Alternative-to-update">Introducing replay -- An Alternative to update</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Collaborating-With-Other-People.html#Collaborating-With-Other-People">Collaborating With Other People</a>
+<hr>
+</div>
+
+<h3 class="section">5.3 Shared and Public Archives</h3>
+
+<p>In the earlier chapters, you learned how to create your first archive,
+start a project, check in the initial sources and subsequent changes,
+and retrieve past revisions.
+
+   <p>In this chapter you'll learn how to make an archive available over a
+network and begin to learn how multiple programmers can share a single
+archive.
+
+<h4 class="subsection">5.3.1 Registering for Network Access to Archives</h4>
+
+<p>As you should recall, an archive has both a logical name, and a
+physical location:
+
+<pre class="example">             % tla archives
+             lord@emf.net--2003-example
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+               |     /usr/lord/archives/2003-example
+               |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+               |                     |
+               |              archive location
+               |
+             archive name
+</pre>
+   <p>(See <a href="Creating-a-New-Archive.html#Creating-a-New-Archive">Creating a New Archive</a>.)
+
+   <p>Some archives can be accessed over a network, currently via any
+of the protocols:
+
+<pre class="example">             FTP
+             SFTP
+             WebDAV
+             plain HTTP
+</pre>
+   <p>Later in this chapter, you'll learn how to create such archives.
+
+   <p>For now, you should know that to access such an archive, you register
+it's name and physical location, using a URL for the physical
+location.
+
+   <p>For example, to access an HTTP or WebDAV archive:
+
+<pre class="example">         % tla register-archive lord@emf.net--2003b \
+                 http://regexps.srparish.net/archives/lord@emf.net--2003b
+</pre>
+   <p class="noindent">or an FTP archive:
+
+<pre class="example">         % tla register-archive lord@regexps.com--2002 \
+                 ftp://ftp.regexps.com/archives/lord@regexps.com--2002
+</pre>
+   <p>You can see that these commands have taken effect:
+
+<pre class="example">         % tla archives
+         lord@emf.net--2003b
+                 http://regexps.srparish.net/archives/lord@emf.net--2003b
+         lord@emf.net--2003-example
+                 /usr/lord/examples/archives/2003-example
+         lord@regexps.com--2002
+                 ftp://ftp.regexps.com/archives/lord@regexps.com--2002
+</pre>
+   <h4 class="subsection">5.3.2 Working with Several Archives at Once</h4>
+
+<p>After you've registered additional archives, how do you access them?
+
+   <p>One trivial way is to make the archive you are interested in your
+default:
+
+<pre class="example">
+             % tla my-default-archive lord@emf.net--2003
+
+             % tla categories
+             [...categories in the remote archive...]
+
+</pre>
+   <p>It can, of course, be inconvenient to keep changing your default
+archive.  So for now, let's restore it to the archive we've been
+using in the examples:
+
+<pre class="example">             % tla my-default-archive lord@emf.net--2003-example
+</pre>
+   <p>There are two other ways to access a remote archive:
+
+<h5 class="subsubsection">5.3.2.1 Selecting an Archive with -A</h5>
+
+<p>Every command that operates on archives accepts a <code>-A</code> option which
+can be used to override the default:
+
+<pre class="example">             % tla my-default-archive
+             lord@emf.net--2003-example
+
+             % tla categories -A lord@emf.net--2003
+             [... categories in lord@emf.net--2003 ...]
+
+</pre>
+   <p><strong>Usage Note:</strong> A <code>-A</code> argument takes precedence over your default
+archive but is overridden by fully qualified project names (see
+below).
+
+<h5 class="subsubsection">5.3.2.2 Fully Qualified Project Names</h5>
+
+<p>Commands that accept project names allow you to use <a name="index-fully-qualified-47"></a>project names
+<dfn>fully qualified
+project names</dfn>.   A fully qualified name is formed by prefixing an
+archive name, followed by a slash, to the project name:
+
+<pre class="example">        category name:
+        tla                     =&gt; lord@emf.net--2003/tla
+
+        branch name:
+        tla--devo               =&gt; lord@emf.net--2003/arch--tla
+
+        version name:
+        tla--devo--1.0          =&gt; lord@emf.net--2003/tla--devo--1.0
+
+        revision name:
+        tla--devo--1.0--patch-1 =&gt; lord@emf.net--2003/tla--devo--1.0--patch-1
+
+</pre>
+   <p>As in this example:
+
+<pre class="example">             % tla my-default-archive
+             lord@emf.net--2003-example
+
+             % tla branches lord@emf.net--2003/hello-world
+             [... branches of hello-world in lord@emf.net--2003 ...]
+
+</pre>
+   <p><strong>Usage Note:</strong> A fully qualified name takes precedence over both <code>-A</code>
+arguments and your default archive.
+
+<h4 class="subsection">5.3.3 Read-only Archives</h4>
+
+<p>Operating system and server access controls can be used to limit some
+or all users to <em>read-only</em> access.  For example, FTP is usually
+configured in such a way that anonymous users can read, but not modify
+the archive.
+
+<h4 class="subsection">5.3.4 Creating Local Mirrors, Remote Mirrors, and Remote Archives</h4>
+
+<p>A <a name="index-mirror-48"></a><dfn>mirror</dfn> is an archive whose contents are copied from another
+archive.   You can not commit to a mirror in the ordinary way, you can
+only update it's copy of it's source.
+
+   <p>There are two primary uses for mirror archives:  one is to make a
+local copy of a remote mirror (so that it's contents can be accessed
+without going over a network);   the other is to make a remote copy of
+a local archive (so that others can access that copy).
+
+<h5 class="subsubsection">5.3.4.1 Mirroring a Remote Archive Locally</h5>
+
+<p>Let's suppose that, in order to have the fastest possible access to
+it, or to be able to use it while disconnected, you want to mirror a
+remote archive locally rather than accessing it over network.
+
+   <p>Supposing that you wanted to do this with <code>lord@emf.net--2003b</code>, there
+are three steps (suppose $remote_location is something like
+http://my.site.com//archives/lord@emf.net&ndash;2003b).
+
+   <p>First, register the remote archive under a pseudonum, formed by
+appending <code>-SOURCE</code> to it's name:
+
+<pre class="example">             % tla register-archive lord@emf.net--2003b-SOURCE $remote_location
+</pre>
+   <p>Second, create your local mirror:
+
+<pre class="example">             % tla make-archive --mirror-from lord@emf.net--2003b-SOURCE $local_location
+</pre>
+   <p>That command will, as a side effect, register <code>lord@emf.net--2003b</code> as
+the name of your local mirror.
+
+   <p>Finally, copy data from the remote archive:
+
+<pre class="example">             % tla archive-mirror lord@emf.net--2003b
+</pre>
+   <p>Whenever the remote archive has been added to, you can incrementally
+update your mirror by repeating the <code>tla archive-mirror</code> step.
+
+   <p>If you don't want to mirror the entire archive, you can optionally
+limit the mirror to specific categories, branches, or versions. See
+tla archive-mirror -H for more.
+
+<h5 class="subsubsection">5.3.4.2 Mirroring a Local Archive Remotely</h5>
+
+<p>Let's suppose that you have a local archive <code>mine@somewhere.com</code>, and
+you'd like to "publish" a mirror of that archive on the Internet
+so that other people can read from it.
+
+   <p>Assuming that you already have <code>mine@somewhere.com</code> registered, you
+can create the remote mirror with:
+
+<pre class="example">             % tla make-archive --mirror mine@somewhere.com $remote_location
+</pre>
+   <p>Arch will write directly to $remote_location, so it must be a writeable
+transport such as sftp, and not something such as standard http.
+
+   <p>You can initialize or incrementally update the contents of the remote
+mirror with:
+
+<pre class="example">             % tla archive-mirror mine@somewhere.com
+</pre>
+   <p>One common situation for many people is that they are able to
+install static files as part of a web site, but they can't provide
+WebDAV access to that web site.   Even under those conditions you can
+still publish an arch archive, though there are two subtleties.
+
+   <p>First, when running make-archive, you need to provide an extra flag:
+
+<pre class="example">             % tla make-archive --listing --mirror mine@somewhere.com \
+                             $remote_location
+</pre>
+   <p>The <code>--listing</code> flag causes arch to keep <code>.listing</code> files up-to-date
+in the mirror, and that, in turn, allows people to read from the
+archive using arch over vanilla HTTP (sans WebDAV support).
+
+   <p>Second, it _is_ possible for the <code>.listing</code> files to fall out of date
+(for example, if you kill an <code>archive-mirror</code> command at just the
+right time_.   If you know or suspect that has occurred, you can repair
+the archive in question by running archive-fixup as in this example:
+
+<pre class="example">             % tla archive-fixup mine@somewhere.com-MIRROR
+</pre>
+   <h5 class="subsubsection">5.3.4.3 Making a Remote Repository</h5>
+
+<p>Although mirroring is a common use of remote repositories, it is
+possible to create remote repositories which are not mirrors, and then
+to commit to those directly.
+
+   <p>One can create a remote repository with a command such as:
+
+<pre class="example">             % tla make-archive $archive_name $remote_location
+</pre>
+   <p class="noindent">or, to create a remote repository with .listing files:
+
+<pre class="example">             % tla make-archive --listing $archive_name $remote_location
+</pre>
+   <h4 class="subsection">5.3.5 Mixing Access Modes</h4>
+
+<p>There is nothing to prevent you from making a single archive available
+via multiple access methods.   For example, you can register an FTP
+accessible archive using a local-filesystem location on the machine
+that contains the FTP directory, but ask other users to register it
+with an <code>ftp:</code> URL.
+
+   </body></html>
+

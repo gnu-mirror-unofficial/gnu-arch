@@ -1,0 +1,534 @@
+<html>
+<head>
+<title>Shared and Public Archives</title>
+</head>
+<body>
+
+<a name="Shared_and_Public_Archives"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Shared and Public Archives</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="update-commit.html#The_update/commit_Style_of_Cooperation">The update/commit Style of Cooperation</a></br>
+
+<b>prev: </b><a href="retrieving-earlier-revisions.html#Retrieving_Earlier_Revisions">Retrieving Earlier Revisions</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p>In the earlier chapters, you learned how to create your first archive,
+start a project, check in the initial sources and subsequent changes,
+and retrieve past revisions.
+</p><p>In this chapter you'll learn how to make an archive available over a
+network and begin to learn how multiple programmers can share a single
+archive.
+</p>
+<a name="Registering_for_Network_Access_to_Archives"></a>
+
+
+
+<h3 align=center>Registering for Network Access to Archives</h3>
+
+
+
+
+
+
+
+
+
+
+<p>As you should recall, an archive has both a logical name, and a
+physical location:
+</p><pre>
+        % tla archives
+        lord@emf.net--2003-example
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+          |     /usr/lord/{archives}/2003-example
+          |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          |                     |
+          |              archive location        
+          |
+        archive name
+
+</pre>
+<p>(See <a href="new-archive.html#Creating_a_New_Archive">Creating a New Archive</a>.)
+</p><p>Some archives can be accessed over a network, currently via any
+of the protocols:
+</p><pre>
+        FTP
+        SFTP
+        WebDAV
+        plain HTTP
+
+</pre>
+<p>Later in this chapter, you'll learn how to create such archives.
+</p><p>For now, you should know that to access such an archive, you register
+it's name and physical location, using a URL for the physical
+location.
+</p><p>For example, to access an HTTP or WebDAV archive:
+</p><pre>
+    % tla register-archive lord@emf.net--2003b \
+            http://regexps.srparish.net/{archives}/lord@emf.net--2003b
+
+</pre>
+<p>or an FTP archive:
+</p><pre>
+    % tla register-archive lord@regexps.com--2002 \
+            ftp://ftp.regexps.com/{archives}/lord@regexps.com--2002
+
+</pre>
+<p>You can see that these commands have taken effect:
+</p><pre>
+    % tla archives
+    lord@emf.net--2003b
+            http://regexps.srparish.net/{archives}/lord@emf.net--2003b
+    lord@emf.net--2003-example
+            /usr/lord/examples/{archives}/2003-example
+    lord@regexps.com--2002
+            ftp://ftp.regexps.com/{archives}/lord@regexps.com--2002
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="Working_with_Several_Archives_at_Once"></a>
+
+
+
+<h3 align=center>Working with Several Archives at Once</h3>
+
+
+
+
+
+
+
+
+
+
+<p>After you've registered additional archives, how do you access them?
+</p><p>One trivial way is to make the archive you are interested in your
+default:
+</p><pre>
+
+        % tla my-default-archive lord@emf.net--2003
+
+        % tla categories
+        [...categories in the remote archive...]
+
+
+</pre>
+<p>It can, of course, be inconvenient to keep changing your default
+archive.  So for now, let's restore it to the archive we've been
+using in the examples:
+</p><pre>
+        % tla my-default-archive lord@emf.net--2003-example
+
+</pre>
+<p>There are two other ways to access a remote archive:
+</p>
+<a name="Selecting_an_Archive_with_-A"></a>
+
+
+
+<h4 align=center>Selecting an Archive with -A</h4>
+
+
+
+
+
+
+
+
+
+
+<p>Every command that operates on archives accepts a <code>-A</code>
+ option which
+can be used to override the default:
+</p><pre>
+        % tla my-default-archive
+        lord@emf.net--2003-example
+
+        % tla categories -A lord@emf.net--2003
+        [... categories in lord@emf.net--2003 ...]
+
+z/*end-insert
+
+\Usage Note:/ A `-A' argument takes precedence over your default
+archive but is overridden by fully qualified project names (see
+below).
+
+
+ * 
+ * 
+ */
+/************************************************************************
+ *(h2 &quot;Fully Qualified Project Names&quot;)
+ * 
+
+Commands that accept project names allow you to use &quot;fully qualified
+project names&quot;.   A fully qualified name is formed by prefixing an
+archive name, followed by a slash, to the project name:
+
+
+insert*/
+   category name:
+   tla                     => lord@emf.net--2003/tla
+
+   branch name:
+   tla--devo               => lord@emf.net--2003/arch--tla
+
+   version name:
+   tla--devo--1.0          => lord@emf.net--2003/tla--devo--1.0
+
+   revision name:
+   tla--devo--1.0--patch-1 => lord@emf.net--2003/tla--devo--1.0--patch-1
+
+
+</pre>
+<p>As in this example:
+</p><pre>
+        % tla my-default-archive
+        lord@emf.net--2003-example
+
+        % tla branches lord@emf.net--2003/hello-world
+        [... branches of hello-world in lord@emf.net--2003 ...]
+
+
+</pre>
+<p><strong><u>Usage Note:</u></strong> A fully qualified name takes precedence over both <code>-A</code>
+
+arguments and your default archive.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="Read-only_Archives"></a>
+
+
+
+<h3 align=center>Read-only Archives</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Operating system and server access controls can be used to limit some
+or all users to <em>read-only</em> access.  For example, FTP is usually
+configured in such a way that anonymous users can read, but not modify
+the archive.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Creating_Local_Mirrors,_Remote_Mirrors,_and_Remote_Archives"></a>
+
+
+
+<h3 align=center>Creating Local Mirrors, Remote Mirrors, and Remote Archives</h3>
+
+
+
+
+
+
+
+
+
+
+<p>A <em>
+<a name="index-pt:0"></a>
+
+mirror
+</em>
+ is an archive whose contents are copied from another
+archive.   You can not commit to a mirror in the ordinary way, you can
+only update it's copy of it's source.
+</p><p>There are two primary uses for mirror archives:  one is to make a
+local copy of a remote mirror (so that it's contents can be accessed
+without going over a network);   the other is to make a remote copy of
+a local archive (so that others can access that copy).
+</p>
+<a name="Mirroring_a_Remote_Archive_Locally"></a>
+
+
+
+<h4 align=center>Mirroring a Remote Archive Locally</h4>
+
+
+
+
+
+
+
+
+
+
+<p>Let's suppose that, in order to have the fastest possible access to
+it, or to be able to use it while disconnected, you want to mirror a
+remote archive locally rather than accessing it over network.
+</p><p>Supposing that you wanted to do this with <code>lord@emf.net--2003b</code>
+, there
+are three steps (suppose $remote_location is something like 
+http://my.site.com//archives/lord@emf.net--2003b).
+</p><p>First, register the remote archive under a pseudonum, formed by
+appending <code>-SOURCE</code>
+ to it's name:
+</p><pre>
+        % tla register-archive lord@emf.net--2003b-SOURCE $remote_location
+
+</pre>
+<p>Second, create your local mirror:
+</p><pre>
+        % tla make-archive --mirror-from lord@emf.net--2003b-SOURCE $local_location
+
+</pre>
+<p>That command will, as a side effect, register <code>lord@emf.net--2003b</code>
+ as
+the name of your local mirror.
+</p><p>Finally, copy data from the remote archive:
+</p><pre>
+        % tla archive-mirror lord@emf.net--2003b
+
+</pre>
+<p>Whenever the remote archive has been added to, you can incrementally
+update your mirror by repeating the <code>tla archive-mirror</code>
+ step.
+</p><p>If you don't want to mirror the entire archive, you can optionally
+limit the mirror to specific categories, branches, or versions. See
+tla archive-mirror -H for more.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Mirroring_a_Local_Archive_Remotely"></a>
+
+
+
+<h4 align=center>Mirroring a Local Archive Remotely</h4>
+
+
+
+
+
+
+
+
+
+
+<p>Let's suppose that you have a local archive <code>mine@somewhere.com</code>
+, and
+you'd like to &quot;publish&quot; a mirror of that archive on the Internet
+so that other people can read from it.
+</p><p>Assuming that you already have <code>mine@somewhere.com</code>
+ registered, you
+can create the remote mirror with:
+</p><pre>
+        % tla make-archive --mirror mine@somewhere.com $remote_location
+
+</pre>
+<p>Arch will write directly to $remote_location, so it must be a writeable
+transport such as sftp, and not something such as standard http.
+</p><p>You can initialize or incrementally update the contents of the remote
+mirror with:
+</p><pre>
+        % tla archive-mirror mine@somewhere.com
+
+</pre>
+<p>One common situation for many people is that they are able to 
+install static files as part of a web site, but they can't provide
+WebDAV access to that web site.   Even under those conditions you can
+still publish an arch archive, though there are two subtleties.
+</p><p>First, when running make-archive, you need to provide an extra flag:
+</p><pre>
+        % tla make-archive --listing --mirror mine@somewhere.com \
+                        $remote_location
+
+</pre>
+<p>The <code>--listing</code>
+ flag causes arch to keep <code>.listing</code>
+ files up-to-date
+in the mirror, and that, in turn, allows people to read from the
+archive using arch over vanilla HTTP (sans WebDAV support).
+</p><p>Second, it _is_ possible for the <code>.listing</code>
+ files to fall out of date
+(for example, if you kill an <code>archive-mirror</code>
+ command at just the
+right time_.   If you know or suspect that has occurred, you can repair
+the archive in question by running archive-fixup as in this example:
+</p><pre>
+        % tla archive-fixup mine@somewhere.com-MIRROR
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="Making_a_Remote_Repository"></a>
+
+
+
+<h4 align=center>Making a Remote Repository</h4>
+
+
+
+
+
+
+
+
+
+
+<p>Although mirroring is a common use of remote repositories, it is
+possible to create remote repositories which are not mirrors, and then
+to commit to those directly.   
+</p><p>One can create a remote repository with a command such as:
+</p><pre>
+        % tla make-archive $archive_name $remote_location
+
+</pre>
+<p>or, to create a remote repository with .listing files:
+</p><pre>
+        % tla make-archive --listing $archive_name $remote_location
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="Mixing_Access_Modes"></a>
+
+
+
+<h3 align=center>Mixing Access Modes</h3>
+
+
+
+
+
+
+
+
+
+
+<p>There is nothing to prevent you from making a single archive available
+via multiple access methods.   For example, you can register an FTP
+accessible archive using a local-filesystem location on the machine
+that contains the FTP directory, but ask other users to register it
+with an <code>ftp:</code>
+ URL.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

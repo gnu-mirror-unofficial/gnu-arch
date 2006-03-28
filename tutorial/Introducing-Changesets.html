@@ -1,0 +1,63 @@
+<html lang="en">
+<head>
+<title>Introducing Changesets - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Advanced-Topics.html#Advanced-Topics" title="Advanced Topics">
+<link rel="prev" href="Patch-Logs-and-Project-Tree-History.html#Patch-Logs-and-Project-Tree-History" title="Patch Logs and Project Tree History">
+<link rel="next" href="Exploring-Changesets.html#Exploring-Changesets" title="Exploring Changesets">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Introducing-Changesets"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Exploring-Changesets.html#Exploring-Changesets">Exploring Changesets</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Patch-Logs-and-Project-Tree-History.html#Patch-Logs-and-Project-Tree-History">Patch Logs and Project Tree History</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Advanced-Topics.html#Advanced-Topics">Advanced Topics</a>
+<hr>
+</div>
+
+<h3 class="section">A.2 Introducing Changesets</h3>
+
+<p><a name="index-applying-a-patch-95"></a>
+
+   <p>It is often extremely useful to compare two project trees (usually for
+the same project) and figure out exactly what has changed between
+them.  A record of such changes is called a <a name="index-changeset-96"></a><dfn>changeset</dfn> or a <a name="index-delta-97"></a><dfn>delta</dfn>.
+
+   <p>Changesets are a very central concept to <code>arch</code> &ndash; much of <code>arch</code> is
+defined in terms of operations performed with changesets.
+
+   <p>If you have a changeset between an "old tree" and a "new tree",
+you can "apply the changeset" to the old tree to get the new tree &ndash;
+in other words, you can automatically make the editing changes
+described by a changeset.  If you have some third tree, you can apply
+the patch to get an approximation of making the same changes to that
+third tree.
+
+   <p><code>arch</code> includes sophisticated tools for creating and applying
+changesets.
+
+<ul class="menu">
+<li><a accesskey="1" href="mkpatch.html#mkpatch">mkpatch</a>
+<li><a accesskey="2" href="dopatch.html#dopatch">dopatch</a>
+<li><a accesskey="3" href="Inexact-Patching-_002d_002d-How-Conflicts-are-Handled.html#Inexact-Patching-_002d_002d-How-Conflicts-are-Handled">Inexact Patching -- How Conflicts are Handled</a>
+</ul>
+
+   </body></html>
+

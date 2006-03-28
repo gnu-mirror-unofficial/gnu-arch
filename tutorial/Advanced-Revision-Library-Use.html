@@ -1,0 +1,125 @@
+<html lang="en">
+<head>
+<title>Advanced Revision Library Use - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Customizing-Arch.html#Customizing-Arch" title="Customizing Arch">
+<link rel="prev" href="Revision-Library-Basics.html#Revision-Library-Basics" title="Revision Library Basics">
+<link rel="next" href="Driving-Process-Automation-with-arch-Hooks.html#Driving-Process-Automation-with-arch-Hooks" title="Driving Process Automation with arch Hooks">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Advanced-Revision-Library-Use"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Driving-Process-Automation-with-arch-Hooks.html#Driving-Process-Automation-with-arch-Hooks">Driving Process Automation with arch Hooks</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Revision-Library-Basics.html#Revision-Library-Basics">Revision Library Basics</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Customizing-Arch.html#Customizing-Arch">Customizing Arch</a>
+<hr>
+</div>
+
+<h3 class="section">6.3 Advanced Revision Library Use</h3>
+
+<p>By default, when you <code>get</code> a revision from an archive, arch stores a
+"pristine copy" of that revision under the <code>{arch}</code> directory.
+
+   <p>Also by default, when <code>get</code> a revison, arch builds the revision by
+searching for the <code>import</code> ancestor or the nearest archive-cached
+ancestor &ndash; then applying later patches to construct the revision you
+want.
+
+   <p><code>get</code> and similar operations can be made both faster and more space
+efficient by using revision libraries.   For example, if <code>get</code> finds
+the revision you asked for in a library, it will copy it directly from
+there (rather than building it by patching) and skip building a
+pristine copy under <code>{arch}</code>.
+
+   <p>That's all well and good &ndash; but it can be awkward to have to remember
+to <code>library-add</code> revisions to your library.   This section will show
+how you can automate the process.
+
+<h4 class="subsection">6.3.1 Greedy Revision Libraries</h4>
+
+<p>A <a name="index-greedy-revision-library-83"></a><dfn>greedy revision library</dfn> has the property that whenever arch looks
+to see if the library contains a particular revision, if the library
+_doesn't_ contain that revision, arch will add it automatically.
+
+   <p>You can make a particular revision library directory greedy with the
+command:
+
+<pre class="example">             % tla library-config --greedy DIR
+</pre>
+   <h4 class="subsection">6.3.2 Sparse Revision Libraries</h4>
+
+<p>When arch automatically adds a revision to a greedy library, normally
+it does it in the default manner of <code>library-add</code>: it adds previous
+revisions in the same version as well.
+
+   <p>If you were adding a revision to a library by-hand you could avoid
+that behavior with the <code>--sparse</code> option to <code>library-add</code>.   To obtain
+that behavior for automatically added revisions, use:
+
+<pre class="example">             % tla library-config --sparse DIR
+</pre>
+   <p class="noindent">which means that if a revision is automatically added to the library
+located at DIR, it is added as if the <code>--sparse</code> option to
+<code>library-add</code> were being used.
+
+<h4 class="subsection">6.3.3 Hard Linked Project Trees</h4>
+
+<p><strong>Warning:</strong> To save yourself some confusion, do not use the following
+feature unless you understand (a) what a hard-link is and (b) what it
+means for an editor to "break hard links when writing a file".   If
+you understand those terms, and know that the editor you use does in
+fact break hard links, then feel free to use this feature.
+
+   <p>You can very rapidly <code>get</code> a revision from a revision library not by
+copying it, but instead by making hard-links to it:
+
+<pre class="example">             % tla get --link REVISION
+</pre>
+   <p>The <code>build-config</code> command has a similar option:
+
+<pre class="example">             % tla build-config --link REVISION
+</pre>
+   <p>This can save considerable disk space and greatly speed up the <code>get</code>
+operation.
+
+   <p>(There is, of course, a small chance that when you use a hard-linked
+tree something will go wrong and modify the files in the revision
+library.  Arch will notice that if it happens and give you an error
+message advising you to delete and reconstruct the problematic
+revision in the library.)
+
+<h4 class="subsection">6.3.4 Putting it All Together</h4>
+
+<p>To sum up, a very handy and efficient set up involves:
+
+   <p><strong>1)</strong> Create one or more revision library directories.
+
+   <p><strong>2)</strong> Make at least some of those libraries greedy and possibly sparse.
+
+   <p><strong>3)</strong> Use the <code>--link</code> option to <code>get</code> and <code>build-config</code>.
+
+   <p>When you work this way, and arch needs to automatically add a revision
+to a library for you, it will search for a library on the appropriate
+device (for hard-links purposes).   Among those it will search first
+for a library that already contains the same version as the revision
+you want and, failing that, for a greedy library.
+
+   </body></html>
+

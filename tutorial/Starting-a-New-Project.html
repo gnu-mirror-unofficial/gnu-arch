@@ -1,0 +1,205 @@
+<html lang="en">
+<head>
+<title>Starting a New Project - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Getting-Started.html#Getting-Started" title="Getting Started">
+<link rel="prev" href="Creating-a-New-Archive.html#Creating-a-New-Archive" title="Creating a New Archive">
+<link rel="next" href="Starting-a-New-Source-Tree.html#Starting-a-New-Source-Tree" title="Starting a New Source Tree">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Starting-a-New-Project"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Starting-a-New-Source-Tree.html#Starting-a-New-Source-Tree">Starting a New Source Tree</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Creating-a-New-Archive.html#Creating-a-New-Archive">Creating a New Archive</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Getting-Started.html#Getting-Started">Getting Started</a>
+<hr>
+</div>
+
+<h3 class="section">3.4 Starting a New Project</h3>
+
+<p><a name="index-archive_002dsetup-7"></a>
+<a name="index-make_002dcategory-8"></a>
+<a name="index-make_002dbranch-9"></a>
+<a name="index-make_002dversion-10"></a>
+<a name="index-categories-11"></a>
+<a name="index-branches-12"></a>
+<a name="index-versions-13"></a>
+
+   <p>This and later chapters will show you how to set up and manage a
+simple project with <code>arch</code> through the specific example of a <a name="index-hello-14"></a>world
+<dfn>hello
+world</dfn> program.
+
+<h4 class="subsection">3.4.1 Choose a Project Category</h4>
+
+<p>As a first step, you must choose a general category to serve as a name
+for the project.   In the examples, we'll use the name:
+
+<pre class="example">             hello-world
+</pre>
+   <h4 class="subsection">3.4.2 Choose a Project Branch</h4>
+
+<p><code>arch</code> encourages you to divide up the work on a project into
+separate <a name="index-branches-15"></a><dfn>branches</dfn>.
+
+   <p>Roughly speaking, branches are a mechanism for splitting the work on a
+project into two or more, largely independent efforts.  Let's suppose,
+for example, that the <code>hello-world</code> project has two needs:
+
+   <p>1) A need to make regular releases of good ol' fashioned <code>hello-world</code>,
+fixing simple bugs, porting the program, and adding tiny features.
+
+   <p>2) A need to begin work on a graphical user interface for
+<code>hello-world,</code> which is expected to take about a year to complete.
+
+   <p>We'd like those two efforts to proceed in parallel, but not get in
+each other's way.   For example, we don't want GUI code to appear in
+the regular releases until it is working fairly well.
+
+   <p>In such a case, we'll use branches: one for regular releases (the
+<em>mainline</em> branch) and another for GUI features (the <em>gui</em> branch).
+
+   <p>There are many other uses for branches, some of which will be
+described later in the manual.   For now, we just need one branch: a
+branch for the official latest sources of <code>hello-world</code>, which we'll
+call:
+
+<pre class="example">             hello-world--mainline
+             ^^^^^^^^^^^  ^^^^^^^^
+                |            |
+                |       branch name
+           category name
+</pre>
+   <p>Notice that the category and branch names are separated by two dashes. 
+In general, category and branch names must: consist only of letters,
+numbers, and dashes; must begin with a letter; must not themselves
+contain two dashes; and must not end with a dash.
+
+<h4 class="subsection">3.4.3 Choose a Version Number</h4>
+
+<p>Finally, you must choose a version number for the version of
+<code>hello-world</code> that you'll be working on, and create that version
+in the archive.
+
+   <p>Version numbers in <code>arch</code> are <em>not</em> the name of a particular
+"snapshot" or release of your project &ndash; though they are related to
+that concept.   Instead, version numbers are the name of a
+<a name="index-development-line-16"></a><dfn>development line</dfn>: a sequence of changes that you make while creating
+a particular release.
+
+   <p>In this case, we'll use the name:
+
+<pre class="example">             hello-world--mainline--0.1
+                                    ^^^
+                                     |
+                               version number
+</pre>
+   <p>Notice that version numbers are always positive integers, separated by
+periods.
+
+<h4 class="subsection">3.4.4 Preparing the Archive</h4>
+
+<p>Having chosen a name, it's time to prepare the archive for use of that
+name:
+
+<pre class="example">             % tla archive-setup hello-world--mainline--0.1
+</pre>
+   <p>After that command, we can query the archive to see what we've done:
+
+<pre class="example">             % tla categories
+             hello-world
+</pre>
+   <pre class="example">             % tla branches hello-world
+             hello-world--mainline
+</pre>
+   <pre class="example">             % tla versions hello-world--mainline
+             hello-world--mainline--0.1
+</pre>
+   <h4 class="subsection">3.4.5 Why is it Like This</h4>
+
+<p>People new to <code>arch</code> are sometimes startled at the rigidity of its
+archive namespace.   Two most common question is:
+
+   <p><strong>Why have categories, branches and versions?  Why can't I just name my
+projects with arbitrary string?</strong> These questions are best answered by
+recalling that a revision control system is a <em>librarian</em>.  Part of
+its job is to help people navigate and search through very large
+collections of projects and source code.  In order to make such
+searching practical, <code>arch</code> defines a <em>cataloging system</em>: categories,
+branches, and versions.   (See <strong>What is Revision Control?</strong> in <a href="Introducing-arch.html#Introducing-arch">Introducing arch</a>.)
+
+   <p>This is somewhat analogous to the cataloging systems used in libraries
+for books, such as the Dewey decimal classification system: it's a
+hierarchical categorization of everything in the library.  It's a
+uniform way to describe where a given item is stored, and it aids
+searching by suggesting the relationships between various items.  For
+example, a branch is likely most closely related to other branches in
+the same category.  A version with a higher major version number most
+likely contains later work than one in the same branch with a lower
+major version number.
+
+   <p>The analogy isn't perfect:  book cataloging systems such as Dewey are
+based on an official list of categories and subcategories, while
+<code>arch</code>, on the other hand, let's you choose your own category names. 
+Still, like Dewey, <code>arch</code> names are based on the idea of grouping
+related items together to make them easier to search and navigate. 
+And just as Dewey is intended to capture the most common patterns of
+how people search through books, <code>arch</code> is intended to capture the
+most common patterns of how people search through source archives.
+
+<h4 class="subsection">3.4.6 How it Works &ndash; Creating Categories, Branches, and Versions</h4>
+
+<p>What does the command <code>archive-setup actually do?  It</code>s conceptually
+quite simple: it creates new directories in your archive:
+
+<pre class="example">
+             % tla whereis-archive lord@emf.net--2003-example
+             /home/lord/archives/2003-example
+
+             % cd `tla whereis-archive lord@emf.net--2003-example`
+</pre>
+   <p>Categories are top level directories:
+
+<pre class="example">             % ls
+             =meta-info      hello-world
+</pre>
+   <p>Branches the next level:
+
+<pre class="example">             % ls hello-world
+             hello-world--mainline
+</pre>
+   <p>Versions the third:
+
+<pre class="example">             % ls hello-world/hello-world--mainline
+             hello-world--mainline--0.1
+</pre>
+   <p>Versions are themselves directories:
+
+<pre class="example">             % ls hello-world/hello-world--mainline/hello-world--mainline--0.1/
+             +revision-lock  +version-lock
+</pre>
+   <p><strong>Note:</strong> The lock files (e.g. <code>+revision-lock</code>) are used internally by
+arch.  When adding new data to an archive, <code>arch</code> doesn't simply call
+<code>mkdir</code>.  Instead, it carefully modifies archives to that they are
+always in a consistent state, regardless of what commands are issued
+concurrently, or whether or not a command is killed in mid-execution.
+
+   </body></html>
+

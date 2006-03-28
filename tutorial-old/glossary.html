@@ -1,0 +1,277 @@
+<html>
+<head>
+<title>Glossary</title>
+</head>
+<body>
+
+<a name="Glossary"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Glossary</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="document-license.html#The_GNU_Free_Documentation_License">The GNU Free Documentation License</a></br>
+
+<b>prev: </b><a href="naming-conventions.html#Customizing_the_inventory_Naming_Conventions">Customizing the inventory Naming Conventions</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p>archive     - An archive is a repository of one or more projects. An
+              archive can be located and accessed anywhere. A user may
+              have an archive in his home directory or could keep his 
+              archive on a remote machine and access it via sftp. A 
+                  project may choose to give public access to its archives
+                  via http, WebDAV and ftp. 
+</p><p>arch        - To reference an arch tree correctly, several pieces are needed:
+stanza        the archive name, the archive location and possibly the 
+              category, branch, version and revision. This information is
+              often passed from one to another in the unofficial form of an
+              arch stanza. An arch stanza will often look like this:
+</p><pre>
+                 someone@somewhere.com--2003
+                 http://arch.somewhere.com/{archives}/2003
+                 widget--devo--2.5--patch-96
+
+</pre>
+<p>arch
+stanza
+branch      - A branch is an path of development for a category. Though
+              projects must (and some simpler projects do) have at least
+              one branch, larger projects will often have two or more
+              branches for each category. For example a large project may
+              have two branches in a category: <em>
+<a name="index-pt:0"></a>
+
+mainline
+</em>
+ and <em>
+<a name="index-pt:1"></a>
+
+devo
+</em>
+. The
+              mainline branch would carry development for the stable series
+              while the devo branch would keep experimental work.
+</p><p>branched    - A simple version in which the base-0 revision is a
+version       continuation revision.
+</p><p>category    - An archive is broken down into categories. Though subtle 
+              differences exist, for many a category is synonymous with the
+              project itself. As an example, a developer may work on several
+              different projects at the same time. Each project would be
+              given a different category. A category in arch is what other
+              revision control systems, such as cvs, call a repository.
+</p><p>category,   - A fully qualified category is the combination of an archive
+fully         name and category name in the format of
+qualified     <em>
+<a name="index-pt:2"></a>
+
+jdoe@example.com--example/mycategory
+</em>
+
+</p><p>changeset   - A changeset is collection of changes that change a software
+              package from one revision to another
+</p><p>changeset   -  A revision created by 'commit'
+revision
+</p><p>commit      - After changes are made to a tree, arch needs to be told that 
+              changes have occured and need to be recorded. This process,
+              in slang terms, is called <em>
+<a name="index-pt:3"></a>
+
+commiting changes to a branch
+</em>
+ 
+</p><p>import      - A revision created by the 'import' command.
+revision 
+</p><p>log         - A log is a detailed accounting of what changes have taken place
+              between revisions in a software project. 
+</p><p>pristine    - A pristine tree is an copy of a project tree that has already 
+copy          been stored in the project archive to a copy of already
+              stored within a project repository
+</p><p>ordinary    - A version in which all but the base-0 revision are changeset
+version       revision
+</p><p>package     - A fully-qualified and unqualified names of categories, branches,
+name          version and revisions
+</p><p>name
+project     - A project has two meanings. In the more general form, a project
+              is a gathering of developers and resources that have comitted to
+              solving some sort of problem. In a stricter sense, especially
+              within the realm of arch, a project refers to the collection of
+              software that has been designed by the team that has gathered
+              together to to solve a problem.
+</p><p>revision    - A revision is generally a set of changes within a branch. As
+              such, a revision is a product of the comitting process. 
+              Each time a developer commits a change to a tree a revision is              
+              created.
+</p><p>revision,   - SEE: changeset revision
+changeset
+</p><p>revision,   - SEE: import revision
+import
+</p><p>sealed      - A version in which a 'version-0' revision exists
+version
+</p><p>stanza,    -  See arch stanza
+arch
+</p><p>version    -  Each branch in tla has one or more versions. The
+              version is used to denote the major versions of the software.
+              As an example, a hypothetical widget project may have both a
+              <code>2</code>
+.4 and a <code>2</code>
+.4 series that are developed side by side.
+</p><p>version,   -  SEE: ordinary version
+</p><p>version,   -  SEE: ordinary version
+simple
+</p><p>version,   -  SEE: sealed version
+sealed
+</p><p>version    -  [ Definition needed here]
+tag
+</p><p>version    -  branched.
+</p>
+<a name="Concept_Glossary"></a>
+
+
+
+<h3 align=center>Concept Glossary</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Branch/Category/Version/Revision examples
+</p><p>For this example imagine that there is a <em>
+<a name="index-pt:4"></a>
+
+widget
+</em>
+ project that has
+even/odd releases. For example, <code>1</code>
+.2, <code>2</code>
+.4 and <code>3</code>
+.6 would all contain
+stable releases of software. Versions such as <code>1</code>
+.3, <code>2</code>
+.1 and <code>2</code>
+.5 would
+be a development series of the software. We could map our categories,
+branches, versions and revisions as such:
+</p><p>widget--mainline--2.4--patch-12  - This is widget <code>2</code>
+.4 with <code>12</code>
+ patches.
+                                   This tree is intended for people that
+                                   wish to track official releases.
+widget--mainline--2.5--patch-5   - This is widget-2.4 with <code>5</code>
+ patches applied.
+                                   This tree is intended for those that wish
+                                             to track official releases of <code>2</code>
+.5
+widget--devo--2.4--patch-14      - This is the development tree of widget.
+                                   <code>14</code>
+ patches has been applied. This archive
+                                   is intended for devolopers that work on
+                                   the stable version of widget.
+widget--devo--2.5--patch-39      - This is the development tree of the <code>2</code>
+.5 
+                                   development series of widget. This tree
+                                   is intended for developers (and truly
+                                   brave users) that wish to be on the
+                                   cutting edge of widget.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Arch_naming_conventions"></a>
+
+
+
+<h3 align=center>Arch naming conventions</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Given a name of the form: <code>cat--branch--version--revision</code>
+
+</p><pre>
+        cat             is a &quot;category name&quot;
+        branch          is a &quot;branch label&quot;
+        version         is a &quot;version id&quot;
+        revision        is a &quot;patch level&quot;
+
+</pre>
+<pre>
+        cat                             is the name of a &quot;category&quot;
+        cat--branch                     is the name of a &quot;branch&quot;
+        cat--branch--version            is the name of a &quot;version&quot;
+        cat--branch--version--rev       is the name of a &quot;revision&quot;
+
+</pre>
+<p>If <code>arch</code>
+ is an archive, name, then:
+</p><pre>
+        arch/cat                        is the &quot;fully qualified&quot; name
+                                        of a category
+
+</pre>
+<pre>
+        arch/cat--branch                is the &quot;fully qualified&quot; name
+                                        of a branch
+
+</pre>
+<pre>
+        and so forth.
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

@@ -1,0 +1,133 @@
+<html lang="en">
+<head>
+<title>Cherrypicking Changes - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Collaborating-With-Other-People.html#Collaborating-With-Other-People" title="Collaborating With Other People">
+<link rel="prev" href="Development-Branches-_002d_002d-The-star_002dmerge-Style-of-Cooperation.html#Development-Branches-_002d_002d-The-star_002dmerge-Style-of-Cooperation" title="Development Branches -- The star-merge Style of Cooperation">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Cherrypicking-Changes"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Development-Branches-_002d_002d-The-star_002dmerge-Style-of-Cooperation.html#Development-Branches-_002d_002d-The-star_002dmerge-Style-of-Cooperation">Development Branches -- The star-merge Style of Cooperation</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Collaborating-With-Other-People.html#Collaborating-With-Other-People">Collaborating With Other People</a>
+<hr>
+</div>
+
+<h3 class="section">5.6 Cherrypicking Changes</h3>
+
+<p><a name="index-replaying-specific-revisions-59"></a>
+
+   <p>So far we've learned about elementary branches for maintaining changes
+apart from a primary development branch and development branches for
+coordinating asynchronous work on a single project (see
+<a href="Elementary-Branches-_002d_002d-Maintaining-Private-Changes.html#Elementary-Branches-_002d_002d-Maintaining-Private-Changes">Elementary Branches &ndash; Maintaining Private Changes</a> and
+<a href="Development-Branches-_002d_002d-The-star_002dmerge-Style-of-Cooperation.html#Development-Branches-_002d_002d-The-star_002dmerge-Style-of-Cooperation">Development Branches &ndash; The star-merge Style of Cooperation</a>).
+
+   <p>In this chapter, we'll briefly describe a third kind of branch that's
+useful when a project consists of multiple "forks" &ndash; multiple,
+equally primary branches.
+
+   <p>Let's suppose, somewhat abstractly, that Alice and Bob's mainline has
+grown quite large:
+
+<pre class="example">
+             mainline
+             --------
+             base-0
+             patch-1
+             ....
+             patch-23
+             patch-24
+             patch-25
+             ...
+             patch-42
+
+</pre>
+   <p>At some point, perhaps because some controversy has emerged over
+choices made in the <code>mainline</code>, a new developer, Derick, declares
+a fork and starts his own branch:
+
+<pre class="example">
+             mainline                derick
+             --------                ------
+             base-0          ------&gt; base-0
+             patch-1        '
+             ....          '
+             patch-23 ----'
+             patch-24
+             patch-25
+             ...
+             patch-42
+
+</pre>
+   <p>We already know that Derick can use <code>update</code> or <code>replay</code> to keep
+current with the mainline, but what he doesn't want to?   What if
+Derick wants the changes in <code>patch-25</code> and <code>patch-42</code>, but none of the
+other post-<code>patch-23</code> changes from the <code>mainline</code>?
+
+   <p>Derick can apply specific changes from the <code>mainline</code> by specifying the
+exact revision he wants, rather than just specifying a version:
+
+<pre class="example">
+             % cd ~/wd
+
+             % tla get hello-world--derick--0.1 derick
+
+             % cd derick
+
+             % tla replay -A lord@emf.net--2003-example \
+                      hello-world--mainline--0.1--patch-23
+
+             % tla replay -A lord@emf.net--2003-example \
+                      hello-world--mainline--0.1--patch-42
+
+             % tla missing -A lord@emf.net--2003-example \
+                      hello-world--mainline--0.1
+             patch-24
+             patch-25
+             ...
+             patch-41
+
+             % tla logs -A lord@emf.net--2003-example \
+                      hello-world--mainline--0.1
+             base-0
+             patch-1
+             ...
+             patch-22
+             patch-23
+             patch-42
+
+</pre>
+   <p><a name="index-Cherrypicking-60"></a><dfn>Cherrypicking</dfn> changes in this manner isn't necessarily easy or even
+practical.  It depends, for example, on the <code>mainline</code> changes being
+"clean changesets" (see <strong>Using commit Well &ndash; The Idea of a Clean Changeset</strong> in <a href="Exploring-Changesets.html#Exploring-Changesets">Exploring Changesets</a>).
+
+   <p>Nevertheless, for some projects, especially those characterized by
+lots of "forks", this technique can be useful.
+
+   <p><strong>Learning Note:</strong> Multiple revisions may be replayed with a single
+command, simply by giving all of them on the command line at once.  The
+<code>replay</code> command also has a <code>--list</code> option which can useful for
+cherrypicking many changes at once.  If you find yourself replaying
+specific revisions often, you should take a look at the <code>--list</code> option
+in <code>tla replay --help</code>.
+
+   </body></html>
+

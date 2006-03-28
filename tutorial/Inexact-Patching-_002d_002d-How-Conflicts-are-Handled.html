@@ -1,0 +1,199 @@
+<html lang="en">
+<head>
+<title>Inexact Patching -- How Conflicts are Handled - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Introducing-Changesets.html#Introducing-Changesets" title="Introducing Changesets">
+<link rel="prev" href="dopatch.html#dopatch" title="dopatch">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Inexact-Patching----How-Conflicts-are-Handled"></a>
+<a name="Inexact-Patching-_002d_002d-How-Conflicts-are-Handled"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="dopatch.html#dopatch">dopatch</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Introducing-Changesets.html#Introducing-Changesets">Introducing Changesets</a>
+<hr>
+</div>
+
+<h4 class="subsection">A.2.3 Inexact Patching &ndash; How Conflicts are Handled</h4>
+
+<p><a name="index-inexact-patching-101"></a>
+<a name="index-patching-_0028inexact_0029-102"></a>
+
+   <p>What if a tree patched by <code>dopatch</code> is not exactly the same as the
+original tree seen by <code>mkpatch</code>?
+
+   <p>Below is a brief description of what to expect.  Complete
+documentation of the <code>dopatch</code> process is included with the source
+code.
+
+   <p><code>dopatch</code> takes an inventory of the tree being patched.  It uses
+inventory ids to decide which files and directories expected by the
+changeset are present or missing from the tree, and to figure out
+where each file and directory is located in the tree.
+
+   <p><strong>Simple Patches</strong> If the changeset contains an ordinary patch or
+metadata patch for a link, directory or file, and that file is present
+in the tree, <code>dopatch</code> applies the patch in the ordinary way.  If the
+patch applies cleanly, the modified file, link, or directory is left
+in place.
+
+   <p>If a simple patch fails to apply cleanly, <code>dopatch</code> will always leave
+behind a <code>.orig</code> file (the file originally in the tree being patched,
+without any changes) and a <code>.rej</code> file (the part of the patch that
+could not be applied).
+
+   <p>If the patch was a context diff, <code>dopatch</code> will also leave behind the
+file itself &ndash; partially patched.
+
+   <p>If an (unsuccessful) patch was for a binary file, no partially-patched
+file will be left.  Instead, there will be:
+
+<pre class="example">             .orig   -- the file originally in the tree being patched,
+                        without modifications.
+
+             .rej    -- a complete copy of the file from the modified tree,
+                        with permissions copied from `.orig'.
+
+             .patch-orig -- a complete copy of the file from the original
+                            tree seen by `mkpatch', with permissions
+                            retained from that original
+
+                             -or-
+
+                            the symbolic link from the original tree seen
+                            by `mkpatch' with permissions as in the original
+                            tree.
+
+</pre>
+   <p>If an (unsuccessful) patch was for a symbolic link, no partially
+patched file will be left.  Instead there will be:
+
+<pre class="example">             .orig   -- the unmodified file from the original tree
+
+             .rej    -- a symbolic link with the target intended by the
+                        patch and permissions copied from .orig
+
+             .patch-orig -- a complete copy of the file from the original
+                            tree seen by `mkpatch', with permissions
+                            retained from that original
+
+                             -or-
+
+                            the symbolic link from the original tree seen
+                            by `mkpatch' with permissions as in the original
+                            tree.
+
+</pre>
+   <p><strong>Patches for Missing Files</strong>
+
+   <p>All patches for missing files and directories are stored in a
+subdirectory of the root of the tree being patched called
+
+<pre class="example">             ==missing-file-patches-PATCH-DATE
+</pre>
+   <p class="noindent">where <code>PATCH</code> is the basename of the changeset directory and <code>DATE</code> a
+time-stamp.
+
+   <p><strong>Directory Rearrangements and New Directories</strong>
+
+   <p>Directories are added, deleted, and rearranged much as you would
+expect, even if you don't know it's what you'd expect.
+
+   <p>Suppose that when <code>mkpatch</code> was called the <code>ORIGINAL</code> tree had:
+
+<pre class="example">             Directory or file:              Id:
+
+             a/x.c                           id_1
+             a/bar.c                         id_2
+
+</pre>
+   <p class="noindent">but the <code>MODIFIED</code> tree had:
+
+<pre class="example">             a/x.c                           id_1
+             a/y.c                           id_2
+</pre>
+   <p class="noindent">with changes to both files.  The patch will want to rename the file
+with id <code>id_2</code> to <code>y.c</code>, and change the contents of the files with
+ids <code>id_1</code> and <code>id_2</code>.
+
+   <p>Suppose, for example, that you have a tree with:
+
+<pre class="example">             a/foo.c                         id_1
+             a/zip.c                         id_2
+</pre>
+   <p class="noindent">and the you apply the patch to that tree.  After the patch, you'll be
+left with:
+
+<pre class="example">             a/foo.c                         id_1
+             a/y.c (was zip.c)               id_2
+</pre>
+   <p class="noindent">with patches made to the contents of both files.
+
+   <p>Here's a sample of some subtleties and ways of handling conflicts:
+
+   <p>Suppose that the original tree seen by mkpatch has:
+
+<pre class="example">             Directory or file:              Id:
+
+             ./a                             id_a
+             ./a/b                           id_b
+             ./a/b/c                         id_c
+
+</pre>
+   <p class="noindent">and that the modified directory has:
+
+<pre class="example">             ./a                             id_a
+             ./a/c                           id_c
+             ./a/c/b                         id_b
+</pre>
+   <p>Finally, suppose that the tree has:
+
+<pre class="example">             ./x                             id_a
+             ./x/b                           id_b
+             ./x/c                           id_new_directory
+             ./x/c/b                         id_different_file_named_b
+             ./x/c/q                         id_c
+</pre>
+   <p>When patch gets done with the tree, it will have:
+
+<pre class="example">             ./x                             id_a
+                     Since the patch doesn't do anything
+                     to change the directory with id_a.
+
+             ./x/c.orig                      id_new_directory
+             ./x/c.rej                       id_c
+                     Since the patch wants to make the
+                     directory with id_c a subdirectory named "c"
+                     of the directory with id_a, but the tree
+                     already had a different directory there,
+                     with the id id_new_directory.
+
+             ./x/c.rej/b                     id_b
+                     Since the patch wants to rename the directory
+                     with id_b to be a subdirectory named "b"
+                     of the directory with id_c.
+
+             ./x/c.orig/b                    id_different_file_named_b
+                     Since the patch made new changes to this file,
+                     it stayed with its parent directory.
+
+</pre>
+   </body></html>
+

@@ -1,0 +1,163 @@
+<html>
+<head>
+<title>Symbolic Tags</title>
+</head>
+<body>
+
+<a name="Symbolic_Tags"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Symbolic Tags</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="cherrypicking-changes.html#Cherrypicking_Changes">Cherrypicking Changes</a></br>
+
+<b>prev: </b><a href="development-branches.html#Development_Branches_--_The_star-merge_Style_of_Cooperation">Development Branches -- The star-merge Style of Cooperation</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p>As projects grow larger and more complicated, it is often useful
+to be able to give a symbolic name to particular revisions within an
+arch version.
+</p><p>For example, let's suppose that the <code>hello-world</code>
+ project has many
+revisions:
+</p><pre>
+
+        mainline
+        --------
+        base-0
+        patch-1
+        patch-2
+        ....
+        patch-23
+
+
+
+</pre>
+<p>It may be that, as development proceeds, occasional &quot;snapshot&quot;
+releases are made from the <code>mainline</code>
+.  Not every revision becomes a
+snapshot, but some do.
+</p><p>It would be convenient to provide a label of which revisions became
+snapshots:
+</p><pre>
+
+        mainline
+        --------
+        base-0
+        patch-1         snapshot 0
+        patch-2
+        ....
+        patch-12        snapshot 2
+        ....
+        patch-23        snapshot 3
+
+
+
+</pre>
+<p>The <code>tag</code>
+ command, introduced earlier, can be used for this purpose
+(see <a href="elementary-branches.html#Making_a_Branch_from_a_Remote_Project_in_a_Local_Archive">Making a Branch from a Remote Project in a Local Archive</a>).
+</p><p>When we first encountered <code>tag</code>
+, it was used just to create the
+<code>base-0</code>
+ revision of an elementary branch.   It can also be used to
+create a branch <em>all</em> of whose revisions are tags.
+</p><p>Let's suppose that we'll be creating a branch called
+<code>hello-world--snapshots--0.1</code>
+.  Diagramatically, we'll have:
+</p><pre>
+
+        mainline                        snapshots
+        --------                        ---------
+        base-0                --------> base-0 (tag)
+        patch-1 -------------'  ------> patch-1 (tag)
+        patch-2                '
+        ....                  '
+        patch-12 ------------'
+        ....
+        patch-23
+
+
+</pre>
+<p>To create the <code>snapshot</code>
+ tag for <code>patch-23</code>
+:
+</p><pre>
+
+        % tla tag hello-world--mainline--0.1--patch-23 \
+                    hello-world--snapshots--0.1
+
+
+</pre>
+<p>after which we'll have:
+</p><pre>
+
+        mainline                        snapshots
+        --------                        ---------
+        base-0                --------> base-0 (tag)
+        patch-1 -------------'  ------> patch-1 (tag)
+        patch-2                ' -----> patch-2 (tag)
+        ....                  ' '
+        patch-12 ------------' '
+        ....                  '
+        patch-23 ------------'
+
+
+</pre>
+<p>In effect, the <code>snapshots</code>
+ branch is a kind of &quot;symbolic name&quot; with
+history.   We can get the latest revision named by that symbol with:
+</p><pre>
+        % tla get hello-world--snapshots--0.1
+
+</pre>
+<p>and earlier revisions by naming specific revisions, e.g.:
+</p><pre>
+        % tla get hello-world--snapshots--0.1--patch-1
+
+</pre>
+<p><strong><u>Usage Caution:</u></strong> As a rule of thumb, your branches should be either
+<code>commit</code>
+ based branches (all revisions after <code>base-0</code>
+ are created by
+<code>commit</code>
+) or tag-based branches (all revisions are created by <code>tag</code>
+).
+Commands such as <code>replay</code>
+, <code>update</code>
+, and <code>star-merge</code>
+ are based on the
+presumption that you stick to that rule.  While it can be tempting, in
+obscure circumstances, to mix <code>commit</code>
+ and <code>tag</code>
+ on a single branch --
+it isn't generally recommended.
+</p>
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

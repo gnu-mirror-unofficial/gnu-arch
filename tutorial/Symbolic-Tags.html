@@ -1,0 +1,134 @@
+<html lang="en">
+<head>
+<title>Symbolic Tags - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Working-With-Arch.html#Working-With-Arch" title="Working With Arch">
+<link rel="prev" href="Selected-Files-Commit.html#Selected-Files-Commit" title="Selected Files Commit">
+<link rel="next" href="Multi_002dtree-Projects-and-Configuration-Management.html#Multi_002dtree-Projects-and-Configuration-Management" title="Multi-tree Projects and Configuration Management">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Symbolic-Tags"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Multi_002dtree-Projects-and-Configuration-Management.html#Multi_002dtree-Projects-and-Configuration-Management">Multi-tree Projects and Configuration Management</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Selected-Files-Commit.html#Selected-Files-Commit">Selected Files Commit</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Working-With-Arch.html#Working-With-Arch">Working With Arch</a>
+<hr>
+</div>
+
+<h3 class="section">4.4 Symbolic Tags</h3>
+
+<p>As projects grow larger and more complicated, it is often useful
+to be able to give a symbolic name to particular revisions within an
+arch version.
+
+   <p>For example, let's suppose that the <code>hello-world</code> project has many
+revisions:
+
+<pre class="example">
+             mainline
+             --------
+             base-0
+             patch-1
+             patch-2
+             ....
+             patch-23
+
+</pre>
+   <p>It may be that, as development proceeds, occasional "snapshot"
+releases are made from the <code>mainline</code>.  Not every revision becomes a
+snapshot, but some do.
+
+   <p>It would be convenient to provide a label of which revisions became
+snapshots:
+
+<pre class="example">
+             mainline
+             --------
+             base-0
+             patch-1         snapshot 0
+             patch-2
+             ....
+             patch-12        snapshot 2
+             ....
+             patch-23        snapshot 3
+
+</pre>
+   <p>The <code>tag</code> command, introduced earlier, can be used for this purpose
+(see <strong>Making a Branch from a Remote Project in a Local Archive</strong> in <a href="Elementary-Branches-_002d_002d-Maintaining-Private-Changes.html#Elementary-Branches-_002d_002d-Maintaining-Private-Changes">Elementary Branches &ndash; Maintaining Private Changes</a>).
+
+   <p>When we first encountered <code>tag</code>, it was used just to create the
+<code>base-0</code> revision of an elementary branch.   It can also be used to
+create a branch <em>all</em> of whose revisions are tags.
+
+   <p>Let's suppose that we'll be creating a branch called
+<code>hello-world--snapshots--0.1</code>.  Diagramatically, we'll have:
+
+<pre class="example">
+             mainline                        snapshots
+             --------                        ---------
+             base-0                --------&gt; base-0 (tag)
+             patch-1 -------------'  ------&gt; patch-1 (tag)
+             patch-2                '
+             ....                  '
+             patch-12 ------------'
+             ....
+             patch-23
+
+</pre>
+   <p>To create the <code>snapshot</code> tag for <code>patch-23</code>:
+
+<pre class="example">
+             % tla tag hello-world--mainline--0.1--patch-23 \
+                         hello-world--snapshots--0.1
+
+</pre>
+   <p class="noindent">after which we'll have:
+
+<pre class="example">
+             mainline                        snapshots
+             --------                        ---------
+             base-0                --------&gt; base-0 (tag)
+             patch-1 -------------'  ------&gt; patch-1 (tag)
+             patch-2                ' -----&gt; patch-2 (tag)
+             ....                  ' '
+             patch-12 ------------' '
+             ....                  '
+             patch-23 ------------'
+
+</pre>
+   <p>In effect, the <code>snapshots</code> branch is a kind of "symbolic name" with
+history.   We can get the latest revision named by that symbol with:
+
+<pre class="example">             % tla get hello-world--snapshots--0.1
+</pre>
+   <p class="noindent">and earlier revisions by naming specific revisions, e.g.:
+
+<pre class="example">             % tla get hello-world--snapshots--0.1--patch-1
+</pre>
+   <p><strong>Usage Caution:</strong> As a rule of thumb, your branches should be either
+<code>commit</code> based branches (all revisions after <code>base-0</code> are created by
+<code>commit</code>) or tag-based branches (all revisions are created by <code>tag</code>). 
+Commands such as <code>replay</code>, <code>update</code>, and <code>star-merge</code> are based on the
+presumption that you stick to that rule.  While it can be tempting, in
+obscure circumstances, to mix <code>commit</code> and <code>tag</code> on a single branch &ndash;
+it isn't generally recommended.
+
+   </body></html>
+

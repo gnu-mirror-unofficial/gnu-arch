@@ -1,0 +1,181 @@
+<html>
+<head>
+<title>System Requirements</title>
+</head>
+<body>
+
+<a name="System_Requirements"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>System Requirements</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="in-general.html#arch_Commands_in_General">arch Commands in General</a></br>
+
+<b>prev: </b><a href="introduction.html#Introducing_arch">Introducing arch</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p>In order to use <code>arch</code>
+, there are some software tools that you must
+already have available.  
+</p>
+<a name="Tools_Used_to_Build_arch"></a>
+
+
+
+<h3 align=center>Tools Used to Build arch</h3>
+
+
+
+
+
+
+
+
+
+
+<p><strong><u>GNU Make</u></strong> You will need <code>GNU Make</code>
+ in order to build <code>arch</code>
+.
+</p><p><strong><u>Standard Posix Shell Tools</u></strong> The package framework (i.e., the
+configure and build process) assumes that some standard Posix shell
+tools are available on your system:
+</p><pre>
+        awk     find    mkdir   sh      wc
+        cat     fold    printf  tee     xargs
+        chmod   grep    pwd     test
+        date    head    rm      touch
+        echo    ls      sed     tsort
+
+</pre>
+<p><em>Note:</em>  On some systems, the program installed as <code>/bin/sh</code>
+ is
+<em>not</em> a Posix shell (it may be a variant of <code>csh</code>
+ or a very buggy
+implementation of Posix <code>sh</code>
+).   On such systems, you should use a 
+different shell to run <code>configure</code>
+, such as:
+</p><pre>
+  % /usr/local/bin/bash ../configure --config-shell /usr/local/bin/bash
+
+</pre>
+<p><strong><u>The null Device</u></strong> Your system must have <code>/dev/null</code>
+.  Information
+directed to <code>/dev/null</code>
+ should simply disappear from the universe.  As
+a special &quot;Green Software&quot; measure, we have made provisions that
+will enable your computers to convert that discarded information into
+<em>heat</em>, which you may use to supplement conventional heating
+systems.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Tools_Used_Internally_by_arch"></a>
+
+
+
+<h3 align=center>Tools Used Internally by arch</h3>
+
+
+
+
+
+
+
+
+
+
+<p>The remaining tools are used internally by arch itself.  They don't
+necessarily need to be on your <code>PATH</code>
+ -- when you build <code>arch</code>
+ from
+source, run the configure script:
+</p><pre>
+       % ./configure --help
+
+</pre>
+<p>and
+</p><pre>
+        % ./configure --help-options
+
+</pre>
+<p>for information about how to point <code>arch</code>
+ to the correct versions.
+</p><p><strong><u>GNU Tar</u></strong> You must have <code>GNU tar</code>
+.  <code>arch</code>
+ invokes <code>tar</code>
+ internally to
+pack and unpack files that it stores in archives.   It is important
+that all versions of <code>arch</code>
+ use a compatible version of <code>tar</code>
+, for
+which purpose <code>GNU tar</code>
+ was chosen.
+</p><p><strong><u>GNU diff and GNU patch</u></strong> After much deliberation, I've decided to go
+ahead and rely on the <strong>GNU</strong> versions of <code>diff</code>
+ and <code>patch</code>
+.
+Specifically, you need a version of <code>diff</code>
+ that can generate &quot;unified
+format&quot; output (option <code>-u</code>
+) and a version of <code>patch</code>
+ that
+understands that format and that understands <code>--posix</code>
+.  (It would be
+trivial to use &quot;context diffs&quot; and, thus, standard <code>diff</code>
+ and
+<code>patch</code>
+, however, unified diffs are much easier to read, and I'm
+hoping that picking specific implementations of these critical
+sub-components will help contribute to the long-term stability of
+<code>arch</code>
+.)
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

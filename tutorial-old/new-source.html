@@ -1,0 +1,371 @@
+<html>
+<head>
+<title>Starting a New Source Tree</title>
+</head>
+<body>
+
+<a name="Starting_a_New_Source_Tree"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Starting a New Source Tree</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="inventories.html#Project_Tree_Inventories">Project Tree Inventories</a></br>
+
+<b>prev: </b><a href="new-project.html#Starting_a_New_Project">Starting a New Project</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p><a name="index-pt:0"></a>
+
+<a name="index-pt:1"></a>
+
+<a name="index-pt:2"></a>
+
+<a name="index-pt:3"></a>
+
+<a name="index-pt:4"></a>
+
+<a name="index-pt:5"></a>
+
+<a name="index-pt:6"></a>
+
+</p><p>After following the examples in earlier chapters, you should have a
+new archive and new <code>hello-world</code>
+ project within that archive.
+</p><p>In this chapter, we'll walk through the steps of preparing a source
+tree to be part of that project.
+</p>
+<a name="The_Intial_Source"></a>
+
+
+
+<h3 align=center>The Intial Source</h3>
+
+
+
+
+
+
+
+
+
+
+<p>For the sake of example, let's assume that we have an initial,
+slightly buggy, implementation of <code>hello-world</code>
+:
+</p><pre>
+        % cd ~/wd
+
+        % ls
+        hello-world
+
+        % cd hello-world
+
+        % ls
+        hw.c    main.c
+        
+        % cat hw.c
+        
+        #include &lt;stdio.h>
+        
+        void
+        hello_world (void)
+        {
+          (void)printf (&quot;hello warld&quot;);
+        }
+        
+        
+        % cat main.c
+        
+        extern void hello_world (void);
+        
+        int
+        main (int argc, char * argv[])
+        {
+          hello_world ();
+          return 0;
+        }
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="Initializing_a_Project_Tree"></a>
+
+
+
+<h3 align=center>Initializing a Project Tree</h3>
+
+
+
+
+
+
+
+
+
+
+<p>The first step of preparing source is to turn the ordinary source tree
+into a <em>
+<a name="index-pt:7"></a>
+
+project tree
+</em>
+:
+</p><pre>
+        % cd ~/wd/hello-world
+
+        % tla init-tree hello-world--mainline--0.1
+
+        % ls
+        hw.c    main.c  {arch}
+
+
+</pre>
+<p>Note that we passed <code>init-tree</code>
+ the name of the version in the archive
+that we'll be working on.   <code>init-tree</code>
+ created a new subdirectory in
+the root of the tree (<code>{arch}</code>
+).
+</p><p>The <code>{arch}</code>
+ subdirectory indicates that this is the root of a project
+tree:
+</p><pre>
+        % tla tree-root
+        /usr/lord/wd/hello-world
+
+</pre>
+<p><code>tla</code>
+ knows what archive version this tree is for:
+</p><pre>
+        % tla tree-version
+        lord@emf.net--2003-example/hello-world--mainline--0.1
+
+</pre>
+<p>Finally, <code>arch</code>
+ has created something called a <em>patch log</em> for 
+the version passed to <code>init-tree</code>
+:
+</p><pre>
+        % tla log-versions
+        lord@emf.net--2003-example/hello-world--mainline--0.1
+
+</pre>
+<p>We'll explain what patch logs are for in later chapters.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Initializing_a_Tree_Does_Not_Change_an_Archive"></a>
+
+
+
+<h3 align=center>Initializing a Tree Does Not Change an Archive</h3>
+
+
+
+
+
+
+
+
+
+
+<p>So far, we've only marked the project tree as source: we haven't yet
+stored anything new in the archive.   We'll get there, but before
+we do that, there's an important topic to cover first: <em>source
+inventories</em>.   We'll cover that in the next chapter.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="What_if_You_Make_a_Mistake_With_init-tree?"></a>
+
+
+
+<h3 align=center>What if You Make a Mistake With init-tree?</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Suppose that in the example above, we had mis-typed:
+</p><pre>
+        % tla init-tree hello-world--mainlin--0.1
+
+</pre>
+<p>One &quot;brute force&quot; solution is just to delete the <code>{arch}</code>
+
+subdirectory and start over.  Later on, though, that solution 
+is undesirable: the <code>{arch}</code>
+ subdirectory may contain some data you
+don't want to delete.   So, we'll take this opportunity to introduce a
+few more advanced commands.
+</p><p>There are two problems after the bogus call to <code>init-tree</code>
+.  The
+output from both of these commands is not what we want:
+</p><pre>
+
+        % tla tree-version
+        lord@emf.net--2003-example/hello-world--mainlin--0.1
+
+        % tla log-versions
+        lord@emf.net--2003-example/hello-world--mainlin--0.1
+
+
+</pre>
+<p>We can change the <code>tree-version</code>
+ of a tree at any time:
+</p><pre>
+        % tla set-tree-version hello-world--mainline--0.1
+        
+        % tla tree-version
+        lord@emf.net--2003-example/hello-world--mainline--0.1
+
+
+</pre>
+<p>Patch logs are a little trickier.  We have to delete the logs we
+don't want, and add those that we do want:
+</p><pre>
+        % tla add-log-version hello-world--mainline--0.1
+
+        % tla log-versions
+        lord@emf.net--2003-example/hello-world--mainlin--0.1
+        lord@emf.net--2003-example/hello-world--mainline--0.1
+
+        % tla remove-log-version hello-world--mainlin--0.1
+
+        % tla log-versions
+        lord@emf.net--2003-example/hello-world--mainline--0.1
+
+
+</pre>
+<p><strong><u>WARNING:</u></strong> <code>remove-log-version</code>
+ is a dangerous command: it will remove
+patch logs that you might need if you ask it to.  You should only use
+<code>remove-log-version</code>
+ when you are certain, as we were above, that what
+is being removed is one you do not want.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="How_it_Works_--_Initializing_a_New_Tree"></a>
+
+
+
+<h3 align=center>How it Works -- Initializing a New Tree</h3>
+
+
+
+
+
+
+
+
+
+
+<p><code>init-tree</code>
+ created the <code>{arch}</code>
+ subdirectory at the root of the
+source tree.   What's in there?
+</p><pre>
+        % ls {arch}
+        ++default-version       =tagging-method         hello-world
+
+        % cat {arch}/++default-version
+        lord@emf.net--2003-example/hello-world--mainline--0.1
+
+        % cat {arch}/=tagging-method
+        [... long output ...]
+
+
+</pre>
+<p><code>{arch}/hello-world</code>
+ is the root of a fairly deep tree.  Patch logs
+are stored within that tree.
+</p><p><code>{arch}/=tagging-method</code>
+ is a configuration file that you can use to
+customize the naming conventions that apply to this tree.  It is
+explained in a later chapter (see <a href="naming-conventions.html#Customizing_the_inventory_Naming_Conventions">Customizing the inventory Naming Conventions</a>).
+</p><p><strong><u>Note:</u></strong> You should not, of course, edit the contents of the <code>{arch}</code>
+
+directory by hand.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

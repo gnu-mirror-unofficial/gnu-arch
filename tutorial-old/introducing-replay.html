@@ -1,0 +1,222 @@
+<html>
+<head>
+<title>Introducing replay -- An Alternative to update</title>
+</head>
+<body>
+
+<a name="Introducing_replay_--_An_Alternative_to_update"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Introducing replay -- An Alternative to update</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="selected-files-commits.html#Selected_Files_Commit">Selected Files Commit</a></br>
+
+<b>prev: </b><a href="exploring-changesets.html#Exploring_Changesets">Exploring Changesets</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p><code>update</code>
+ isn't the only way to catch-up with a development path.
+Another option is <code>replay</code>
+:
+</p><pre>
+        % cd ~/wd/project-tree
+        % tla replay
+        [....]
+
+</pre>
+<p>What does that actually do?
+</p>
+<a name="An_update_Refresher"></a>
+
+
+
+<h3 align=center>An update Refresher</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Let's suppose that we check out an old version of <code>hello-world</code>
+:
+</p><pre>
+        % cd ~/wd
+        % tla get hello-world--mainline--0.1--patch-1 hw-patch-1
+        [...]
+
+</pre>
+<p>It's easy to see that the resulting tree is not up-to-date:
+</p><pre>
+        % cd hw-patch-1
+        % tla missing
+        patch-2
+        patch-3
+
+</pre>
+<p>Now, let's suppose that we make some local changes in <code>hw-patch-1</code>
+ and
+then run <code>update</code>
+.   What happens?
+</p><p><strong><u>Local changes are computed against patch-1.</u></strong>  In other words, 
+a changeset is created that represents the changes from a 
+pristine copy of the <code>patch-1</code>
+ revision to the current state
+of the project tree (<code>hw-patch-1</code>
+).
+</p><p><strong><u>A copy of patch-3 is checked out.</u></strong>  <code>update</code>
+ starts with a pristine
+copy of the <code>patch-3</code>
+ revision.
+</p><p><strong><u>The changeset is applied to the patch-3 tree.</u></strong>  The changes computed
+in the first step are made to the new tree.
+</p><p>There's another way, though:
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="The_replay_Command"></a>
+
+
+
+<h3 align=center>The replay Command</h3>
+
+
+
+
+
+
+
+
+
+
+<p>We have a local copy of the <code>patch-1</code>
+, perhaps with some local
+changes:
+</p><pre>
+        % cd ~/wd/hw-patch-1
+        % tla missing
+        patch-2
+        patch-3
+
+</pre>
+<p>Recall that the <code>patch-2</code>
+ and <code>patch-3</code>
+ revisions each correspond to a
+specific changeset, stored in the archive (see <a href="checking-in-changes.html#How_it_Works_--_commit_of_a_New_Revision">How it Works -- commit of a New Revision</a>).
+</p><p>We could add those changes to your local tree by using <code>get-changeset</code>
+
+to retrieve each changeset, and <code>dopatch</code>
+ to apply it (see
+<a href="exploring-changesets.html#get-changeset_Retrieves_a_Changeset_from_an_Archive">get-changeset Retrieves a Changeset from an Archive</a>, and
+<a href="introducing-changesets.html#dopatch">dopatch</a>).  That's a lot of tedious work, though, so <code>arch</code>
+
+provides a more automated way to accomplish that same effect:
+</p><pre>
+        % cd ~/wd/hw-patch-1
+        % tla replay
+        [....]
+        % tla missing
+        [no output]
+
+</pre>
+<p><code>replay</code>
+ will do just what we've described: get patches
+from the archive and apply them one-by-one.   One word of caution,
+though: if one of those patches generates conflicts, <code>replay</code>
+ will
+stop there and let you fix the conflicts.  You can then pick up where
+<code>replay</code>
+ left off by running <code>replay</code>
+ a second time.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="How_it_Works_--_replay"></a>
+
+
+
+<h3 align=center>How it Works -- replay</h3>
+
+
+
+
+
+
+
+
+
+
+<p>If you've followed along with the tutorial so far, the way that <code>replay</code>
+
+works should be pretty obvious.  In fact, it's just exactly how we
+described it above.  <code>replay</code>
+ uses <code>missing</code>
+ to find out what changes
+your tree is missing, <code>get-changeset</code>
+ to retrieve those changesets, and
+<code>dopatch</code>
+ to apply them.  There's a fair amount of &quot;bookkeeping&quot;
+involved in doing that -- and that bookkeeping is what <code>replay</code>
+
+automates for you.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

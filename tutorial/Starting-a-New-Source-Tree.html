@@ -1,0 +1,207 @@
+<html lang="en">
+<head>
+<title>Starting a New Source Tree - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Getting-Started.html#Getting-Started" title="Getting Started">
+<link rel="prev" href="Starting-a-New-Project.html#Starting-a-New-Project" title="Starting a New Project">
+<link rel="next" href="Project-Tree-Inventories.html#Project-Tree-Inventories" title="Project Tree Inventories">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Starting-a-New-Source-Tree"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Project-Tree-Inventories.html#Project-Tree-Inventories">Project Tree Inventories</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Starting-a-New-Project.html#Starting-a-New-Project">Starting a New Project</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Getting-Started.html#Getting-Started">Getting Started</a>
+<hr>
+</div>
+
+<h3 class="section">3.5 Starting a New Source Tree</h3>
+
+<p><a name="index-init_002dtree-17"></a>
+<a name="index-tree_002droot-18"></a>
+<a name="index-tree_002dversion-19"></a>
+<a name="index-log_002dversions-20"></a>
+<a name="index-set_002dtree_002dversion-21"></a>
+<a name="index-remove_002dlog_002dversion-22"></a>
+<a name="index-add_002dlog_002dversion-23"></a>
+
+   <p>After following the examples in earlier chapters, you should have a
+new archive and new <code>hello-world</code> project within that archive.
+
+   <p>In this chapter, we'll walk through the steps of preparing a source
+tree to be part of that project.
+
+<h4 class="subsection">3.5.1 The Intial Source</h4>
+
+<p>For the sake of example, let's assume that we have an initial,
+slightly buggy, implementation of <code>hello-world</code>:
+
+<pre class="example">             % cd ~/wd
+
+             % ls
+             hello-world
+
+             % cd hello-world
+
+             % ls
+             hw.c    main.c
+
+             % cat hw.c
+
+             #include &lt;stdio.h&gt;
+
+             void
+             hello_world (void)
+             {
+               (void)printf ("hello warld");
+             }
+
+             % cat main.c
+
+             extern void hello_world (void);
+
+             int
+             main (int argc, char * argv[])
+             {
+               hello_world ();
+               return 0;
+             }
+</pre>
+   <h4 class="subsection">3.5.2 Initializing a Project Tree</h4>
+
+<p>The first step of preparing source is to turn the ordinary source tree
+into a <a name="index-project-tree-24"></a><dfn>project tree</dfn>:
+
+<pre class="example">             % cd ~/wd/hello-world
+
+             % tla init-tree hello-world--mainline--0.1
+
+             % ls
+             hw.c    main.c  {arch}
+
+</pre>
+   <p>Note that we passed <code>init-tree</code> the name of the version in the archive
+that we'll be working on.   <code>init-tree</code> created a new subdirectory in
+the root of the tree (<code>{arch}</code>).
+
+   <p>The <code>{arch}</code> subdirectory indicates that this is the root of a project
+tree:
+
+<pre class="example">             % tla tree-root
+             /usr/lord/wd/hello-world
+</pre>
+   <p><code>tla</code> knows what archive version this tree is for:
+
+<pre class="example">             % tla tree-version
+             lord@emf.net--2003-example/hello-world--mainline--0.1
+</pre>
+   <p>Finally, <code>arch</code> has created something called a <em>patch log</em> for
+the version passed to <code>init-tree</code>:
+
+<pre class="example">             % tla log-versions
+             lord@emf.net--2003-example/hello-world--mainline--0.1
+</pre>
+   <p>We'll explain what patch logs are for in later chapters.
+
+<h4 class="subsection">3.5.3 Initializing a Tree Does Not Change an Archive</h4>
+
+<p>So far, we've only marked the project tree as source: we haven't yet
+stored anything new in the archive.   We'll get there, but before
+we do that, there's an important topic to cover first: <em>source
+inventories</em>.   We'll cover that in the next chapter.
+
+<h4 class="subsection">3.5.4 What if You Make a Mistake With init-tree?</h4>
+
+<p>Suppose that in the example above, we had mis-typed:
+
+<pre class="example">             % tla init-tree hello-world--mainlin--0.1
+</pre>
+   <p>One "brute force" solution is just to delete the <code>{arch}</code>
+subdirectory and start over.  Later on, though, that solution
+is undesirable: the <code>{arch}</code> subdirectory may contain some data you
+don't want to delete.   So, we'll take this opportunity to introduce a
+few more advanced commands.
+
+   <p>There are two problems after the bogus call to <code>init-tree</code>.  The
+output from both of these commands is not what we want:
+
+<pre class="example">
+             % tla tree-version
+             lord@emf.net--2003-example/hello-world--mainlin--0.1
+
+             % tla log-versions
+             lord@emf.net--2003-example/hello-world--mainlin--0.1
+
+</pre>
+   <p>We can change the <code>tree-version</code> of a tree at any time:
+
+<pre class="example">             % tla set-tree-version hello-world--mainline--0.1
+
+             % tla tree-version
+             lord@emf.net--2003-example/hello-world--mainline--0.1
+
+</pre>
+   <p>Patch logs are a little trickier.  We have to delete the logs we
+don't want, and add those that we do want:
+
+<pre class="example">             % tla add-log-version hello-world--mainline--0.1
+
+             % tla log-versions
+             lord@emf.net--2003-example/hello-world--mainlin--0.1
+             lord@emf.net--2003-example/hello-world--mainline--0.1
+
+             % tla remove-log-version hello-world--mainlin--0.1
+
+             % tla log-versions
+             lord@emf.net--2003-example/hello-world--mainline--0.1
+
+</pre>
+   <p><strong>WARNING:</strong> <code>remove-log-version</code> is a dangerous command: it will remove
+patch logs that you might need if you ask it to.  You should only use
+<code>remove-log-version</code> when you are certain, as we were above, that what
+is being removed is one you do not want.
+
+<h4 class="subsection">3.5.5 How it Works &ndash; Initializing a New Tree</h4>
+
+<p><code>init-tree</code> created the <code>{arch}</code> subdirectory at the root of the
+source tree.   What's in there?
+
+<pre class="example">             % ls {arch}
+             ++default-version       =tagging-method         hello-world
+
+             % cat {arch}/++default-version
+             lord@emf.net--2003-example/hello-world--mainline--0.1
+
+             % cat {arch}/=tagging-method
+             [... long output ...]
+
+</pre>
+   <p><code>{arch}/hello-world</code> is the root of a fairly deep tree.  Patch logs
+are stored within that tree.
+
+   <p><code>{arch}/=tagging-method</code> is a configuration file that you can use to
+customize the naming conventions that apply to this tree.  It is
+explained in a later chapter (see <a href="Customizing-the-inventory-Naming-Conventions.html#Customizing-the-inventory-Naming-Conventions">Customizing the inventory Naming Conventions</a>).
+
+   <p><strong>Note:</strong> You should not, of course, edit the contents of the <code>{arch}</code>
+directory by hand.
+
+   </body></html>
+

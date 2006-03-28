@@ -1,0 +1,245 @@
+<html>
+<head>
+<title>Exploring Changesets</title>
+</head>
+<body>
+
+<a name="Exploring_Changesets"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Exploring Changesets</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="introducing-replay.html#Introducing_replay_--_An_Alternative_to_update">Introducing replay -- An Alternative to update</a></br>
+
+<b>prev: </b><a href="introducing-changesets.html#Introducing_Changesets">Introducing Changesets</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p>The previous chapter introduced <em>changesets</em> and the commands
+<code>mkpatch</code>
+ and <code>dopatch</code>
+ (fancy variations on the theme of the
+traditional <code>diff</code>
+ and <code>patch</code>
+ programs).
+</p><p>In this chapter, we'll look in a bit more detail about how changesets
+are used in archives, how they are used by the <code>commit</code>
+ and <code>update</code>
+
+commands, and what this implies for how you can make the best use of
+<code>arch</code>
+.
+</p>
+<a name="How_it_Works_--_commit_Stores_a_Changeset_in_the_Archive"></a>
+
+
+
+<h3 align=center>How it Works -- commit Stores a Changeset in the Archive</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Suppose that you <code>get</code>
+ the latest revision of a project, make some
+changes, write a log message, and <code>commit</code>
+ those changes to an
+archive.   What happens?
+</p><p>In essence, commit:
+</p><p><strong><u>1</u></strong> Computes a changeset that describes what changes you've made
+compared to the latest revision.
+</p><p><strong><u>2</u></strong> Creates a directory for the new revision in the archive.
+</p><p><strong><u>3</u></strong> Stores your log message and the changeset in the archive.
+</p><p>In that light, you might want to go back and review an earlier
+section: <a href="checking-in-changes.html#How_it_Works_--_commit_of_a_New_Revision">How it Works -- commit of a New Revision</a>.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="get-changeset_Retrieves_a_Changeset_from_an_Archive"></a>
+
+
+
+<h3 align=center>get-changeset Retrieves a Changeset from an Archive</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:0"></a>
+
+</p><p>Earlier, you learned that the <code>cat-archive-log</code>
+ command retrieves a
+log message from an archive (see <a href="update-commit.html#Studying_Why_Alice_Can_Not_commit">Studying Why Alice Can Not commit</a>).
+</p><p>You can also retrieve a changeset from an archive:
+</p><pre>
+
+        % cd ~/wd
+
+        % tla get-changeset hello-world--mainline--0.1--patch-1 patch-1
+        [...]
+
+
+</pre>
+<p><code>get-changeset</code>
+ retrieves the changeset from the archive and, in this
+case, stores it in a directory called <code>patch-1</code>
+.
+</p><p>(The format of changesets is described in <a href="changeset-format.html#The_arch_Changeset_Format">The arch Changeset Format</a>.)
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Using_show-changeset_to_Examine_a_Changeset"></a>
+
+
+
+<h3 align=center>Using show-changeset to Examine a Changeset</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:1"></a>
+
+</p><p>The changeset format is optimized for use by programs, not people.
+It's awkward to look at a changeset &quot;by hand&quot;.   Instead, you 
+may wish to consider getting a report of the patch in diff format 
+by using:
+</p><pre>
+        % tla show-changeset --diffs patch-1
+
+</pre>
+<pre>
+        [...]
+
+</pre>
+<p>If you've been following along with the examples, you'll recognize the
+output format of <code>show-changeset</code>
+ from the <code>changes</code>
+ command introduced
+earlier (see <a href="checking-in-changes.html#Oh_My_Gosh_--_What_Have_I_Done?">Oh My Gosh -- What Have I Done?</a>).
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Using_commit_Well_--_The_Idea_of_a_Clean_Changeset"></a>
+
+
+
+<h3 align=center>Using commit Well -- The Idea of a Clean Changeset</h3>
+
+
+
+
+
+
+
+
+
+
+<p>When you commit a set of changes, it is generally &quot;best practice&quot; to
+make sure you are creating a <em>
+<a name="index-pt:2"></a>
+
+clean changeset
+</em>
+.
+</p><p>A clean changeset is one that contains only changes that are all
+related and for a single purpose.   For example, if you have several
+bugs to fix, or several features to add, try not to mix those changes
+up in a single <code>commit</code>
+.
+</p><p>There are many advantages to clean changesets but foremost among them
+are:
+</p><p><strong><u>Easier Review</u></strong>  It is easy for someone to understand a changeset if
+it is only trying to do one thing.
+</p><p><strong><u>Easier Merging</u></strong> As we'll learn in later chapters, there are
+circumstances in which you'll want to look at a collection of
+changesets in an archive and pick-and-choose among them.  Perhaps you
+want to grab &quot;bug fix A&quot; but not &quot;new feature B&quot;.   If each
+changeset has only one purpose, that kind of <em>
+<a name="index-pt:3"></a>
+
+cherrypicking
+</em>
+ is much
+more practical.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

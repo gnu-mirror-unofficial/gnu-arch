@@ -1,0 +1,65 @@
+<html lang="en">
+<head>
+<title>dopatch - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Introducing-Changesets.html#Introducing-Changesets" title="Introducing Changesets">
+<link rel="prev" href="mkpatch.html#mkpatch" title="mkpatch">
+<link rel="next" href="Inexact-Patching-_002d_002d-How-Conflicts-are-Handled.html#Inexact-Patching-_002d_002d-How-Conflicts-are-Handled" title="Inexact Patching -- How Conflicts are Handled">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="dopatch"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Inexact-Patching-_002d_002d-How-Conflicts-are-Handled.html#Inexact-Patching-_002d_002d-How-Conflicts-are-Handled">Inexact Patching -- How Conflicts are Handled</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="mkpatch.html#mkpatch">mkpatch</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Introducing-Changesets.html#Introducing-Changesets">Introducing Changesets</a>
+<hr>
+</div>
+
+<h4 class="subsection">A.2.2 dopatch</h4>
+
+<p><a name="index-dopatch-100"></a>
+
+   <p><code>dopatch</code> is used to apply a changeset to tree:
+
+<pre class="example">             % tla dopatch PATCH-SET TREE
+</pre>
+   <p>If <code>tree</code> is exactly the same as the the "original" tree seen by
+<code>mkpatch</code>, then the effect is to modify <code>tree</code> so that it is exactly
+the same as the the "modified" tree seen by <code>mkpatch</code>, with one
+exception (explained below).
+
+   <p>"Exactly the same" means that the directory structure is the same,
+symbolic link targets are the same, the contents of regular files are
+the same, and file permissions are the same.  Modification times,
+files with multiple (hard) links, and file ownership are not reliably
+preserved.
+
+   <p>The exception to the "exactly the same" rule is that if the patch
+requires that files or directories be removed from <code>tree</code>, those files
+and directories will be saved in a subdirectory of <code>tree</code> with an
+eye-splitting name matching the pattern:
+
+<pre class="example">             ++removed-by-dopatch-PATCH--DATE
+</pre>
+   <p class="noindent">where <code>PATCH</code> is the name of the patch-set directory and <code>DATE</code> a
+timestamp.
+
+   </body></html>
+

@@ -1,0 +1,105 @@
+<html>
+<head>
+<title>arch Commands in General</title>
+</head>
+<body>
+
+<a name="arch_Commands_in_General"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>arch Commands in General</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="introducing-yourself.html#Introducing_Yourself_to_arch">Introducing Yourself to arch</a></br>
+
+<b>prev: </b><a href="system-requirements.html#System_Requirements">System Requirements</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p>Every command in <code>arch</code>
+ is accessed via the program <code>tla</code>
+, using an
+ordinary sub-command syntax:
+</p><pre>
+        % tla &lt;sub-command> &lt;options> &lt;parameters>
+
+</pre>
+<p>A list of sub-commands can be obtained from:
+</p><pre>
+        % tla help
+
+</pre>
+<p>A brief summary of the options to any command is given by:
+</p><pre>
+        % tla &lt;sub-command> -h
+
+</pre>
+<p>A more detailed help message for each command is given by:
+</p><pre>
+        % tla &lt;sub-command> -H
+
+</pre>
+<p>For example, try:
+</p><pre>
+        % tla my-id -H
+        print or change your id
+        usage: tla my-id [options] [id]
+        
+          -h, --help     Display a help message and exit.
+          -H             Display a verbose help message and exit.
+          -V, --version  Display a release identifier string
+                         and exit.
+          -e, --errname  specify program name for errors
+          -u, --uid      print only the UID portion of the ID
+        
+        With no argument print your arch id.
+        
+        With an argument, record ID-STRING as your id
+        in ~/.arch-params/=id
+        
+        Your id is recorded in various archives and log messages
+        as you use arch.  It must consist entirely of printable
+        characters and fit on one line.  By convention, it should
+        have the form of an email address, as in this example:
+        
+                Jane Hacker &lt;jane.hacker@gnu.org>
+        
+        The portion of an id string between &lt; and > is called your
+        uid.  arch sometimes uses your uid as a fragment when generating
+        unique file names.
+        
+        The option -u (--uid) causes only the uid part of your id string
+        to be printed.
+
+
+</pre>
+<p>There is a great deal of regularity among commands regarding option
+names and parameter syntax.  Hopefully, you'll pick this up as you
+learn the various commands.
+</p>
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

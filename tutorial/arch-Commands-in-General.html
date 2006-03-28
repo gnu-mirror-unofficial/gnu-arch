@@ -1,0 +1,90 @@
+<html lang="en">
+<head>
+<title>arch Commands in General - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Getting-Started.html#Getting-Started" title="Getting Started">
+<link rel="next" href="Introducing-Yourself-to-arch.html#Introducing-Yourself-to-arch" title="Introducing Yourself to arch">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="arch-Commands-in-General"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Introducing-Yourself-to-arch.html#Introducing-Yourself-to-arch">Introducing Yourself to arch</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Getting-Started.html#Getting-Started">Getting Started</a>
+<hr>
+</div>
+
+<h3 class="section">3.1 arch Commands in General</h3>
+
+<p>Every command in <code>arch</code> is accessed via the program <code>tla</code>, using an
+ordinary sub-command syntax:
+
+<pre class="example">             % tla &lt;sub-command&gt; &lt;options&gt; &lt;parameters&gt;
+</pre>
+   <p>A list of sub-commands can be obtained from:
+
+<pre class="example">             % tla help
+</pre>
+   <p>A brief summary of the options to any command is given by:
+
+<pre class="example">             % tla &lt;sub-command&gt; -h
+</pre>
+   <p>A more detailed help message for each command is given by:
+
+<pre class="example">             % tla &lt;sub-command&gt; -H
+</pre>
+   <p>For example, try:
+
+<pre class="example">             % tla my-id -H
+             print or change your id
+             usage: tla my-id [options] [id]
+
+               -h, --help     Display a help message and exit.
+               -H             Display a verbose help message and exit.
+               -V, --version  Display a release identifier string
+                              and exit.
+               -e, --errname  specify program name for errors
+               -u, --uid      print only the UID portion of the ID
+
+             With no argument print your arch id.
+
+             With an argument, record ID-STRING as your id
+             in ~/.arch-params/=id
+
+             Your id is recorded in various archives and log messages
+             as you use arch.  It must consist entirely of printable
+             characters and fit on one line.  By convention, it should
+             have the form of an email address, as in this example:
+
+                     Jane Hacker &lt;jane.hacker@gnu.org&gt;
+
+             The portion of an id string between &lt; and &gt; is called your
+             uid.  arch sometimes uses your uid as a fragment when generating
+             unique file names.
+
+             The option -u (--uid) causes only the uid part of your id string
+             to be printed.
+
+</pre>
+   <p>There is a great deal of regularity among commands regarding option
+names and parameter syntax.  Hopefully, you'll pick this up as you
+learn the various commands.
+
+   </body></html>
+

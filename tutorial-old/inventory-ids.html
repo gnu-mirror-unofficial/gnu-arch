@@ -1,0 +1,639 @@
+<html>
+<head>
+<title>Inventory Ids for Source</title>
+</head>
+<body>
+
+<a name="Inventory_Ids_for_Source"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Inventory Ids for Source</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="importing-first.html#Importing_the_First_Revision">Importing the First Revision</a></br>
+
+<b>prev: </b><a href="inventories.html#Project_Tree_Inventories">Project Tree Inventories</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p><strong><u>Caution: Steep Learning Curve:</u></strong> As in the previous chapter, the
+concepts and commands introduced here are likely to be unfamiliar to
+you, even if you have used other revision control systems.   Once 
+you &quot;get it&quot;, though, this will seem quite natural.  Best of all,
+this is the last tricky step before we can start storing project trees
+in an archive.
+</p>
+<a name="Looks_Like_Source_vs_Really_is_Source"></a>
+
+
+
+<h3 align=center>Looks Like Source vs Really is Source</h3>
+
+
+
+
+
+
+
+
+
+
+<p>In the previous chapter, we saw how to find out which files look like
+source according to the naming conventions:
+</p><pre>
+        % tla inventory --names --source
+        hw.c
+        main.c
+
+</pre>
+<p>In this chapter, there's a new distincition:  files which <em>look</em> like
+source according to their names, vs. files which <em>really are</em> source.
+</p><p>When you save your project tree in an archive, arch will store the
+files that <em>really are</em> source and ignore the rest.  We can ask which
+files really are source by dropping the <code>--names</code>
+ option to
+<code>inventory</code>
+:
+</p><pre>
+        % tla inventory --source
+        [no output]
+
+</pre>
+<p>It's a little more interesting if we include arch's own &quot;system
+files and directories&quot; in the listing:
+</p><pre>
+        % tla inventory --source --all --both
+        {arch}
+        {arch}/.arch-project-tree
+        {arch}/=tagging-method
+        {arch}/hello-world
+        [....]
+
+</pre>
+<p>but the thing to note here is that <code>hw.c</code>
+ and <code>main.c</code>
+ aren't listed.
+Arch thinks they are source in name only.  The next section gives a
+recipe to fix that, and the sections after that explain what's really
+going on.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="The_add_Command"></a>
+
+
+
+<h3 align=center>The add Command</h3>
+
+
+
+
+
+
+
+
+
+
+<p>We can tell arch that our files really are source, and should really
+be archived with the project, using the <code>tla add</code>
+ command:
+</p><pre>
+        % tla add hw.c
+        % tla add main.c
+
+</pre>
+<p>And now we get a better answer from:
+</p><pre>
+        % tla inventory --source
+        hw.c
+        main.c
+
+</pre>
+<p>A related command is <code>tla delete</code>
+:
+</p><pre>
+        % tla delete hw.c
+
+</pre>
+<p>That doesn't delete the file <code>hw.c</code>
+ itself:
+</p><pre>
+        % ls
+        hw.c            hw.c.~1~        main.c          {arch}
+
+</pre>
+<p>but it does remove it from the official list of source:
+</p><pre>
+        % tla inventory --source
+        main.c
+
+</pre>
+<p>For the sake of the examples, we need to put <code>hw.c</code>
+ back in the list:
+</p><pre>
+        % tla add hw.c
+
+</pre>
+<pre>
+        % tla inventory --source
+        hw.c
+        main.c
+
+</pre>
+<p>Let's take a deeper look at what's going on when you <code>tla add</code>
+ files:
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Two_Names_for_Every_File"></a>
+
+
+
+<h3 align=center>Two Names for Every File</h3>
+
+
+
+
+
+
+
+
+
+
+<p>In the <code>arch</code>
+ world, every source file (and directory) in your project
+tree has two names: a <em>
+<a name="index-pt:0"></a>
+
+file path
+</em>
+ and a <em>
+<a name="index-pt:1"></a>
+
+inventory id
+</em>
+.
+</p><p>The <strong>file path</strong> of a file is the relative path to the file from the
+root of the project tree.  It describes <em>where</em> within a source tree a
+file is located.
+</p><p>The <strong>inventory id</strong> of a file is a (mostly) arbitrary string that is
+unique to the file within the tree.   The inventory id remains
+constant even if a file is renamed.   So while the file path says
+where a file is located, the inventory id says which file it is
+that's stored at that path.
+</p><p>The purpose of <code>tla add</code>
+ is to assign an inventory id to a file.
+</p><p>In our example, we can examine the ids:
+</p><pre>
+        % tla inventory --source --ids
+        hw.c    x_very_long_string
+        main.c  x_another_very_long_string
+        ^^^^    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+         |                |
+         |           inventory ids
+     file paths
+
+</pre>
+<p>Ordinarily, when a file is moved, its file path changes, but its
+inventory id should remain the same.  The <code>tla move</code>
+ command 
+helps with this.   Suppose that we:
+</p><pre>
+        % mv hw.c hello.c
+
+</pre>
+<p>we should follow that with:
+</p><pre>
+        % tla move hw.c hello.c
+
+</pre>
+<p>after which:
+</p><pre>
+        % tla inventory --source --ids
+        hello.c   x_very_long_string
+        main.c    x_another_very_long_string
+
+</pre>
+<p>Note that <code>hello.c</code>
+ has the same inventory id that <code>hw.c</code>
+ used to.
+</p><p>We'll come back to the topic of renames later so, for now, let's 
+put things back where they started:
+</p><pre>
+        % mv hello.c hw.c
+        % tla move hello.c hw.c
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="Quick_Aside_--_Adding_Directories"></a>
+
+
+
+<h3 align=center>Quick Aside -- Adding Directories</h3>
+
+
+
+
+
+
+
+
+
+
+<p>The <code>tla add</code>
+ command applies to directories, too.   If we were to
+create a new subdirectory in the tree, we should <code>tla add</code>
+ it:
+</p><pre>
+        % mkdir docs
+
+</pre>
+<pre>
+        % tla inventory --names --source --both
+        docs
+        hw.c
+        hello.c
+
+</pre>
+<p>but
+</p><pre>
+        % tla inventory --source --both
+        hw.c
+        hello.c
+
+</pre>
+<p>unless
+</p><pre>
+        % tla add docs
+
+</pre>
+<p>and then
+</p><pre>
+        % tla inventory --source --both
+        docs
+        hw.c
+        hello.c
+
+</pre>
+<p>But again, for the sake of our example, we don't need docs.
+We can just:
+</p><pre>
+        % rm -rf docs
+
+</pre>
+<p>There isn't a need to <code>tla delete</code>
+ a directory that we physically remove.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="How_it_Works_--_tla_add"></a>
+
+
+
+<h3 align=center>How it Works -- tla add</h3>
+
+
+
+
+
+
+
+
+
+
+<p>What <code>tla add</code>
+ does is fairly simple.   Note that when we added
+<code>hw.c</code>
+ and <code>main.c</code>
+, a new directory was created:
+</p><pre>
+        % ls -a
+        .               .arch-ids       hw.c.~1~        {arch}
+        ..              hw.c            main.c
+
+</pre>
+<p>The <code>.arch-ids</code>
+ directory is new:
+</p><pre>
+        % ls .arch-ids
+        hw.c.id         main.c.id
+
+</pre>
+<pre>
+        % cat .arch-ids/hw.c.id
+        very long string
+
+</pre>
+<p>The <code>*.id</code>
+ files is where the raw data that determines a file id are
+stored.   The command <code>tla delete</code>
+ removes those files.   The command
+<code>tla move</code>
+ renames them.
+</p><p>The id for a directory is stored slightly differently.  For example,
+when we created a <code>docs</code>
+ subdir and gave it an id with <code>tla add</code>
+, that
+created a file <code>docs/.arch-ids/=id</code>
+.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Keeping_Things_Neat_and_Tidy"></a>
+
+
+
+<h3 align=center>Keeping Things Neat and Tidy</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:2"></a>
+
+</p><p>The command:
+</p><pre>
+        % tla tree-lint
+
+</pre>
+<p>is useful for keeping things neat and tidy.
+</p><p><code>tree-lint</code>
+ will tell you of any ids for which the corresponding file
+does not exist.  It will tell you of any files that pass the naming
+conventions, but for which no explicit id exists.
+</p><p>It will also warn you about files that don't fit the naming
+conventions.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Inventory_Ids_--_There's_More_Than_One_Way_to_Do_It"></a>
+
+
+
+<h3 align=center>Inventory Ids -- There's More Than One Way to Do It</h3>
+
+
+
+
+
+
+
+
+
+
+<p>In this chapter, you've learned about the basic commands <code>add</code>
+,
+<code>move</code>
+, and <code>delete</code>
+.   
+</p><p>The use of those tools for managing inventory ids was chosen as the
+default behavior because, superficially at least, it resembles similar
+commands in systems such as CVS which many users are already familiar
+with.
+</p><p>There are other ways to manage inventory ids.   Sometimes the other
+ways are more convenient.   A later chapter discusses these other
+techniques (see: xref :<em>
+<a name="index-pt:3"></a>
+
+!!!
+</em>
+).
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Why_is_it_Like_This_--_The_Purpose_of_Inventory_Ids"></a>
+
+
+
+<h3 align=center>Why is it Like This -- The Purpose of Inventory Ids</h3>
+
+
+
+
+
+
+
+
+
+
+<p>As you'll see in later chapters, <code>arch</code>
+ is good at managing <em>changes</em>
+made to source trees and the files they contain, and good at telling
+you about the <em>history</em> of trees and files.
+</p><p>As an example, let's suppose that Alice and Bob are both working on
+the <code>hello_world</code>
+ project.  In her tree, Alice makes some changes to
+<code>hw.c</code>
+.  In his tree, Bob renames <code>hw.c</code>
+ to <code>hello.c</code>
+.
+</p><p>At some point it is necessary to &quot;sync-up&quot; Alice and Bob.  Bob
+should wind up with the changes Alice has been making.   Alice should
+wind up with the same file renaming that Bob has done.
+</p><p><code>arch</code>
+ provides many mechanisms for that syncing up -- it's one of the
+most important things that <code>arch</code>
+ can do -- but nearly all of them
+boil down to computing and applying <strong>changesets</strong>.
+</p><p>Alice can ask <code>arch</code>
+ to create a changeset describing the work she's
+done, and that changeset will describe the changes she made within
+<code>hw.c</code>
+.  Bob can create a changeset and that changeset will describe
+the file renaming he did.
+</p><p>If Alice applies Bob's changeset to her tree, her copy of <code>hw.c</code>
+
+should be renamed <code>hello.c</code>
+.   But a trickier case is this:  What
+happens if Bob applies Alice's changeset to his tree?
+</p><p>Alice changed a file named <code>./hw.c</code>
+, but in Bob's tree, those same
+changes should be made to a file named <code>./hello.c</code>
+.  Fortunately, both
+files have the same inventory id:
+</p><pre>
+
+        file path               inventory id
+        ---------               -------------
+
+                 Alice's tree:
+        ./hw.c                  x_very_long_string
+                                                  \ 
+                                                   - the same long string
+                 Bob's tree:                      /
+        ./hello.c               x_very_long_string
+
+
+</pre>
+<p>In Alice's changeset, the changes Alice made are described as being
+made to the file whose id is <code>x_very_long_string</code>
+.
+</p><p>Therefore, when applying that changeset to Bob's tree, <code>arch</code>
+ knows to
+apply the changes to the file with that same id;  it knows to apply
+the changes to his <code>./hello.c</code>
+.
+</p><p>That example illustrates what inventory ids are for: they allow
+<code>arch</code>
+ to describe the changes made to a tree in terms of the logical
+identity of files rather than their physical location.  There are many
+more complicated examples of how inventory ids come into play, but
+now you've seen at least the basic point.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Why_is_it_Like_This_--_Why_tla_move_Doesn't_Move_Files"></a>
+
+
+
+<h3 align=center>Why is it Like This -- Why tla move Doesn't Move Files</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Why doesn't <code>tla delete</code>
+ delete the file being removed from the source
+category, or <code>tla move</code>
+ rename it?
+</p><p>Those commands work as they do so that you can adjust the ids in a
+tree even if some other tool which knows nothing about arch has
+rearranged files.    For example, if you use a &quot;directory editor&quot; to
+rename source files, <code>tla move</code>
+ is available to catch-up to the
+changes the directory editor made.
+</p><p>Sometimes, arch users request the addition of commands: <code>tla mv</code>
+, <code>tla
+mkdir</code>
+, <code>tla rmdir</code>
+, and <code>tla rm</code>
+ that would modify <em>both</em> ids and
+the corresponding source files.  That's a great idea and it's not all
+that hard: so, if you're looking for something to do, that's a good
+idea for a real-world programming project on which to try-out and
+learn arch.  Let us know on the <code>gnu-arch-users</code>
+ mailing list if you
+do this, so that we can consider merging your changes into the
+distribution.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

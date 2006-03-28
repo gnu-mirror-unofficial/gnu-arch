@@ -1,0 +1,324 @@
+<html>
+<head>
+<title>Creating a New Archive</title>
+</head>
+<body>
+
+<a name="Creating_a_New_Archive"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Creating a New Archive</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="new-project.html#Starting_a_New_Project">Starting a New Project</a></br>
+
+<b>prev: </b><a href="introducing-yourself.html#Introducing_Yourself_to_arch">Introducing Yourself to arch</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p>An archive is a dedicated directory which <code>arch</code>
+ uses to hold a
+library of your project trees and changesets.  This chapter shows you
+how to create a new archive.
+</p>
+<a name="Choose_a_Location"></a>
+
+
+
+<h3 align=center>Choose a Location</h3>
+
+
+
+
+
+
+
+
+
+
+<p>You need to decide where to store your archive: where to create the
+directory that will contain the archive.
+</p><p><strong><u>Usage Advice:</u></strong> It is likely that you'll eventually want to have <em>more
+than one</em> archive.  Therefore, it is a good idea to create a directory
+of archives.
+</p><p>In the examples that follow, we'll be creating an archive as a
+subdirectory of <code>~/{archives}</code>
+, a directory of archives.
+</p><pre>
+        # Create a directory in which to store archives:
+        #
+        % mkdir ~/{archives}
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="Choose_an_Archive_Name"></a>
+
+
+
+<h3 align=center>Choose an Archive Name</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Next, you need to choose a name for your archive.  An archive name
+consists of an email address, followed by two dashes (<code>--</code>
+), followed
+by a suffix.  By convention, the email address should be that of the
+archive owner.
+</p><p>In the example, we'll use the name:
+</p><pre>
+        lord@emf.net--2003-example
+
+</pre>
+<p><strong><u>Usage Advice:</u></strong> If you use a single archive for a very long time it
+will eventually accumulate a very large amount of data and thus start
+to become inconvenient to work with.  Because <code>arch</code>
+ seamlessly
+operates across archive boundaries, there is no need to keep
+everything in just one archive.  It's a good idea to plan to divide up
+your archives by <em>time</em> and that suggests that you include a date in
+the archive name.  In the example above, the archive is labeled <code>2003</code>
+:
+a year later, we could create <code>lord@emf.net--2004-example</code>
+ and
+continue the project in that new archive.  The <code>2003</code>
+ archive will
+still exist at that point -- we'll just stop adding new data to it.
+</p><p><strong><u>Usage Advice:</u></strong> You should plan on having multiple archives, and
+therefore choose archive names that distinguish them.  The suffix
+<code>-example</code>
+ above tells us that this archive is being created just work
+through the examples in this tutorial.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Create_the_Archive"></a>
+
+
+
+<h3 align=center>Create the Archive</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:0"></a>
+
+</p><p>To create a new archive, use the <code>make-archive</code>
+ command, telling it
+the archive name and archive location:
+</p><pre>
+        # Create the new archive
+        # 
+        % tla make-archive lord@emf.net--2003-example \
+                             ~/{archives}/2003-example
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="Make_this_Your_Default_Archive"></a>
+
+
+
+<h3 align=center>Make this Your Default Archive</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:1"></a>
+
+</p><p>To save yourself from having to type the archive name to every future
+command, declare that your new archive is your default choice:
+</p><pre>
+        # Choose a default archive
+        # 
+        % tla my-default-archive lord@emf.net--2003-example
+
+</pre>
+<p>Your current default is reported by:
+</p><pre>
+        % tla my-default-archive
+        lord@emf.net--2003-example
+
+</pre>
+<p>And you can cancel the default setting with:
+</p><pre>
+        % tla my-default-archive -d
+        user default archive removed
+
+</pre>
+<p>(If you experiment with <code>-d</code>
+, be sure to re-establish your default
+archive so that you can continue to follow the examples.)
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="How_it_Works_--_New_Archives"></a>
+
+
+
+<h3 align=center>How it Works -- New Archives</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:2"></a>
+
+<a name="index-pt:3"></a>
+
+</p><p>Let's examine what that command did.
+</p><p>First, <code>tla</code>
+ now knows about the new archive:
+</p><pre>
+
+        # What archives does `tla' know about?
+        # 
+        % tla archives
+        lord@emf.net--2003-example
+                /home/lord/{archives}/2003-example
+
+        
+        % tla whereis-archive lord@emf.net--2003-example
+        /home/lord/{archives}/2003-example
+
+
+        # Where is that data stored?
+        # 
+        % ls ~/.arch-params
+        =default-archive        =id             =locations
+
+        % cat ~/.arch-params/=default-archive
+        lord@emf.net--2003-example
+
+        % ls ~/.arch-params/=locations
+        lord@emf.net--2003-example
+
+        % cat ~/.arch-params/=locations/lord@emf.net--2003-example
+        /home/lord/{archives}/2003-example
+
+
+</pre>
+<p>Next, the archive directory has been created and contains a few files:
+</p><pre>
+
+        % ls ~/{archives}
+        2003-example
+
+        % ls -a ~/{archives}/2003-example
+        .                       .archive-version
+        ..                      =meta-info
+
+        % cat ~/{archives}/2003-example/.archive-version
+        Hackerlab arch archive directory, format version 2.
+
+        % ls -a ~/{archives}/2003-example/=meta-info/
+        .       ..      name
+
+        % cat ~/{archives}/2003-example/=meta-info/name
+        lord@emf.net--2003-example
+
+
+</pre>
+<p><strong><u>Caution:</u></strong> You usually should not edit files in <code>~/.arch-params/</code>
+ or
+files in an archive &quot;by hand.&quot;
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>

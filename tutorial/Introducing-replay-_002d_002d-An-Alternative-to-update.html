@@ -1,0 +1,120 @@
+<html lang="en">
+<head>
+<title>Introducing replay -- An Alternative to update - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Collaborating-With-Other-People.html#Collaborating-With-Other-People" title="Collaborating With Other People">
+<link rel="prev" href="The-update_002fcommit-Style-of-Cooperation.html#The-update_002fcommit-Style-of-Cooperation" title="The update/commit Style of Cooperation">
+<link rel="next" href="Shared-and-Public-Archives.html#Shared-and-Public-Archives" title="Shared and Public Archives">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Introducing-replay----An-Alternative-to-update"></a>
+<a name="Introducing-replay-_002d_002d-An-Alternative-to-update"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Shared-and-Public-Archives.html#Shared-and-Public-Archives">Shared and Public Archives</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="The-update_002fcommit-Style-of-Cooperation.html#The-update_002fcommit-Style-of-Cooperation">The update/commit Style of Cooperation</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Collaborating-With-Other-People.html#Collaborating-With-Other-People">Collaborating With Other People</a>
+<hr>
+</div>
+
+<h3 class="section">5.2 Introducing replay &ndash; An Alternative to update</h3>
+
+<p><code>update</code> isn't the only way to catch-up with a development path. 
+Another option is <code>replay</code>:
+
+<pre class="example">             % cd ~/wd/project-tree
+             % tla replay
+             [....]
+</pre>
+   <p>What does that actually do?
+
+<h4 class="subsection">5.2.1 An update Refresher</h4>
+
+<p>Let's suppose that we check out an old version of <code>hello-world</code>:
+
+<pre class="example">             % cd ~/wd
+             % tla get hello-world--mainline--0.1--patch-1 hw-patch-1
+             [...]
+</pre>
+   <p>It's easy to see that the resulting tree is not up-to-date:
+
+<pre class="example">             % cd hw-patch-1
+             % tla missing
+             patch-2
+             patch-3
+</pre>
+   <p>Now, let's suppose that we make some local changes in <code>hw-patch-1</code> and
+then run <code>update</code>.   What happens?
+
+   <p><strong>Local changes are computed against patch-1.</strong>  In other words,
+a changeset is created that represents the changes from a
+pristine copy of the <code>patch-1</code> revision to the current state
+of the project tree (<code>hw-patch-1</code>).
+
+   <p><strong>A copy of patch-3 is checked out.</strong>  <code>update</code> starts with a pristine
+copy of the <code>patch-3</code> revision.
+
+   <p><strong>The changeset is applied to the patch-3 tree.</strong>  The changes computed
+in the first step are made to the new tree.
+
+   <p>There's another way, though:
+
+<h4 class="subsection">5.2.2 The replay Command</h4>
+
+<p>We have a local copy of the <code>patch-1</code>, perhaps with some local
+changes:
+
+<pre class="example">             % cd ~/wd/hw-patch-1
+             % tla missing
+             patch-2
+             patch-3
+</pre>
+   <p>Recall that the <code>patch-2</code> and <code>patch-3</code> revisions each correspond to a
+specific changeset, stored in the archive (see <strong>How it Works &ndash; commit of a New Revision</strong> in <a href="Checking_002din-Changes.html#Checking_002din-Changes">Checking-in Changes</a>).
+
+   <p>We could add those changes to your local tree by using <code>get-changeset</code>
+to retrieve each changeset, and <code>dopatch</code> to apply it (see
+<strong>get-changeset Retrieves a Changeset from an Archive</strong> in <a href="Exploring-Changesets.html#Exploring-Changesets">Exploring Changesets</a>, and
+<a href="dopatch.html#dopatch">dopatch</a>).  That's a lot of tedious work, though, so <code>arch</code>
+provides a more automated way to accomplish that same effect:
+
+<pre class="example">             % cd ~/wd/hw-patch-1
+             % tla replay
+             [....]
+             % tla missing
+             [no output]
+</pre>
+   <p><code>replay</code> will do just what we've described: get patches
+from the archive and apply them one-by-one.   One word of caution,
+though: if one of those patches generates conflicts, <code>replay</code> will
+stop there and let you fix the conflicts.  You can then pick up where
+<code>replay</code> left off by running <code>replay</code> a second time.
+
+<h4 class="subsection">5.2.3 How it Works &ndash; replay</h4>
+
+<p>If you've followed along with the tutorial so far, the way that <code>replay</code>
+works should be pretty obvious.  In fact, it's just exactly how we
+described it above.  <code>replay</code> uses <code>missing</code> to find out what changes
+your tree is missing, <code>get-changeset</code> to retrieve those changesets, and
+<code>dopatch</code> to apply them.  There's a fair amount of "bookkeeping"
+involved in doing that &ndash; and that bookkeeping is what <code>replay</code>
+automates for you.
+
+   </body></html>
+

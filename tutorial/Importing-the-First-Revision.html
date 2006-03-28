@@ -1,0 +1,293 @@
+<html lang="en">
+<head>
+<title>Importing the First Revision - arch Meets hello-world</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="arch Meets hello-world">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Getting-Started.html#Getting-Started" title="Getting Started">
+<link rel="prev" href="Inventory-Ids-for-Source.html#Inventory-Ids-for-Source" title="Inventory Ids for Source">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Importing-the-First-Revision"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Inventory-Ids-for-Source.html#Inventory-Ids-for-Source">Inventory Ids for Source</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Getting-Started.html#Getting-Started">Getting Started</a>
+<hr>
+</div>
+
+<h3 class="section">3.8 Importing the First Revision</h3>
+
+<p>Just to Review: If you've been following the examples in the earlier
+chapters, we now have:
+
+   <p><strong>Your arch User ID</strong> In <a href="Introducing-Yourself-to-arch.html#Introducing-Yourself-to-arch">Introducing Yourself to arch</a>, you set an
+ID string that <code>arch</code> uses to identify you.
+
+   <p><strong>Your First Archive</strong>  In <a href="Creating-a-New-Archive.html#Creating-a-New-Archive">Creating a New Archive</a>, you created
+your first archive and made that your default archive.  In
+<a href="Starting-a-New-Project.html#Starting-a-New-Project">Starting a New Project</a> you added the <code>hello-world</code> project to
+that archive.
+
+   <p><strong>Your Initial Source Tree</strong> In <a href="Starting-a-New-Source-Tree.html#Starting-a-New-Source-Tree">Starting a New Source Tree</a> you
+began to initialize the sources for <code>hello-world</code> as an <code>arch</code> project
+tree and in <a href="Inventory-Ids-for-Source.html#Inventory-Ids-for-Source">Inventory Ids for Source</a> you assigned inventory
+ids to the source files in that project.
+
+   <p>Now it's <strong>finally</strong> time to import the sources for <code>hello-world</code> into
+your archive.  That will happen in two steps: <code>(1)</code> create a log
+message; <code>(2)</code> import the sources.
+
+<h4 class="subsection">3.8.1 Making the First Log File</h4>
+
+<p><a name="index-make_002dlog_002dfile-31"></a>
+
+   <p>You're about to create a new <a name="index-revision-32"></a><dfn>revision</dfn> of <code>hello-world</code> in your
+archive: a record of how that project looked at a particular point in
+time.
+
+   <p>Whenever you create a new revision, the first step is to create a log
+file for that revision:
+
+<pre class="example">
+             % cd ~/wd/hello-world
+
+             % tla make-log
+             ++log.hello-world--mainline--0.1--lord@emf.net--2003-example
+
+</pre>
+   <p>The output from that command is the name of a file which you must now
+edit.  Initially it contains:
+
+<pre class="example">             Summary:
+             Keywords:
+</pre>
+   <p>You should fill out this file just like an email message.  Add a short
+description of the revision in the <code>Summary:</code> field, and a full
+description in the body.  Just as in email, the body must be separated
+from the headers by a blank line.   When you're done, the log might look
+like this:
+
+<pre class="example">             Summary: initial import
+             Keywords:
+
+             This is the initial import of `hello-world', the killer app
+             that will propel our new .com company to a successful IPO.
+
+</pre>
+   <p><strong>Usage Note for vi Fans:</strong>  The default filename of log messages starts
+with the character <code>+</code>.   <code>vi</code> is a non-standard program in the sense
+that it treats arguments starting with <code>+</code> as options rather than
+ordinary arguments.  Therefore, you should be sure to type the
+filename for <code>vi</code> starting with <code>./</code>, as in:
+
+<pre class="example">         % vi ./++log.hello-world--mainline--0.1--lord@emf.net--2003-example
+</pre>
+   <p class="noindent">or you could simply:
+
+<pre class="example">         % vi `tla make-log`
+</pre>
+   <p><strong>Shortcut Note:</strong> This section describes the "long way" to make the
+log entry to go with your initial import.  There is a short-cut that
+can let you skip this step: the <code>-L</code> and <code>-s</code> options to <code>tla import</code>. 
+We've walked though the long way here but later you might want to try
+<code>tla import -H</code> to learn about the shortcut'.
+
+<h4 class="subsection">3.8.2 Storing the First Revision in the Archive</h4>
+
+<p><a name="index-import-33"></a>
+<a name="index-revisions-34"></a>
+
+   <p>Finally, we can ask <code>arch</code> to add our source to the archive:
+
+<pre class="example">             % tla import
+             [....]
+</pre>
+   <p><strong>Note:</strong> If you have received an error along the lines of <a name="index-These-35"></a>apparent source files lack inventory ids
+<dfn>These
+apparent source files lack inventory ids</dfn>, please reread
+<a href="Inventory-Ids-for-Source.html#Inventory-Ids-for-Source">Inventory Ids for Source</a> and either add each file or
+change the id-tagging-method to names.
+
+   <p>We can observe the side effects of that command in a few ways.
+
+   <p>For one thing, we can ask <code>arch</code> what revisions exist in the archive
+for our project:
+
+<pre class="example">             % tla revisions hello-world--mainline--0.1
+             base-0
+</pre>
+   <p>In fact, we can get more detail:
+
+<pre class="example">             % tla revisions --summary --creator --date \
+                               hello-world--mainline--0.1
+             base-0
+                 2003-01-28 00:45:50 GMT
+                 Tom (testing) Lord &lt;lord@emf.net&gt;
+                 initial import
+</pre>
+   <p>What's changed in the project tree?   Recall that we have something
+called a <a name="index-patch-log-36"></a><dfn>patch log</dfn>:
+
+<pre class="example">             % tla log-versions
+             lord@emf.net--2003-example/hello-world--mainline--0.1
+</pre>
+   <p>Now it has an entry:
+
+<pre class="example">             % tla logs hello-world--mainline--0.1
+             base-0
+
+             % tla logs --summary --creator --date \
+                            hello-world--mainline--0.1
+             base-0
+                 2003-01-28 00:45:50 GMT
+                 Tom (testing) Lord &lt;lord@emf.net&gt;
+                 initial import
+
+             % tla cat-log hello-world--mainline--0.1--base-0
+             Revision: hello-world--mainline--0.1--base-0
+             Archive: lord@emf.net--2003-example
+             Creator: Tom (testing) Lord &lt;lord@emf.net&gt;
+             Date: Mon Jan 27 16:45:50 PST 2003
+             Standard-date: 2003-01-28 00:45:50 GMT
+             Summary: initial import
+             Keywords:
+             New-files: ./hw.c ./main.c
+             New-patches: \
+               lord@emf.net--2003-example/hello-world--mainline--0.1--base-0
+
+             This is the initial import of `hello-world', the killer app
+             that will propel our new .com company to a successful IPO.
+</pre>
+   <h4 class="subsection">3.8.3 Revision Names from import</h4>
+
+<p><code>import</code> created a new revision in the archive.  Note that the
+revision it created is called <code>base-0</code> and that we can form a longer
+name for that revision by prepending the category, branch, and
+version:
+
+<pre class="example">             hello-world--mainline--0.1--base-0
+             ^^^^^^^^^^^  ^^^^^^^^  ^^^  ^^^^^^
+                  |          |       |     |
+                  |          |       |    patch level name
+                  |          |       |
+                  |          |     version number
+                  |          |
+                  |     branch name
+                  |
+              category name
+</pre>
+   <p>If we add in the archive name, we get something called a <a name="index-fully-37"></a>qualified revision name
+<dfn>fully
+qualified revision name</dfn>, which is a globally unique identifier for
+the revision:
+
+<pre class="example">         lord@emf.net--2003-example/hello-world--mainline--0.1--base-0
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     |
+               archive name
+</pre>
+   <p>Fully qualified names will be of increasing importance as you learn
+about distributed repositories in later chapters.
+
+<h4 class="subsection">3.8.4 How it Works &ndash; What import Does</h4>
+
+<p>Let's look at what <code>import</code> did to the archive:
+
+<pre class="example">             # cd to the directory for the version we are working
+             # on:
+             #
+             % cd ~/archives
+             % cd 2003-example/
+             % cd hello-world/
+             % cd hello-world--mainline/
+             % cd hello-world--mainline--0.1/
+             % ls
+             base-0
+</pre>
+   <p>It created a new <code>base-0</code> directory for the revision.
+
+<pre class="example">             % cd base-0
+             % ls
+             +revision-lock
+             hello-world--mainline--0.1--base-0.src.tar.gz
+             log
+</pre>
+   <p>As always, the <code>+revision-lock</code> file is something <code>arch</code> uses
+internally to keep the archive in a consistent state under all
+circumstances.
+
+   <p>The <code>log</code> file is a copy of the log message you wrote, with some
+additional headers added:
+
+<pre class="example">             % cat log
+             Revision: hello-world--mainline--0.1--base-0
+             Archive: lord@emf.net--2003-example
+             Creator: Tom (testing) Lord &lt;lord@emf.net&gt;
+             Date: Mon Jan 27 16:45:50 PST 2003
+             Standard-date: 2003-01-28 00:45:50 GMT
+             Summary: initial import
+             Keywords:
+             New-files: ./hw.c ./main.c
+             New-patches: \
+               lord@emf.net--2003-example/hello-world--mainline--0.1--base-0
+
+             This is the initial import of `hello-world', the killer app
+             that will propel our new .com company to a successful IPO.
+
+</pre>
+   <p>Finally, the compressed tar file is a copy of the source files in your
+project tree:
+
+<pre class="example">             % tar ztf hello-world--mainline--0.1--base-0.src.tar.gz
+             hello-world--mainline--0.1--base-0/
+             hello-world--mainline--0.1--base-0/hw.c
+             hello-world--mainline--0.1--base-0/main.c
+             hello-world--mainline--0.1--base-0/{arch}/
+             hello-world--mainline--0.1--base-0/{arch}/.arch-project-tree
+             hello-world--mainline--0.1--base-0/{arch}/=tagging-method
+             hello-world--mainline--0.1--base-0/{arch}/hello-world/
+             [....]
+</pre>
+   <p>You should notice that the tar file does not include <em>every</em> file from
+your project tree.  Specifically, it contains those files that are
+listed by:
+
+<pre class="example">             % cd ~/wd/hello-world
+
+             % tla inventory --source --both --all
+             [....]
+</pre>
+   <p>Finally, if you poke around in the <code>{arch}</code> subdirectory of your
+project tree, you'll see two new items:
+
+<pre class="example">             % ls
+             ++default-version       =tagging-method
+             ++pristine-trees        hello-world
+</pre>
+   <p>The directory <code>++pristine-trees</code> contains (at some depth) a copy of
+the tree you just imported.  This is a cached copy used by other
+<code>arch</code> commands.  (Note: In future releases of <code>arch</code>, it is likely
+that the <code>++pristine-trees</code> subdirectory will be replaced by a
+different mechanism.)
+
+   <p>If you dig around in the <code>hello-world</code> (patch log) directory, you
+can find a local copy of the log file for the revision you just
+created (with extra headers added to that log file).
+
+   </body></html>
+

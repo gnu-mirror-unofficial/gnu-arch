@@ -1,0 +1,454 @@
+<html>
+<head>
+<title>Checking-in Changes</title>
+</head>
+<body>
+
+<a name="Checking-in_Changes"></a>
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+<h2 align=center>Checking-in Changes</h2>
+
+
+
+
+<small>
+<b>up: </b><a href="arch.html#arch_Meets_hello-world">arch Meets hello-world</a></br>
+<b>next: </b><a href="retrieving-earlier-revisions.html#Retrieving_Earlier_Revisions">Retrieving Earlier Revisions</a></br>
+
+<b>prev: </b><a href="importing-first.html#Importing_the_First_Revision">Importing the First Revision</a></br>
+
+</small>
+<br>
+
+
+
+
+
+
+<p>So far, if you're following the examples, we've created a new archive
+and a <code>hello-world</code>
+ project within that archive, and we've imported 
+the initial version of <code>hello-world</code>
+ into the archive.
+</p><p>The most common task you're likely to perform as a programming using a 
+revision control system is to <em>
+<a name="index-pt:0"></a>
+
+commit
+</em>
+ a set of changes.  In this
+chapter, we'll look at the most basic way that that works.
+</p>
+<a name="warld_!=_world\n"></a>
+
+
+
+<h3 align=center>warld != world\n</h3>
+
+
+
+
+
+
+
+
+
+
+<p>If you look at our <code>hello-world</code>
+ sources, you might notice a spelling
+error and newline bug:
+</p><pre>
+        % cat hw.c
+
+        #include &lt;stdio.h>
+
+        void
+        hello_world (void)
+        {
+          (void)printf (&quot;hello warld&quot;);
+        }
+
+
+</pre>
+<p>Clearly, we meant to say <code>hello world</code>
+, not <code>hello warld</code>
+ and, if
+we're going to be conventional, we probably wanted a newline at the
+end of the message.  So, let's fix those bugs now.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Some_Free_Advice_About_Log_Messages"></a>
+
+
+
+<h3 align=center>Some Free Advice About Log Messages</h3>
+
+
+
+
+
+
+
+
+
+
+<p><em>Free advice is worth what you pay for it.</em> -- anonymous.
+</p><p>Here's the plan for fixing these bugs:  We'll change the source to fix
+the bugs.  Then we'll ask <code>arch</code>
+ to record the changes need to fix the
+bugs in the archive.    That second step will create a new <em>revision</em>
+in the archive.
+</p><p>As we noted earlier, whenever you create a new revision, you need to
+provide a <em>log message</em> for that revision (see <a href="importing-first.html#Making_the_First_Log_File">Making the First Log File</a>).
+</p><p>The particular bugs we're about to fix in our toy example are quite
+trivial -- but in a real world situation, they would likely be more
+complicated.   You have a choice:  you can either wait until all the
+changes are done to write the log message describing your changes, or
+you can write the log message as you go along.
+</p><p>Here's the free advice: write the log message as you go along.  In
+other words, take notes as you hack.   In terms of <code>tla</code>
+ commands, 
+that means to start the bug fix process with:
+</p><pre>
+        % cd ~/wd/hello-world
+
+        tla make-log
+        ++log.hello-world--mainline--0.1--lord@emf.net--2003-example
+
+
+</pre>
+<p>Then edit your new log file so that it reads:
+</p><pre>
+        Summary: Fix bugs in the &quot;hello world&quot; string
+        Keywords: 
+
+</pre>
+<p>The <code>Summary:</code>
+ thus explains what you intend to do with the upcoming
+changes.  As you work, you can fill in the body of the log message.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="The_Edit/Update-Log_Cycle"></a>
+
+
+
+<h3 align=center>The Edit/Update-Log Cycle</h3>
+
+
+
+
+
+
+
+
+
+
+<p>Pretending that these bugs are more complicated than they actually
+are, here's how the work might go:
+</p><p><strong><u>Fix the spelling error.</u></strong>  Change <code>warld</code>
+ to <code>world</code>
+.
+</p><p><strong><u>Update the log message.</u></strong>  Add a note to the log file:
+</p><pre>
+        Summary: Fix bugs in the &quot;hello world&quot; string
+        Keywords: 
+
+        Spell &quot;world&quot; correctly (not &quot;warld&quot;).
+
+
+</pre>
+<p><strong><u>Fix the newline error.</u></strong>  Add a newline to the message.
+</p><p><strong><u>Update the log message again.</u></strong> Add a note to the log file:
+</p><pre>
+        Summary: Fix bugs in the &quot;hello world&quot; string
+        Keywords: 
+
+        Spell &quot;world&quot; correctly (not &quot;warld&quot;).
+
+        Add a newline to the hello world message.
+
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="Oh_My_Gosh_--_What_Have_I_Done?"></a>
+
+
+
+<h3 align=center>Oh My Gosh -- What Have I Done?</h3>
+
+
+
+
+
+
+
+
+
+
+<p><a name="index-pt:1"></a>
+
+</p><p>So you've just worked long and hard on these complex bug fixes.
+Wouldn't it be a good idea to review your work once more before
+publishing it?
+</p><p>No problem, <code>arch</code>
+ can help:
+</p><pre>
+        tla changes --diffs
+        [....]
+        *** patched regular files
+ 
+        **** ./hw.c
+        [....] 
+             @@ -4,7 +4,7 @@
+              void
+              hello_world (void)
+              {
+             -  (void)printf (&quot;hello warld&quot;);
+             +  (void)printf (&quot;hello world\n&quot;);
+              }
+        [....]
+
+
+
+</pre>
+<p>Aha!  Now we know.  It's time to record that change in the archive.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="Storing_Changes_in_the_Archive"></a>
+
+
+
+<h3 align=center>Storing Changes in the Archive</h3>
+
+
+
+
+
+
+
+
+
+
+<p>So now let's record those changes in the archive.
+</p><p>If you didn't take our free advice (see <em>
+<a name="index-pt:2"></a>
+
+Some Free Advice About Log
+Messages
+</em>
+), now is the time to create a log message (hint: <code>tla
+make-log</code>
+).
+</p><p>To save your changes in the archive, simply:
+</p><pre>
+        % tla commit
+        [....]
+
+</pre>
+<p>After the <code>commit</code>
+ completes, there is a new revision in the archive:
+</p><pre>
+        % tla revisions hello-world--mainline--0.1
+        base-0
+        patch-1
+
+</pre>
+<p>or in more detail:
+</p><pre>
+        % tla revisions --summary hello-world--mainline--0.1
+        base-0
+            initial import
+        patch-1
+            Fix bugs in the &quot;hello world&quot; string
+
+</pre>
+<p>Our project tree patch log has been similarly updated:
+</p><pre>
+        % tla logs hello-world--mainline--0.1
+        base-0
+        patch-1
+
+        % tla logs --summary hello-world--mainline--0.1
+        base-0
+            initial import
+        patch-1
+            Fix bugs in the &quot;hello world&quot; string
+
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="How_it_Works_--_commit_of_a_New_Revision"></a>
+
+
+
+<h3 align=center>How it Works -- commit of a New Revision</h3>
+
+
+
+
+
+
+
+
+
+
+<p>What does <code>commit</code>
+ do to an archive?
+</p><pre>
+        # cd to the directory for the version we are working 
+        # on:
+        # 
+        % cd ~/{archives}
+        % cd 2003-example/
+        % cd hello-world/
+        % cd hello-world--mainline/
+        % cd hello-world--mainline--0.1/
+        % ls
+        % ls
+        +version-lock   =README         base-0          patch-1
+
+</pre>
+<p>The <code>patch-1</code>
+ subdirectory is new:
+</p><pre>
+        % cd patch-1
+
+        % ls
+        +revision-lock
+        hello-world--mainline--0.1--patch-1.patches.tar.gz
+        log
+
+
+</pre>
+<p>As usual, the log file is the log file you wrote, with some 
+extra headers added:
+</p><pre>
+        % cat log
+        Revision: hello-world--mainline--0.1--patch-1
+        Archive: lord@emf.net--2003-example
+        Creator: Tom (testing) Lord &lt;lord@emf.net>
+        Date: Mon Jan 27 22:26:13 PST 2003
+        Standard-date: 2003-01-28 06:26:13 GMT
+        Summary: Fix bugs in the &quot;hello world&quot; string
+        Keywords: 
+        New-files: \
+          {arch}/hello-world/ [....] /patch-log/patch-1
+        Modified-files: hw.c
+        New-patches: \
+          lord@emf.net--2003-example/hello-world--mainline--0.1--patch-1
+
+        Spell &quot;world&quot; correctly (not &quot;warld&quot;).
+
+        Add a newline to the hello world message.
+
+
+
+</pre>
+<p>The <code>.patches.tar.gz</code>
+ file is something called a <strong>changeset</strong>.  It
+describes the changes you made as differences between the <code>base-0</code>
+
+revision and the <code>patch-1</code>
+ revision.   You'll learn more about the
+nature of changesets in later chapters.  For now, you can think of a
+changeset as <em>similar</em> to the output of <code>diff -r</code>
+ if used to compare
+the <code>base-0</code>
+ revision before your recent changes, with that same tree
+after your recent changes (or, in the words of one <code>arch</code>
+ user: a
+&quot;patch set on steroids&quot;).
+</p><p>In the project tree:
+</p><pre>
+        % cd ~/wd/hello-world
+
+</pre>
+<p>the commit command had two effects.  First, it added a log file under
+<code>{arch}/hello-world</code>
+.   Second, it modified <code>{arch}/++pristine-trees</code>
+ 
+to contain a cached copy of the <code>patch-1</code>
+ revision instead of the
+<code>base-0</code>
+ revision.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<small><i>arch Meets hello-world: A Tutorial Introduction to The arch Revision Control System
+
+</i></small><br>
+
+
+<a href="http://www.regexps.com">The Hackerlab at <code>regexps.com</code></a>
+
+</body>
